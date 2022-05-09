@@ -7,11 +7,10 @@ internal class DySequenceTypeInfo : DyMixin
 
     public override int ReflectedTypeId => Dy.Sequence;
 
-    protected override SupportedOperations GetSupportedOperations() => SupportedOperations.Iter; 
-
     public DySequenceTypeInfo()
     {
         Members.Add(Builtins.Iterate, Unary(Builtins.Iterate, Iterate));
+        SetSupportedOperations(Ops.Iter);
     }
 
     private static DyObject Iterate(ExecutionContext ctx, DyObject self) =>

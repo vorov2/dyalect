@@ -1,7 +1,6 @@
 ﻿using Dyalect.Codegen;
 using Dyalect.Runtime;
 using Dyalect.Runtime.Types;
-using System;
 using System.IO;
 using System.Linq;
 namespace Dyalect.Library.IO;
@@ -10,8 +9,6 @@ namespace Dyalect.Library.IO;
 public sealed partial class DyPathTypeInfo : DyForeignTypeInfo<IOModule>
 {
     public override string ReflectedTypeName => "Path";
-
-    protected override SupportedOperations GetSupportedOperations() => SupportedOperations.None;
 
     [StaticMethod]
     internal static string? GetFullPath(string path) => Path.GetFullPath(path);

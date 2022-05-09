@@ -1,7 +1,6 @@
 ﻿using Dyalect.Codegen;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 namespace Dyalect.Runtime.Types;
 
 [GeneratedType]
@@ -11,10 +10,11 @@ internal sealed partial class DyArrayTypeInfo : DyCollTypeInfo
 
     public override int ReflectedTypeId => Dy.Array;
 
-    protected override SupportedOperations GetSupportedOperations() =>
-        SupportedOperations.Get | SupportedOperations.Set | SupportedOperations.Len | SupportedOperations.Iter | SupportedOperations.In;
-
-    public DyArrayTypeInfo() => AddMixins(Dy.Lookup, Dy.Collection);
+    public DyArrayTypeInfo()
+    {
+        AddMixins(Dy.Lookup, Dy.Collection);
+        SetSupportedOperations(Ops.Get | Ops.Set | Ops.Len | Ops.Iter | Ops.In);
+    }
 
     #region Operations
     protected override DyObject ToStringOp(ExecutionContext ctx, DyObject arg, DyObject format)
@@ -130,7 +130,7 @@ internal sealed partial class DyArrayTypeInfo : DyCollTypeInfo
     }
 
     [InstanceMethod(Method.RemoveAt)]
-    internal static void RemoveItemAt(ExecutionContext ctx, DyArray self, int index)
+    internal static void RemoveItemAt(DyArray self, int index)
     {
         if (!CorrectIndex(self, ref index, insert: true))
             throw new DyCodeException(DyError.IndexOutOfRange, index);
@@ -314,7 +314,7 @@ internal sealed partial class DyArrayTypeInfo : DyCollTypeInfo
         DyCollection.ConcatValues(ctx, values);
 
     [StaticMethod]
-    internal static DyObject Copy(ExecutionContext ctx, DyArray source, int index = 0, DyArray? destination = null, int destinationIndex = 0, int? count = null)
+    internal static DyObject Copy(DyArray source, int index = 0, DyArray? destination = null, int destinationIndex = 0, int? count = null)
     {
         if (count is null)
             count = source.Count;

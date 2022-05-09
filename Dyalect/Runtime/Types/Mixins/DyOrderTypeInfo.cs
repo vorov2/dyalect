@@ -7,13 +7,11 @@ internal class DyOrderTypeInfo : DyMixin
 
     public override int ReflectedTypeId => Dy.Order;
 
-    protected override SupportedOperations GetSupportedOperations() =>
-        SupportedOperations.Gt | SupportedOperations.Lt | SupportedOperations.Gte | SupportedOperations.Lte;
-
     public DyOrderTypeInfo()
     {
         Members.Add(Builtins.Gt, Binary(Builtins.Gt, Greater));
         Members.Add(Builtins.Lt, Binary(Builtins.Lt, Lesser));
+        SetSupportedOperations(Ops.Gt | Ops.Lt | Ops.Gte | Ops.Lte);
     }
 
     private static DyObject Greater(ExecutionContext ctx, DyObject left, DyObject right)

@@ -1,18 +1,19 @@
 ﻿using Dyalect.Codegen;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 namespace Dyalect.Runtime.Types;
 
 [GeneratedType]
 internal sealed partial class DyIteratorTypeInfo : DyTypeInfo
 {
-    protected override SupportedOperations GetSupportedOperations() =>
-        SupportedOperations.Get | SupportedOperations.Len | SupportedOperations.Iter | SupportedOperations.In;
-
     public override string ReflectedTypeName => nameof(Dy.Iterator);
 
     public override int ReflectedTypeId => Dy.Iterator;
+
+    public DyIteratorTypeInfo()
+    {
+        SetSupportedOperations(Ops.Get | Ops.Len | Ops.Iter | Ops.In);
+    }
 
     #region Operations
     protected override DyObject AddOp(ExecutionContext ctx, DyObject left, DyObject right) => DyIterator.Create(Concat(ctx, left, right));
@@ -140,7 +141,7 @@ internal sealed partial class DyIteratorTypeInfo : DyTypeInfo
     }
 
     [InstanceMethod]
-    internal static DyObject ElementAt(ExecutionContext ctx, IEnumerable<DyObject> self, int index)
+    internal static DyObject ElementAt(IEnumerable<DyObject> self, int index)
     {
         //TODO: validate logic
         try

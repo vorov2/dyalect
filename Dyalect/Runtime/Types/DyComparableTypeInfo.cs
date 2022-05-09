@@ -7,14 +7,12 @@ internal sealed class DyComparableTypeInfo : DyTypeInfo
 
     public override int ReflectedTypeId => Dy.Order;
 
-    protected override SupportedOperations GetSupportedOperations() => SupportedOperations.None;
-
     public DyComparableTypeInfo()
     {
         Closed = true;
-        AddDefaultMixin2(Builtins.Gt, "other");
-        AddDefaultMixin2(Builtins.Lt, "other");
-        AddDefaultMixin2(Builtins.Gte, "other");
-        AddDefaultMixin2(Builtins.Lte, "other");
+        AddDefaultMixin(Builtins.Gt, "other");
+        AddDefaultMixin(Builtins.Lt, "other");
+        AddDefaultMixin(Builtins.Gte, "other");
+        AddDefaultMixin(Builtins.Lte, "other");
     }
 }

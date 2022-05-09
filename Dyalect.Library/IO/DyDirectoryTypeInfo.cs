@@ -9,8 +9,6 @@ public sealed partial class DyDirectoryTypeInfo : DyForeignTypeInfo<IOModule>
 {
     public override string ReflectedTypeName => "Directory";
 
-    protected override SupportedOperations GetSupportedOperations() => SupportedOperations.None;
-
     [StaticMethod]
     internal static bool Exists(ExecutionContext ctx, string path) => ctx.Handle(() => Directory.Exists(path));
 

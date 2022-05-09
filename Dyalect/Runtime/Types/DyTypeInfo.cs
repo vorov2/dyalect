@@ -6,16 +6,16 @@ namespace Dyalect.Runtime.Types;
 
 public abstract class DyTypeInfo : DyObject
 {
-    protected SupportedOperations ops;
+    protected Ops ops;
 
     internal bool Closed { get; set; }
 
     public override string TypeName => nameof(Dy.TypeInfo);
-    
-    protected virtual SupportedOperations GetSupportedOperations() => SupportedOperations.None;
+
+    protected void SetSupportedOperations(Ops ops) => this.ops = ops;
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private bool Support(SupportedOperations op) => ((GetSupportedOperations() | ops) & op) == op ;
+    private bool Support(Ops op) => (ops & op) == op;
 
     public override object ToObject() => this;
 
@@ -523,7 +523,7 @@ public abstract class DyTypeInfo : DyObject
     protected readonly Dictionary<HashString, DyFunction> Members = new();
     
     internal virtual bool HasInstanceMember(DyObject self, HashString name, ExecutionContext ctx) =>
-        LookupInstanceMember(self, GetBuiltinName((string)name), ctx) is not null;
+        LookupInstanceMember(self, Builtins.OperatorToName((string)name), ctx) is not null;
 
     internal virtual DyObject GetInstanceMember(DyObject self, HashString name, ExecutionContext ctx)
     {
@@ -582,8 +582,12 @@ public abstract class DyTypeInfo : DyObject
         {
             var set = Builtins.GetSetterName(name);
 
-            if ((set == Builtins.Length & (GetSupportedOperations() & SupportedOperations.Len) == SupportedOperations.Len)
-                || set == Builtins.String || (Members.TryGetValue(set, out var get) && !get.Auto))
+                //Length cannot be a property if a type supports Len
+            if ((set == Builtins.Length && Support(Ops.Len))
+                //ToString can never be a property
+                || set == Builtins.String
+                //A non-property cannot be overriden by a property
+                || (Members.TryGetValue(set, out var get) && !get.Auto))
             {
                 ctx.InvalidOverload(set);
                 return;
@@ -621,7 +625,7 @@ public abstract class DyTypeInfo : DyObject
                     ctx.UnableOverload(this, name);
                     return;
                 }
-                ops |= SupportedOperations.Add;
+                ops |= Ops.Add;
                 add = func;
                 break;
             case Builtins.Sub:
@@ -630,7 +634,7 @@ public abstract class DyTypeInfo : DyObject
                     ctx.UnableOverload(this, name);
                     return;
                 }
-                ops |= SupportedOperations.Sub;
+                ops |= Ops.Sub;
                 sub = func;
                 break;
             case Builtins.Mul:
@@ -639,7 +643,7 @@ public abstract class DyTypeInfo : DyObject
                     ctx.UnableOverload(this, name);
                     return;
                 }
-                ops |= SupportedOperations.Mul;
+                ops |= Ops.Mul;
                 mul = func;
                 break;
             case Builtins.Div:
@@ -648,7 +652,7 @@ public abstract class DyTypeInfo : DyObject
                     ctx.UnableOverload(this, name);
                     return;
                 }
-                ops |= SupportedOperations.Div;
+                ops |= Ops.Div;
                 div = func;
                 break;
             case Builtins.Rem:
@@ -657,7 +661,7 @@ public abstract class DyTypeInfo : DyObject
                     ctx.UnableOverload(this, name);
                     return;
                 }
-                ops |= SupportedOperations.Rem;
+                ops |= Ops.Rem;
                 rem = func;
                 break;
             case Builtins.Shl:
@@ -666,7 +670,7 @@ public abstract class DyTypeInfo : DyObject
                     ctx.UnableOverload(this, name);
                     return;
                 }
-                ops |= SupportedOperations.Shl;
+                ops |= Ops.Shl;
                 shl = func;
                 break;
             case Builtins.Shr:
@@ -675,7 +679,7 @@ public abstract class DyTypeInfo : DyObject
                     ctx.UnableOverload(this, name);
                     return;
                 }
-                ops |= SupportedOperations.Shr;
+                ops |= Ops.Shr;
                 shr = func;
                 break;
             case Builtins.And:
@@ -684,7 +688,7 @@ public abstract class DyTypeInfo : DyObject
                     ctx.UnableOverload(this, name);
                     return;
                 }
-                ops |= SupportedOperations.And;
+                ops |= Ops.And;
                 and = func;
                 break;
             case Builtins.Or:
@@ -693,7 +697,7 @@ public abstract class DyTypeInfo : DyObject
                     ctx.UnableOverload(this, name);
                     return;
                 }
-                ops |= SupportedOperations.Or;
+                ops |= Ops.Or;
                 or = func;
                 break;
             case Builtins.Xor:
@@ -702,7 +706,7 @@ public abstract class DyTypeInfo : DyObject
                     ctx.UnableOverload(this, name);
                     return;
                 }
-                ops |= SupportedOperations.Xor;
+                ops |= Ops.Xor;
                 xor = func;
                 break;
             case Builtins.Eq:
@@ -727,7 +731,7 @@ public abstract class DyTypeInfo : DyObject
                     ctx.UnableOverload(this, name);
                     return;
                 }
-                ops |= SupportedOperations.Gt;
+                ops |= Ops.Gt;
                 gt = func;
                 break;
             case Builtins.Lt:
@@ -736,7 +740,7 @@ public abstract class DyTypeInfo : DyObject
                     ctx.UnableOverload(this, name);
                     return;
                 }
-                ops |= SupportedOperations.Lt;
+                ops |= Ops.Lt;
                 lt = func;
                 break;
             case Builtins.Gte:
@@ -745,7 +749,7 @@ public abstract class DyTypeInfo : DyObject
                     ctx.UnableOverload(this, name);
                     return;
                 }
-                ops |= SupportedOperations.Gte;
+                ops |= Ops.Gte;
                 gte = func;
                 break;
             case Builtins.Lte:
@@ -754,7 +758,7 @@ public abstract class DyTypeInfo : DyObject
                     ctx.UnableOverload(this, name);
                     return;
                 }
-                ops |= SupportedOperations.Lte;
+                ops |= Ops.Lte;
                 lte = func;
                 break;
             case Builtins.Neg:
@@ -763,7 +767,7 @@ public abstract class DyTypeInfo : DyObject
                     ctx.UnableOverload(this, name);
                     return;
                 }
-                ops |= SupportedOperations.Neg;
+                ops |= Ops.Neg;
                 neg = func;
                 break;
             case Builtins.Not:
@@ -780,7 +784,7 @@ public abstract class DyTypeInfo : DyObject
                     ctx.UnableOverload(this, name);
                     return;
                 }
-                ops |= SupportedOperations.BitNot;
+                ops |= Ops.BitNot;
                 bitnot = func;
                 break;
             case Builtins.Plus:
@@ -789,7 +793,7 @@ public abstract class DyTypeInfo : DyObject
                     ctx.UnableOverload(this, name);
                     return;
                 }
-                ops |= SupportedOperations.Plus;
+                ops |= Ops.Plus;
                 plus = func;
                 break;
             case Builtins.Set:
@@ -798,7 +802,7 @@ public abstract class DyTypeInfo : DyObject
                     ctx.UnableOverload(this, name);
                     return;
                 }
-                ops |= SupportedOperations.Set;
+                ops |= Ops.Set;
                 set = func;
                 break;
             case Builtins.Get:
@@ -807,7 +811,7 @@ public abstract class DyTypeInfo : DyObject
                     ctx.UnableOverload(this, name);
                     return;
                 }
-                ops |= SupportedOperations.Get;
+                ops |= Ops.Get;
                 get = func;
                 break;
             case Builtins.Iterate:
@@ -821,7 +825,7 @@ public abstract class DyTypeInfo : DyObject
                     ctx.UnableOverload(this, name);
                     return;
                 }
-                ops |= SupportedOperations.Iter;
+                ops |= Ops.Iter;
                 iter = func;
                 break;
             case Builtins.In:
@@ -835,7 +839,7 @@ public abstract class DyTypeInfo : DyObject
                     ctx.UnableOverload(this, name);
                     return;
                 }
-                ops |= SupportedOperations.In;
+                ops |= Ops.In;
                 @in = func;
                 break;
             case Builtins.Clone:
@@ -862,7 +866,7 @@ public abstract class DyTypeInfo : DyObject
                     ctx.UnableOverload(this, name);
                     return;
                 }
-                ops |= SupportedOperations.Len;
+                ops |= Ops.Len;
                 len = func;
                 break;
             case Builtins.String:
@@ -911,60 +915,36 @@ public abstract class DyTypeInfo : DyObject
     private DyFunction? InitializeInstanceMembers(DyObject self, string name, ExecutionContext ctx) =>
         name switch
         {
-            Builtins.Add => Support(SupportedOperations.Add) ? (add is null ? Binary(name, AddOp) : add) : null,
-            Builtins.Sub => Support(SupportedOperations.Sub) ? (sub is null ? Binary(name, SubOp) : sub) : null,
-            Builtins.Mul => Support(SupportedOperations.Mul) ? (mul is null ? Binary(name, MulOp) : mul) : null,
-            Builtins.Div => Support(SupportedOperations.Div) ? (div is null ? Binary(name, DivOp) : div) : null,
-            Builtins.Rem => Support(SupportedOperations.Rem) ? (rem is null ? Binary(name, RemOp) : rem) : null,
-            Builtins.Shl => Support(SupportedOperations.Shl) ? (shl is null ? Binary(name, ShiftLeftOp) : shl) : null,
-            Builtins.Shr => Support(SupportedOperations.Shr) ? (shr is null ? Binary(name, ShiftRightOp) : shr) : null,
-            Builtins.And => Support(SupportedOperations.And) ? (and is null ? Binary(name, AndOp) : and) : null,
-            Builtins.Or => Support(SupportedOperations.Or) ? (or is null ? Binary(name, OrOp) : or) : null,
-            Builtins.Xor => Support(SupportedOperations.Xor) ? (xor is null ? Binary(name, XorOp) : xor) : null,
+            Builtins.Add => Support(Ops.Add) ? (add is null ? Binary(name, AddOp) : add) : null,
+            Builtins.Sub => Support(Ops.Sub) ? (sub is null ? Binary(name, SubOp) : sub) : null,
+            Builtins.Mul => Support(Ops.Mul) ? (mul is null ? Binary(name, MulOp) : mul) : null,
+            Builtins.Div => Support(Ops.Div) ? (div is null ? Binary(name, DivOp) : div) : null,
+            Builtins.Rem => Support(Ops.Rem) ? (rem is null ? Binary(name, RemOp) : rem) : null,
+            Builtins.Shl => Support(Ops.Shl) ? (shl is null ? Binary(name, ShiftLeftOp) : shl) : null,
+            Builtins.Shr => Support(Ops.Shr) ? (shr is null ? Binary(name, ShiftRightOp) : shr) : null,
+            Builtins.And => Support(Ops.And) ? (and is null ? Binary(name, AndOp) : and) : null,
+            Builtins.Or => Support(Ops.Or) ? (or is null ? Binary(name, OrOp) : or) : null,
+            Builtins.Xor => Support(Ops.Xor) ? (xor is null ? Binary(name, XorOp) : xor) : null,
             Builtins.Eq => eq is null ? Binary(name, EqOp) : eq,
             Builtins.Neq => neq is null ? Binary(name, NeqOp) : neq,
-            Builtins.Gt => Support(SupportedOperations.Gt) ? (gt is null ? Binary(name, GtOp) : gt) : null,
-            Builtins.Lt => Support(SupportedOperations.Lt) ? (lt is null ? Binary(name, LtOp) : lt) : null,
-            Builtins.Gte => Support(SupportedOperations.Gte) ? (gte is null ? Binary(name, GteOp) : gte) : null,
-            Builtins.Lte => Support(SupportedOperations.Lte) ? (lte is null ? Binary(name, LteOp) : lte) : null,
-            Builtins.Neg => Support(SupportedOperations.Neg) ? (neg is null ? Unary(name, NegOp) : neg) : null,
+            Builtins.Gt => Support(Ops.Gt) ? (gt is null ? Binary(name, GtOp) : gt) : null,
+            Builtins.Lt => Support(Ops.Lt) ? (lt is null ? Binary(name, LtOp) : lt) : null,
+            Builtins.Gte => Support(Ops.Gte) ? (gte is null ? Binary(name, GteOp) : gte) : null,
+            Builtins.Lte => Support(Ops.Lte) ? (lte is null ? Binary(name, LteOp) : lte) : null,
+            Builtins.Neg => Support(Ops.Neg) ? (neg is null ? Unary(name, NegOp) : neg) : null,
             Builtins.Not => not is null ? Unary(name, NotOp) : not,
-            Builtins.BitNot => Support(SupportedOperations.BitNot) ? (bitnot is null ? Unary(name, BitwiseNotOp) : bitnot) : null,
-            Builtins.Plus => Support(SupportedOperations.Plus) ? (plus is null ? Unary(name, PlusOp) : plus) : null,
-            Builtins.Get => Support(SupportedOperations.Get) ? (get is null ? Binary(name, GetOp, "index") : get) : null,
-            Builtins.Set => Support(SupportedOperations.Set) ? (set is null ? Ternary(name, SetOp, "index", "value") : set) : null,
-            Builtins.Length => Support(SupportedOperations.Len) ? (len is null ? Unary(name, LengthOp) : len) : null,
+            Builtins.BitNot => Support(Ops.BitNot) ? (bitnot is null ? Unary(name, BitwiseNotOp) : bitnot) : null,
+            Builtins.Plus => Support(Ops.Plus) ? (plus is null ? Unary(name, PlusOp) : plus) : null,
+            Builtins.Get => Support(Ops.Get) ? (get is null ? Binary(name, GetOp, "index") : get) : null,
+            Builtins.Set => Support(Ops.Set) ? (set is null ? Ternary(name, SetOp, "index", "value") : set) : null,
+            Builtins.Length => Support(Ops.Len) ? (len is null ? Unary(name, LengthOp) : len) : null,
             Builtins.String => tos is null ? Binary(name, ToStringOp, new Par("format", Nil)) : tos,
-            Builtins.Iterate => Support(SupportedOperations.Iter) ? (iter is null ? Unary(name, GetIterator) : iter) : null,
+            Builtins.Iterate => Support(Ops.Iter) ? (iter is null ? Unary(name, GetIterator) : iter) : null,
             Builtins.Clone => clone is null ? Unary(name, Clone) : clone,
             Builtins.Has => Binary(name, Has, "member"),
             Builtins.Type => Unary(name, (ct, o) => ct.RuntimeContext.Types[o.TypeId]),
-            Builtins.In => Support(SupportedOperations.In) ? (@in is null ? Binary(name, InOp, "value") : @in) : null,
+            Builtins.In => Support(Ops.In) ? (@in is null ? Binary(name, InOp, "value") : @in) : null,
             _ => InitializeInstanceMember(self, name, ctx)
-        };
-
-    private static string GetBuiltinName(string name) =>
-        name switch
-        {
-            "+" => Builtins.Add,
-            "-" => Builtins.Sub,
-            "*" => Builtins.Mul,
-            "/" => Builtins.Div,
-            "%" => Builtins.Rem,
-            "<<<" => Builtins.Shl,
-            ">>>" => Builtins.Shr,
-            "^^^" => Builtins.Xor,
-            "==" => Builtins.Eq,
-            "!=" => Builtins.Neq,
-            ">" => Builtins.Gt,
-            "<" => Builtins.Lt,
-            ">=" => Builtins.Gte,
-            "<=" => Builtins.Lte,
-            "!" => Builtins.Not,
-            "~~~" => Builtins.BitNot,
-            "|||" => Builtins.BitOr,
-            "&&&" => Builtins.BitAnd,
-            _ => name
         };
 
     protected virtual DyFunction? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx) => null;
@@ -983,7 +963,7 @@ public abstract class DyTypeInfo : DyObject
             Members[kv.Key] = kv.Value;
         }
 
-        ops |= typeInfo.GetSupportedOperations();
+        ops |= typeInfo.ops;
         mixins.Add(typeInfo.ReflectedTypeId);
         typeInfo.Closed = true;
         mixins.UnionWith(typeInfo.mixins);
@@ -995,14 +975,8 @@ public abstract class DyTypeInfo : DyObject
             mixins.Add(typeInfos[i]);
     }
 
-    protected void AddDefaultMixin1(string name) =>
-        Members.Add(name, new DyUnaryFunction(name, (ctx, _) => ctx.NotImplemented(name)));
-
-    protected void AddDefaultMixin2(string name, string p1) =>
+    protected void AddDefaultMixin(string name, string p1) =>
         Members.Add(name, new DyBinaryFunction(name, (ctx, _, _) => ctx.NotImplemented(name), p1));
-
-    protected void AddDefaultPropertyMixin(string name) =>
-        Members.Add(name, new DyUnaryFunction(name, (ctx, _) => ctx.NotImplemented(name), isPropertyGetter: true));
 
     internal bool CheckType(DyTypeInfo typeInfo) =>
         ReflectedTypeId == typeInfo.ReflectedTypeId || mixins.Contains(typeInfo.ReflectedTypeId);

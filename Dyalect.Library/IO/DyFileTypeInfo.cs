@@ -2,7 +2,6 @@
 using Dyalect.Library.Core;
 using Dyalect.Runtime;
 using Dyalect.Runtime.Types;
-using System;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -12,8 +11,6 @@ namespace Dyalect.Library.IO;
 public sealed partial class DyFileTypeInfo : DyForeignTypeInfo<IOModule>
 {
     public override string ReflectedTypeName => "File";
-
-    protected override SupportedOperations GetSupportedOperations() => SupportedOperations.None;
 
     private static Encoding GetEncoding(ExecutionContext ctx, int? encoding)
     {

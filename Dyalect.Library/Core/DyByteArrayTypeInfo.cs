@@ -11,7 +11,10 @@ public sealed partial class DyByteArrayTypeInfo : DyForeignTypeInfo
 
     public override string ReflectedTypeName => ByteArray;
 
-    protected override SupportedOperations GetSupportedOperations() => SupportedOperations.Len;
+    public DyByteArrayTypeInfo()
+    {
+        SetSupportedOperations(Ops.Len);
+    }
 
     #region Operations
     public DyByteArray Create(byte[]? buffer) => new(this, buffer);

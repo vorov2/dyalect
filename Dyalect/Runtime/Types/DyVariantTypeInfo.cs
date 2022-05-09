@@ -1,6 +1,5 @@
 ﻿using Dyalect.Debug;
 using System.Collections.Generic;
-
 namespace Dyalect.Runtime.Types;
 
 internal sealed class DyVariantTypeInfo : DyTypeInfo
@@ -9,10 +8,11 @@ internal sealed class DyVariantTypeInfo : DyTypeInfo
 
     public override int ReflectedTypeId => Dy.Variant;
 
-    protected override SupportedOperations GetSupportedOperations() =>
-        SupportedOperations.Len | SupportedOperations.Get | SupportedOperations.Set;
-
-    public DyVariantTypeInfo() => AddMixins(Dy.Lookup);
+    public DyVariantTypeInfo()
+    {
+        AddMixins(Dy.Lookup);
+        SetSupportedOperations(Ops.Len | Ops.Get | Ops.Set);
+    }
 
     #region Operations
     protected override DyObject EqOp(ExecutionContext ctx, DyObject left, DyObject right)

@@ -7,11 +7,6 @@ internal sealed class DyNumberTypeInfo : DyTypeInfo
 
     public override int ReflectedTypeId => Dy.Number;
 
-    protected override SupportedOperations GetSupportedOperations() =>
-        SupportedOperations.Add | SupportedOperations.Sub | SupportedOperations.Div
-        | SupportedOperations.Mul | SupportedOperations.Rem | SupportedOperations.Neg
-        | SupportedOperations.Plus;
-
     public DyNumberTypeInfo()
     {
         Members.Add(Builtins.Add, Binary(Builtins.Add, Sum));
@@ -21,6 +16,7 @@ internal sealed class DyNumberTypeInfo : DyTypeInfo
         Members.Add(Builtins.Rem, Binary(Builtins.Rem, Remainder));
         Members.Add(Builtins.Neg, Unary(Builtins.Neg, Negate));
         Members.Add(Builtins.Plus, Unary(Builtins.Plus, MakePlus));
+        SetSupportedOperations(Ops.Add | Ops.Sub | Ops.Div | Ops.Mul | Ops.Rem | Ops.Neg | Ops.Plus);
     }
 
     private static DyObject Sum(ExecutionContext ctx, DyObject left, DyObject right) =>

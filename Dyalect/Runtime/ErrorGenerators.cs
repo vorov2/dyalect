@@ -51,7 +51,7 @@ public static class ErrorGenerators
 
     public static DyObject NotImplemented(this ExecutionContext ctx, string op)
     {
-        ctx.Error = new(DyError.NotImplemented, Builtins.Translate(op));
+        ctx.Error = new(DyError.NotImplemented, Builtins.NameToOperator(op));
         return Nil;
     }
 
@@ -163,14 +163,14 @@ public static class ErrorGenerators
 
     public static DyObject OperationNotSupported(this ExecutionContext ctx, string op, DyObject obj)
     {
-        ctx.Error = new(DyError.OperationNotSupported, Builtins.Translate(op), obj.TypeName);
+        ctx.Error = new(DyError.OperationNotSupported, Builtins.NameToOperator(op), obj.TypeName);
         return Nil;
     }
 
     public static DyObject OperationNotSupported(this ExecutionContext ctx, string op, int typeId)
     {
         var typeName = ctx.RuntimeContext.Types[typeId].ReflectedTypeName;
-        ctx.Error = new(DyError.OperationNotSupported, Builtins.Translate(op), typeName, 0, 0);
+        ctx.Error = new(DyError.OperationNotSupported, Builtins.NameToOperator(op), typeName, 0, 0);
         return Nil;
     }
 
@@ -178,13 +178,13 @@ public static class ErrorGenerators
     {
         var typeName = ctx.RuntimeContext.Types[typeId].ReflectedTypeName;
         //small hack to get OperationNotSupported.4
-        ctx.Error = new(DyError.OperationNotSupported, Builtins.Translate(op), typeName, 0, 0);
+        ctx.Error = new(DyError.OperationNotSupported, Builtins.NameToOperator(op), typeName, 0, 0);
         return Nil;
     }
 
     public static DyObject OperationNotSupported(this ExecutionContext ctx, string op, DyObject obj1, DyObject obj2)
     {
-        ctx.Error = new(DyError.OperationNotSupported, Builtins.Translate(op), obj1.TypeName, obj2.TypeName);
+        ctx.Error = new(DyError.OperationNotSupported, Builtins.NameToOperator(op), obj1.TypeName, obj2.TypeName);
         return Nil;
     }
 

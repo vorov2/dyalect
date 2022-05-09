@@ -1,228 +1,248 @@
 ﻿#region "Number: GetType"
-	assert("Number", typeName(Number))
+    assert("Number", typeName(Number))
 #endregion
 
 #region "Number"
-	func test(Number n, pattern) {
-		assert(pattern, n)
-	}
-	test(42, 42)
-	test(12.2, 12.2)
+    func test(Number n, pattern) {
+        assert(pattern, n)
+    }
+    test(42, 42)
+    test(12.2, 12.2)
 #endregion
 
 #region "Lookup: GetType"
-	assert("Lookup", typeName(Lookup))
+    assert("Lookup", typeName(Lookup))
 #endregion
 
 #region "Lookup"
-	func elementAt(Lookup xs, index) => xs[index]
-	func length(Lookup xs) => xs.Length()
-	let arr = [1..10]
-	let xs = (1..10,)
-	let tab = Dictionary(x: 1, y: 2)
-	let str = "abcdef"
-	assert(3, elementAt(arr, 2))
-	assert(10, length(arr))
-	assert(3, elementAt(xs, 2))
-	assert(10, length(arr))
-	assert(2, elementAt(tab, "y"))
-	assert(2, length(tab))
-	assert('d', elementAt(str, 3))
-	assert(6, length(str))
+    func elementAt(Lookup xs, index) => xs[index]
+    func length(Lookup xs) => xs.Length()
+    let arr = [1..10]
+    let xs = (1..10,)
+    let tab = Dictionary(x: 1, y: 2)
+    let str = "abcdef"
+    assert(3, elementAt(arr, 2))
+    assert(10, length(arr))
+    assert(3, elementAt(xs, 2))
+    assert(10, length(arr))
+    assert(2, elementAt(tab, "y"))
+    assert(2, length(tab))
+    assert('d', elementAt(str, 3))
+    assert(6, length(str))
 #endregion
 
 #region "Collection: GetType"
-	assert("Collection", typeName(Collection))
+    assert("Collection", typeName(Collection))
 #endregion
 
 #region "Collection"
-	func setElement(Collection xs, index, value) => xs[index] = value
-	let arr = [1,2]
-	let tab = Dictionary(x: 1, y: 2)
-	setElement(arr, 0, 11)
-	assert([11,2], arr)
-	setElement(tab, "x", 11)
-	assert(11, tab["x"])
+    func setElement(Collection xs, index, value) => xs[index] = value
+    let arr = [1,2]
+    let tab = Dictionary(x: 1, y: 2)
+    setElement(arr, 0, 11)
+    assert([11,2], arr)
+    setElement(tab, "x", 11)
+    assert(11, tab["x"])
 #endregion
 
 #region "Functor: GetType"
-	assert("Functor", typeName(Functor))
+    assert("Functor", typeName(Functor))
 #endregion
 
 #region "Functor"
-	func test(Functor fn, arg) {
-		assert("hello, user!", fn(arg))
-	}
-	func hello(arg) => "hello, " + arg + "!"
-	type Foo() with Functor
-	func Foo.Call(arg) => "hello, " + arg + "!"
-	test(hello, "user")
-	test(Foo(), "user")
+    func test(Functor fn, arg) {
+        assert("hello, user!", fn(arg))
+    }
+    func hello(arg) => "hello, " + arg + "!"
+    type Foo() with Functor
+    func Foo.Call(arg) => "hello, " + arg + "!"
+    test(hello, "user")
+    test(Foo(), "user")
 #endregion
 
 #region "Disposable: GetType"
-	assert("Disposable", typeName(Disposable))
+    assert("Disposable", typeName(Disposable))
 #endregion
 
-#region "Functor"
-	func test(Disposable o) {
-		assert(got: true)
-	}
-	var msg
-	type Foo() with Disposable
-	func Foo.Dispose() {
-		msg = "Disposed!"
-	}
-	{
-		auto f = Foo()
-		test(f)
-	}
-	assert("Disposed!", msg)
+#region "Disposable 1"
+    func test(Disposable o) {
+        assert(got: true)
+    }
+    var msg
+    type Foo() with Disposable
+    func Foo.Dispose() {
+        msg = "Disposed!"
+    }
+    {
+        auto f = Foo()
+        test(f)
+    }
+    assert("Disposed!", msg)
+#endregion
+
+#region "Disposable 2"
+    type Foo() with Disposable
+    try {
+        {
+            auto f = Foo()
+        }
+    } catch {
+        @NotImplemented => assert(got: true)
+    }
 #endregion
 
 #region "Equatable: GetType"
-	assert("Equatable", typeName(Equatable))
+    assert("Equatable", typeName(Equatable))
 #endregion
 
 #region "Equatable"
-	type Foo(x, y, z)
-	assert(false, Foo(1,2,3) == Foo(1,2,3))
-	type Bar(x, y, z) with Equatable
-	assert(true, Bar(1,2,3) == Bar(1,2,3))
+    type Foo(x, y, z)
+    assert(false, Foo(1,2,3) == Foo(1,2,3))
+    type Bar(x, y, z) with Equatable
+    assert(true, Bar(1,2,3) == Bar(1,2,3))
 #endregion
 
 #region "Identity: GetType"
-	assert("Identity", typeName(Identity))
+    assert("Identity", typeName(Identity))
 #endregion
 
 #region "Identity"
-	type Foo()
-	let f = Foo()
-	assert(false, referenceEquals(f, f.Clone()))
-	type Bar() with Identity
-	let b = Bar()
-	assert(true, referenceEquals(b, b.Clone()))
+    type Foo()
+    let f = Foo()
+    assert(false, referenceEquals(f, f.Clone()))
+    type Bar() with Identity
+    let b = Bar()
+    assert(true, referenceEquals(b, b.Clone()))
 #endregion
 
 #region "Order: GetType"
-	assert("Order", typeName(Order))
+    assert("Order", typeName(Order))
 #endregion
 
 #region "Order"
-	func gte(Order x, Order y) => x > y
-	assert(true, gte(12, 2))
-	assert(true, gte(12.0456, 2.0023))
-	assert(true, gte('d', 'a'))
-	assert(true, gte("dahoo", "boo"))
+    func gte(Order x, Order y) => x > y
+    assert(true, gte(12, 2))
+    assert(true, gte(12.0456, 2.0023))
+    assert(true, gte('d', 'a'))
+    assert(true, gte("dahoo", "boo"))
 #endregion
 
 #region "Sequence: GetType"
-	assert("Sequence", typeName(Sequence))
+    assert("Sequence", typeName(Sequence))
 #endregion
 
 #region "Sequence"
-	type Foo(x, y, z) with Sequence
-	let f = Foo(10,20,30)
-	let xs = f.Iterate().ToArray()
-	assert([10,20,30], xs)
+    type Foo(x, y, z) with Sequence
+    let f = Foo(10,20,30)
+    let xs = f.Iterate().ToArray()
+    assert([10,20,30], xs)
+#endregion
+
+#region "Show: GetType"
+    assert("Show", typeName(Show))
+#endregion
+
+#region "Show"
+    type Foo(x, y) with Show
+    let f = Foo(1, 2)
+    assert("Foo(x: 1, y: 2)", f.ToString())
 #endregion
 
 #region "Object: GetType"
-	assert("Object", typeName(Object))
+    assert("Object", typeName(Object))
 #endregion
 
 #region "Custom type"
-	type Bar
-	func get Bar.First() => this[0]
-	func get Bar.Last() => this[this.Length() - 1]
-	type Foo(x, y) with Bar, Lookup
-	let f = Foo(12, 34)
-	assert(12, f.First)
-	assert(34, f.Last)
-	assert(true, f is Foo)
-	assert(true, f is Bar)
+    type Bar
+    func get Bar.First() => this[0]
+    func get Bar.Last() => this[this.Length() - 1]
+    type Foo(x, y) with Bar, Lookup
+    let f = Foo(12, 34)
+    assert(12, f.First)
+    assert(34, f.Last)
+    assert(true, f is Foo)
+    assert(true, f is Bar)
 #endregion
 
 #region "Closed type"
-	type Bar
-	type Foo() with Bar
-	try {
-		func Bar.Test() { }
-		assert(got: false)
-	} catch {
-		@TypeClosed => assert(got: true)
-	}
+    type Bar
+    type Foo() with Bar
+    try {
+        func Bar.Test() { }
+        assert(got: false)
+    } catch {
+        @TypeClosed => assert(got: true)
+    }
 #endregion
 
 #region "Multiple mixins"
-	type Bar1
-	func get Bar1.First() => this[0]
-	type Bar2
-	func get Bar2.Last() => this[this.Length() - 1]
-	type Foo(x, y) with Bar1, Bar2, Lookup
-	let f = Foo(12, 34)
-	assert(12, f.First)
-	assert(34, f.Last)
-	assert(true, f is Foo)
-	assert(true, f is Bar1)
-	assert(true, f is Bar2)
+    type Bar1
+    func get Bar1.First() => this[0]
+    type Bar2
+    func get Bar2.Last() => this[this.Length() - 1]
+    type Foo(x, y) with Bar1, Bar2, Lookup
+    let f = Foo(12, 34)
+    assert(12, f.First)
+    assert(34, f.Last)
+    assert(true, f is Foo)
+    assert(true, f is Bar1)
+    assert(true, f is Bar2)
 #endregion
 
 #region "Mixin with operators"
-	type Bar
-	func Bar + (other) {
-		this[0] + other[0]
-	}
-	func Bar - (other) {
-		this[0] - other[0]
-	}
-	type Num(x) with Bar, Lookup
-	let x = Num(12)
-	let y = Num(24)
-	assert(-12, x - y)
-	assert(36, x + y)
-	assert(true, x is Bar)
-	assert(true, x is Num)
-	assert(true, y is Bar)
-	assert(true, y is Num)
+    type Bar
+    func Bar + (other) {
+        this[0] + other[0]
+    }
+    func Bar - (other) {
+        this[0] - other[0]
+    }
+    type Num(x) with Bar, Lookup
+    let x = Num(12)
+    let y = Num(24)
+    assert(-12, x - y)
+    assert(36, x + y)
+    assert(true, x is Bar)
+    assert(true, x is Num)
+    assert(true, y is Bar)
+    assert(true, y is Num)
 #endregion
 
 #region "Implement mixin"
-	type Foo()
-	let x = Foo()
-	try {
-		x.Length()
-		assert(got: false)
-	} catch {
-		@OperationNotSupported => assert(got: true)
-	}
-	type Bar() with Lookup
-	let b = Bar()
-	assert(0, b.Length())
+    type Foo()
+    let x = Foo()
+    try {
+        x.Length()
+        assert(got: false)
+    } catch {
+        @OperationNotSupported => assert(got: true)
+    }
+    type Bar() with Lookup
+    let b = Bar()
+    assert(0, b.Length())
 #endregion
 
 #region "Array mixins"
-	func test1(Collection xs) {
-		assert([1,2,3], xs)
-	}
-	func test2(Lookup xs) {
-		assert([1,2,3], xs)
-	}
-	let xs = [1,2,3]
-	test1(xs)
-	test2(xs)
+    func test1(Collection xs) {
+        assert([1,2,3], xs)
+    }
+    func test2(Lookup xs) {
+        assert([1,2,3], xs)
+    }
+    let xs = [1,2,3]
+    test1(xs)
+    test2(xs)
 #endregion
 
-
 #region "Mixin inheritance"
-	type Foo(var x, var y, var z) with Collection
-	func test1(Collection xs) {
-		assert(got: true)
-	}
-	func test2(Lookup xs) {
-		assert(got: true)
-	} 
-	let f = Foo(1,2,3)
-	test1(f)
-	test2(f)
+    type Foo(var x, var y, var z) with Collection
+    func test1(Collection xs) {
+        assert(got: true)
+    }
+    func test2(Lookup xs) {
+        assert(got: true)
+    } 
+    let f = Foo(1,2,3)
+    test1(f)
+    test2(f)
 #endregion

@@ -1,7 +1,7 @@
 ﻿namespace Dyalect;
 
 [Flags]
-public enum SupportedOperations
+public enum Ops
 {
     None   = 0xFF,
     Add    = 0x01,

@@ -4,13 +4,20 @@ internal static class Builtins
 {
     private const string SET = "set_";
     private const string GET = "get_";
+
     public static string Setter(string name) => $"{SET}{name}";
+
     public static string Getter(string name) => $"{GET}{name}";
+
     public static bool IsSetter(string name) => name.StartsWith(SET);
+
     public static string GetSetterName(string name) => name[SET.Length..];
+
     public static bool IsSetter(HashString name) => ((string)name).StartsWith(SET);
+
     public static string GetSetterName(HashString name) => ((string)name)[SET.Length..];
-    public static string Translate(string op) =>
+
+    public static string NameToOperator(string op) =>
         op switch
         {
             Add => "+",
@@ -36,6 +43,30 @@ internal static class Builtins
             Neg => "- (unary)",
             Plus => "+ (unary)",
             _ => op
+        };
+
+    public static string OperatorToName(string name) =>
+        name switch
+        {
+            "+" => Builtins.Add,
+            "-" => Builtins.Sub,
+            "*" => Builtins.Mul,
+            "/" => Builtins.Div,
+            "%" => Builtins.Rem,
+            "<<<" => Builtins.Shl,
+            ">>>" => Builtins.Shr,
+            "^^^" => Builtins.Xor,
+            "==" => Builtins.Eq,
+            "!=" => Builtins.Neq,
+            ">" => Builtins.Gt,
+            "<" => Builtins.Lt,
+            ">=" => Builtins.Gte,
+            "<=" => Builtins.Lte,
+            "!" => Builtins.Not,
+            "~~~" => Builtins.BitNot,
+            "|||" => Builtins.BitOr,
+            "&&&" => Builtins.BitAnd,
+            _ => name
         };
 
     public const string OperatorSymbols = "?:+-*/&%<>^=!~|";
@@ -68,7 +99,7 @@ internal static class Builtins
     public const string String      = "ToString";
     public const string ToTuple     = "ToTuple";
     public const string ToArray     = "ToArray";
-    public const string Iterate    = "Iterate";
+    public const string Iterate     = "Iterate";
     public const string Clone       = "Clone";
     public const string Max         = "Max";
     public const string Min         = "Min";

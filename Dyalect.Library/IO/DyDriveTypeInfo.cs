@@ -10,8 +10,6 @@ public sealed partial class DyDriveTypeInfo : DyForeignTypeInfo<IOModule>
 {
     public override string ReflectedTypeName => "Drive";
 
-    protected override SupportedOperations GetSupportedOperations() => SupportedOperations.None;
-
     [InstanceProperty]
     internal static string? Name(ExecutionContext ctx, DyDrive self) => ctx.Handle(() => self.Value.Name);
 

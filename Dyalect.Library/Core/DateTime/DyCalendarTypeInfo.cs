@@ -1,15 +1,12 @@
 ﻿using Dyalect.Codegen;
 using Dyalect.Runtime;
 using Dyalect.Runtime.Types;
-using System;
 namespace Dyalect.Library.Core;
 
 [GeneratedType]
 public sealed partial class DyCalendarTypeInfo : DyForeignTypeInfo<CoreModule>
 {
     public override string ReflectedTypeName => "Calendar";
-
-    protected override SupportedOperations GetSupportedOperations() => SupportedOperations.None;
 
     [StaticMethod]
     internal static int DaysInMonth(int year, int month) => DateTime.DaysInMonth(year, month);
