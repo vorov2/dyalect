@@ -32,7 +32,7 @@
   * Fix: _`Slice` for arrays and tuples does unnecessary allocations_ ([Issue #881](https://github.com/vorov2/dyalect/issues/881)).
   * Fix: _Method `Format` doesn't take into account format strings_ ([Issue #882](https://github.com/vorov2/dyalect/issues/882)).
 
-# 0.44.3
+# 0.44.3 
   * Change: _Type system refactoring._
   * Change: _Refactor `Regex` to use tuples for the results_ ([Issue #872](https://github.com/vorov2/dyalect/issues/872), [docs](https://github.com/vorov2/dyalect/wiki/Library.Core.Regex)).
   * Fix: _Passing arguments to a variant, undesirable side effects_ ([Issue #874](https://github.com/vorov2/dyalect/issues/874)).
