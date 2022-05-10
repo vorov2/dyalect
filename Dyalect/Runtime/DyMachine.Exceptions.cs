@@ -95,9 +95,9 @@ partial class DyMachine
 
         if (dump is null)
         {
-
             var callStack = ctx.CallStack.Clone();
             dump = new Stack<StackPoint>();
+            var sp = StackPoint.Empty;
 
             for (var i = 0; i < callStack.Count; i++)
             {
@@ -107,21 +107,24 @@ partial class DyMachine
                     continue;
 
                 if (ReferenceEquals(cm, Caller.External))
-                    dump.Push(StackPoint.External);
+                    sp = StackPoint.External;
                 else
-                    dump.Push(new(cm.Offset, cm.Function.UnitId));
+                    sp = new(cm.Offset, cm.Function.UnitId);
+
+                dump.Push(sp);
             }
 
-            dump.Push(new(offset, function.UnitId));
+            if (sp.IsEmpty || sp.Offset != offset || sp.UnitId != function.UnitId)
+                dump.Push(new(offset, function.UnitId));
         }
 
         return dump;
     }
 
-    public static IEnumerable<RuntimeVar> DumpVariables(ExecutionContext ctx)
+    public static IEnumerable<RuntimeVar> DumpVariables(RuntimeContext rtx)
     {
-        foreach (var v in ctx.RuntimeContext.Composition.Units[0].GlobalScope!.EnumerateVars())
-            yield return new(v.Key, ctx.RuntimeContext.Units[0][v.Value.Address]);
+        foreach (var v in rtx.Composition.Units[0].GlobalScope!.EnumerateVars())
+            yield return new(v.Key, rtx.Units[0][v.Value.Address]);
     }
 
     private static (DyVariant err, CallStackTrace? trace) GetErrorInformation(DyFunction func, Exception ex)

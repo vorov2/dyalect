@@ -6,7 +6,10 @@ internal sealed class DyLabelTypeInfo : DyTypeInfo
 
     public override int ReflectedTypeId => Dy.Label;
 
-    protected override SupportedOperations GetSupportedOperations() => SupportedOperations.In;
+    public DyLabelTypeInfo()
+    {
+        SetSupportedOperations(Ops.In);
+    }
 
     protected override DyObject InOp(ExecutionContext ctx, DyObject self, DyObject field) =>
         field.TypeId is Dy.String or Dy.Char && ((DyLabel)self).Label == field.ToString() ? True : False;

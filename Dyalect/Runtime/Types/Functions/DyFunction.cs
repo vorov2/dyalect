@@ -20,8 +20,10 @@ public abstract class DyFunction : DyObject
     public abstract bool IsExternal { get; }
 
     internal bool Auto => (Attr & FunAttr.Auto) == FunAttr.Auto;
-    
-    internal bool VariantConstructor => (Attr & FunAttr.Vari) == FunAttr.Vari;
+
+    internal bool Final => (Attr & FunAttr.Final) == FunAttr.Final;
+
+    internal bool VariantConstructor => (Attr & FunAttr.Variadic) == FunAttr.Variadic;
 
     protected DyFunction(Par[] pars, int varArgIndex) : base(Dy.Function) =>
         (Parameters, VarArgIndex) = (pars, varArgIndex);

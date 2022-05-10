@@ -7,13 +7,11 @@ internal sealed class DyCollectionTypeInfo : DyLookupTypeInfo
 
     public override int ReflectedTypeId => Dy.Collection;
 
-    protected override SupportedOperations GetSupportedOperations() =>
-        base.GetSupportedOperations() | SupportedOperations.Set;
-
     public DyCollectionTypeInfo()
     {
         AddMixins(Dy.Lookup);
         Members.Add(Builtins.Set, Ternary(Builtins.Set, Setter, "index", "value"));
+        SetSupportedOperations(Ops.Set);
     }
 
     private static DyObject Setter(ExecutionContext ctx, DyObject self, DyObject index, DyObject value)

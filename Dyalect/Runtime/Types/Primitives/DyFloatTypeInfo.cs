@@ -5,16 +5,16 @@ namespace Dyalect.Runtime.Types;
 [GeneratedType]
 internal sealed partial class DyFloatTypeInfo : DyTypeInfo
 {
-    protected override SupportedOperations GetSupportedOperations() =>
-        SupportedOperations.Gt | SupportedOperations.Lt | SupportedOperations.Gte | SupportedOperations.Lte
-        | SupportedOperations.Sub | SupportedOperations.Div | SupportedOperations.Mul | SupportedOperations.Rem
-        | SupportedOperations.Neg | SupportedOperations.Plus;
-
     public override string ReflectedTypeName => nameof(Dy.Float);
 
     public override int ReflectedTypeId => Dy.Float;
 
-    public DyFloatTypeInfo() => AddMixins(Dy.Number, Dy.Order);
+    public DyFloatTypeInfo()
+    {
+        AddMixins(Dy.Number, Dy.Order);
+        SetSupportedOperations(Ops.Gt | Ops.Lt | Ops.Gte | Ops.Lte | Ops.Sub
+            | Ops.Div | Ops.Mul | Ops.Rem | Ops.Neg | Ops.Plus);
+    }
 
     #region Operations
     protected override DyObject AddOp(ExecutionContext ctx, DyObject left, DyObject right)

@@ -7,12 +7,11 @@ internal class DyLookupTypeInfo : DyMixin
 
     public override int ReflectedTypeId => Dy.Lookup;
 
-    protected override SupportedOperations GetSupportedOperations() => SupportedOperations.Get | SupportedOperations.Len;
-
     public DyLookupTypeInfo()
     {
         Members.Add(Builtins.Length, Unary(Builtins.Length, GetLength));
         Members.Add(Builtins.Get, Binary(Builtins.Get, Getter, "index"));
+        SetSupportedOperations(Ops.Get | Ops.Len);
     }
 
     private static DyObject GetLength(ExecutionContext ctx, DyObject self) =>

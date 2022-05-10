@@ -11,10 +11,11 @@ internal sealed partial class DySetTypeInfo : DyTypeInfo
 
     public override int ReflectedTypeId => Dy.Set;
 
-    protected override SupportedOperations GetSupportedOperations() =>
-        SupportedOperations.Len | SupportedOperations.Iter | SupportedOperations.In;
-
-    public DySetTypeInfo() => AddMixins(Dy.Lookup);
+    public DySetTypeInfo()
+    {
+        AddMixins(Dy.Lookup);
+        SetSupportedOperations(Ops.Len | Ops.Iter | Ops.In);
+    }
 
     #region Operations
     protected override DyObject EqOp(ExecutionContext ctx, DyObject left, DyObject right)
@@ -40,27 +41,6 @@ internal sealed partial class DySetTypeInfo : DyTypeInfo
             ctx.Error = ex.Error;
             return Nil;
         }
-    }
-
-    private DyObject ToLiteralOrString(DyObject arg, ExecutionContext ctx, bool literal)
-    {
-        var self = (DySet)arg;
-        var sb = new StringBuilder("Set(");
-        var c = 0;
-
-        foreach (var v in self)
-        {
-            if (c++ > 0)
-                sb.Append(", ");
-
-            sb.Append(literal ? v.ToLiteral(ctx) : v.ToString(ctx));
-
-            if (ctx.HasErrors)
-                return Nil;
-        }
-
-        sb.Append(')');
-        return new DyString(sb.ToString());
     }
 
     protected override DyObject CastOp(ExecutionContext ctx, DyObject self, DyTypeInfo targetType) =>

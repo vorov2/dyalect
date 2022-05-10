@@ -610,6 +610,24 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Unable to overload a method, method is final..
+        /// </summary>
+        internal static string UnableOverload_0 {
+            get {
+                return ResourceManager.GetString("UnableOverload.0", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unable to overload a method &quot;{0}.{1}&quot;, method is final..
+        /// </summary>
+        internal static string UnableOverload_2 {
+            get {
+                return ResourceManager.GetString("UnableOverload.2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Value is not available..
         /// </summary>
         internal static string ValueMissing_0 {

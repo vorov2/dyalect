@@ -303,4 +303,10 @@
   <data name="IOFailed.0" xml:space="preserve">
     <value>Cannot complete an IO operation.</value>
   </data>
+  <data name="UnableOverload.0" xml:space="preserve">
+    <value>Unable to overload a method, method is final.</value>
+  </data>
+  <data name="UnableOverload.2" xml:space="preserve">
+    <value>Unable to overload a method "{0}.{1}", method is final.</value>
+  </data>
 </root>

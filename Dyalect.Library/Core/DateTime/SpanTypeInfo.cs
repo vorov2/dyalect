@@ -1,6 +1,5 @@
 ﻿using Dyalect.Runtime;
 using Dyalect.Runtime.Types;
-using System;
 namespace Dyalect.Library.Core;
 
 public abstract class SpanTypeInfo<T> : DyForeignTypeInfo<CoreModule>
@@ -12,10 +11,8 @@ public abstract class SpanTypeInfo<T> : DyForeignTypeInfo<CoreModule>
     {
         ReflectedTypeName = typeName;
         AddMixins(Dy.Order);
+        SetSupportedOperations(Ops.Gt | Ops.Gte | Ops.Lt | Ops.Lte);
     }
-
-    protected override SupportedOperations GetSupportedOperations() =>
-       SupportedOperations.Gt | SupportedOperations.Gte | SupportedOperations.Lt | SupportedOperations.Lte;
 
     #region Operations
     protected override DyObject ToStringOp(ExecutionContext ctx, DyObject arg, DyObject format)

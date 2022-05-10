@@ -14,6 +14,8 @@ public static partial class DyMachine
     public static ExecutionContext CreateExecutionContext(UnitComposition composition) =>
         new(new(), new(composition));
 
+    public static ExecutionContext CreateExecutionContext(RuntimeContext rtx) => new(new(), rtx);
+
     public static ExecutionResult Execute(ExecutionContext ctx)
     {
         var res = ExecuteModule(0, ctx);
@@ -106,9 +108,6 @@ public static partial class DyMachine
                     break;
                 case OpCode.Unbox:
                     evalStack.Push(function.Self is DyClass c ? c.Inits : DyTuple.Empty);
-                    break;
-                case OpCode.Privates:
-                    evalStack.Replace(evalStack.Peek() is DyClass c1 ? c1.Inits : DyTuple.Empty);
                     break;
                 case OpCode.Term:
                     if (evalStack.Size is > 1 or 0)

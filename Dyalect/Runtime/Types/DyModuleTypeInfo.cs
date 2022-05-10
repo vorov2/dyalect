@@ -5,14 +5,15 @@ namespace Dyalect.Runtime.Types;
 
 internal sealed class DyModuleTypeInfo : DyTypeInfo
 {
-    protected override SupportedOperations GetSupportedOperations() =>
-        SupportedOperations.Get | SupportedOperations.Len | SupportedOperations.Iter | SupportedOperations.In;
-
     public override string ReflectedTypeName => nameof(Dy.Module);
 
     public override int ReflectedTypeId => Dy.Module;
 
-    public DyModuleTypeInfo() => AddMixins(Dy.Lookup);
+    public DyModuleTypeInfo()
+    {
+        AddMixins(Dy.Lookup);
+        SetSupportedOperations(Ops.Get | Ops.Len | Ops.Iter | Ops.In);
+    }
 
     #region Operations
     protected override DyObject ToStringOp(ExecutionContext ctx, DyObject arg, DyObject format) =>

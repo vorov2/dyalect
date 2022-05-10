@@ -1,7 +1,6 @@
 ﻿using Dyalect.Codegen;
 using Dyalect.Runtime;
 using Dyalect.Runtime.Types;
-using System;
 namespace Dyalect.Library.Core;
 
 [GeneratedType]
@@ -9,10 +8,10 @@ public sealed partial class DyTimeDeltaTypeInfo : SpanTypeInfo<DyTimeDelta>
 {
     private const string TimeDelta = nameof(TimeDelta);
 
-    public DyTimeDeltaTypeInfo() : base(TimeDelta) { }
-
-    protected override SupportedOperations GetSupportedOperations() =>
-        base.GetSupportedOperations() | SupportedOperations.Add | SupportedOperations.Sub | SupportedOperations.Neg;
+    public DyTimeDeltaTypeInfo() : base(TimeDelta)
+    {
+        SetSupportedOperations(Ops.Add | Ops.Sub | Ops.Neg);
+    }
 
     #region Operations
     protected override DyObject NegOp(ExecutionContext ctx, DyObject arg) => ((DyTimeDelta)arg).Negate();

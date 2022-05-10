@@ -42,8 +42,8 @@ public sealed class DyDebugger
                 continue;
             }
 
-            var offset = mem.BreakAddress - 1;
-            var unit = Composition.Units[mem.UnitHandle];
+            var offset = mem.Offset - 1;
+            var unit = Composition.Units[mem.UnitId];
 
             if (unit.Symbols is null)
             {

@@ -1,19 +1,18 @@
 ﻿using Dyalect.Codegen;
-using Dyalect.Parser;
 namespace Dyalect.Runtime.Types;
 
 [GeneratedType]
 internal sealed partial class DyCharTypeInfo : DyTypeInfo
 {
-    protected override SupportedOperations GetSupportedOperations() =>
-        SupportedOperations.Add | SupportedOperations.Sub | SupportedOperations.Gt
-        | SupportedOperations.Lt | SupportedOperations.Gte | SupportedOperations.Lte;
-
     public override string ReflectedTypeName => nameof(Dy.Char);
 
     public override int ReflectedTypeId => Dy.Char;
 
-    public DyCharTypeInfo() => AddMixins(Dy.Order);
+    public DyCharTypeInfo()
+    {
+        AddMixins(Dy.Order);
+        SetSupportedOperations(Ops.Add | Ops.Sub | Ops.Gt | Ops.Lt | Ops.Gte | Ops.Lte);
+    }
 
     #region Operations
     protected override DyObject AddOp(ExecutionContext ctx, DyObject left, DyObject right)

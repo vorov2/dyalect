@@ -1,5 +1,4 @@
 ﻿using Dyalect.Codegen;
-using Dyalect.Parser;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -20,16 +19,16 @@ internal sealed partial class DyStringTypeInfo : DyCollTypeInfo
             Object.ToString(Context, DyString.Get(format)).ToString();
     }
 
-    protected override SupportedOperations GetSupportedOperations() =>
-        SupportedOperations.Add | SupportedOperations.Gt | SupportedOperations.Lt
-        | SupportedOperations.Gte | SupportedOperations.Lte | SupportedOperations.Get
-        | SupportedOperations.Len | SupportedOperations.Iter | SupportedOperations.In;
-
     public override string ReflectedTypeName => nameof(Dy.String);
 
     public override int ReflectedTypeId => Dy.String;
 
-    public DyStringTypeInfo() => AddMixins(Dy.Lookup, Dy.Order, Dy.Equatable);
+    public DyStringTypeInfo()
+    {
+        AddMixins(Dy.Lookup, Dy.Order, Dy.Equatable);
+        SetSupportedOperations(Ops.Add | Ops.Gt | Ops.Lt | Ops.Gte 
+            | Ops.Lte | Ops.Get | Ops.Len | Ops.Iter | Ops.In);
+    }
 
     #region Operations
     protected override DyObject AddOp(ExecutionContext ctx, DyObject left, DyObject right)

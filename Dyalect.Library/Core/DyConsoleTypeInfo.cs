@@ -1,7 +1,6 @@
 ﻿using Dyalect.Codegen;
 using Dyalect.Runtime;
 using Dyalect.Runtime.Types;
-using System;
 using System.IO;
 namespace Dyalect.Library.Core;
 
@@ -13,8 +12,6 @@ public sealed partial class DyConsoleTypeInfo : DyForeignTypeInfo
     private const string VAR_DEFAULTBACKCOLOR = "sys.DefaultBackColor";
 
     public override string ReflectedTypeName => "Console";
-
-    protected override SupportedOperations GetSupportedOperations() => SupportedOperations.None;
 
     private static ConsoleColor GetColor(string color)
     {

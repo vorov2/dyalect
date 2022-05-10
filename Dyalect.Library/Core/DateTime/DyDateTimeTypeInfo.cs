@@ -1,7 +1,6 @@
 ﻿using Dyalect.Codegen;
 using Dyalect.Runtime;
 using Dyalect.Runtime.Types;
-using System;
 namespace Dyalect.Library.Core;
 
 [GeneratedType]
@@ -9,10 +8,10 @@ public sealed partial class DyDateTimeTypeInfo : SpanTypeInfo<DyDateTime>
 {
     private const string DateTimeType = "DateTime";
 
-    public DyDateTimeTypeInfo() : base(DateTimeType) { }
-
-    protected override SupportedOperations GetSupportedOperations() =>
-        base.GetSupportedOperations() | SupportedOperations.Sub | SupportedOperations.Add;
+    public DyDateTimeTypeInfo() : base(DateTimeType)
+    {
+        SetSupportedOperations(Ops.Sub | Ops.Add);
+    }
 
     #region Operations
     protected override DyObject SubOp(ExecutionContext ctx, DyObject left, DyObject right)

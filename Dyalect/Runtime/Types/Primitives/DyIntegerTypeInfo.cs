@@ -5,17 +5,17 @@ namespace Dyalect.Runtime.Types;
 [GeneratedType]
 internal sealed partial class DyIntegerTypeInfo : DyTypeInfo
 {
-    protected override SupportedOperations GetSupportedOperations() =>
-        SupportedOperations.Gt | SupportedOperations.Lt | SupportedOperations.Gte | SupportedOperations.Lte
-        | SupportedOperations.Sub | SupportedOperations.Div | SupportedOperations.Mul | SupportedOperations.Rem
-        | SupportedOperations.Neg | SupportedOperations.Plus | SupportedOperations.And | SupportedOperations.Or
-        | SupportedOperations.Xor | SupportedOperations.BitNot | SupportedOperations.Shl | SupportedOperations.Shr;
-
     public override string ReflectedTypeName => nameof(Dy.Integer);
 
     public override int ReflectedTypeId => Dy.Integer;
 
-    public DyIntegerTypeInfo() => AddMixins(Dy.Number, Dy.Order);
+    public DyIntegerTypeInfo()
+    {
+        AddMixins(Dy.Number, Dy.Order);
+        SetSupportedOperations(Ops.Gt | Ops.Lt | Ops.Gte | Ops.Lte | Ops.Sub 
+            | Ops.Div | Ops.Mul | Ops.Rem | Ops.Neg | Ops.Plus | Ops.And | Ops.Or
+            | Ops.Xor | Ops.BitNot | Ops.Shl | Ops.Shr);
+    }
 
     #region Operations
     protected override DyObject AddOp(ExecutionContext ctx, DyObject left, DyObject right)

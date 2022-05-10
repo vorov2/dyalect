@@ -117,21 +117,22 @@ namespace Dyalect.Util
             Printer.LineFeed();
             Printer.Output("Dump of globals:");
 
-            if (ctx.ExecutionContext == null)
+            if (ctx.RuntimeContext is null)
             {
                 Printer.Output("...none");
                 return;
             }
 
-            var xs = DyMachine.DumpVariables(ctx.ExecutionContext).ToList();
+            var xs = DyMachine.DumpVariables(ctx.RuntimeContext).ToList();
             var vals = new string[xs.Count];
             var types = new string[xs.Count];
             var (keyLen, valLen) = (0, 0);
+            var etx = DyMachine.CreateExecutionContext(ctx.RuntimeContext);
 
             for (var i = 0; i < xs.Count; i++)
             {
                 var rv = xs[i];
-                vals[i] = Printer.Format(rv.Value, ctx.ExecutionContext, notype: true, maxLen: 32);
+                vals[i] = Printer.Format(rv.Value, etx, notype: true, maxLen: 32);
                 types[i] = rv.Value.TypeName;
 
                 if (keyLen < rv.Name.Length) keyLen = rv.Name.Length;

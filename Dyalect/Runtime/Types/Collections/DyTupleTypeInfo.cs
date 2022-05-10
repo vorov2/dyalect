@@ -7,15 +7,15 @@ namespace Dyalect.Runtime.Types;
 [GeneratedType]
 internal sealed partial class DyTupleTypeInfo : DyCollTypeInfo
 {
-    protected override SupportedOperations GetSupportedOperations() =>
-        SupportedOperations.Get | SupportedOperations.Set | SupportedOperations.Len
-        | SupportedOperations.Add | SupportedOperations.Iter | SupportedOperations.In;
-
     public override string ReflectedTypeName => nameof(Dy.Tuple);
 
     public override int ReflectedTypeId => Dy.Tuple;
 
-    public DyTupleTypeInfo() => AddMixins(Dy.Lookup, Dy.Container, Dy.Order, Dy.Collection, Dy.Equatable);
+    public DyTupleTypeInfo()
+    {
+        AddMixins(Dy.Lookup, Dy.Container, Dy.Order, Dy.Collection, Dy.Equatable);
+        SetSupportedOperations(Ops.Get | Ops.Set | Ops.Len | Ops.Add | Ops.Iter | Ops.In);
+    }
 
     #region Operations
     //TODO: reconsider logic
@@ -116,10 +116,21 @@ internal sealed partial class DyTupleTypeInfo : DyCollTypeInfo
         ((DyTuple)self).SetItem(ctx, index, value);
         return Nil;
     }
+
+    internal override void SetInstanceMember(ExecutionContext ctx, HashString name, DyFunction func)
+    {
+        if ((string)name is Builtins.Get or Builtins.Set or Builtins.Length)
+        {
+            ctx.UnableOverload(this, (string)name);
+            return;
+        }
+
+        base.SetInstanceMember(ctx, name, func);
+    }
     #endregion
 
     [InstanceMethod]
-    internal static bool ContainsField(ExecutionContext ctx, DyTuple self, string field) =>
+    internal static bool ContainsField(DyTuple self, string field) =>
         self.GetOrdinal(field.ToString()) is not -1;
 
     [InstanceMethod(Method.Add)]
@@ -260,7 +271,7 @@ internal sealed partial class DyTupleTypeInfo : DyCollTypeInfo
     }
 
     [InstanceMethod]
-    internal static DyObject ToDictionary(ExecutionContext ctx, DyTuple self) =>
+    internal static DyObject ToDictionary(DyTuple self) =>
         new DyDictionary(self.ConvertToDictionary());
 
     [InstanceMethod(Method.ToArray)]

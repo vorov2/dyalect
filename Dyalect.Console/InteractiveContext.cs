@@ -43,7 +43,7 @@ namespace Dyalect
 
         public BuilderOptions BuildOptions { get; }
 
-        public ExecutionContext? ExecutionContext { get; private set; }
+        public RuntimeContext? RuntimeContext { get; private set; }
 
         public DyIncrementalLinker Linker { get; private set; }
 
@@ -51,8 +51,25 @@ namespace Dyalect
 
         public void Reset()
         {
-            ExecutionContext = null;
             Linker = new DyIncrementalLinker(Linker.Lookup, Linker.BuilderOptions, Options.UserArguments);
+        }
+
+        private ExecutionContext GetExecutionContext(UnitComposition composition)
+        {
+            ExecutionContext ctx;
+
+            if (RuntimeContext is null)
+            {
+                ctx = DyMachine.CreateExecutionContext(composition);
+                RuntimeContext = ctx.RuntimeContext;
+            }
+            else
+            {
+                RuntimeContext.Refresh(composition);
+                ctx = DyMachine.CreateExecutionContext(RuntimeContext);
+            }
+
+            return ctx;
         }
 
         public bool Eval(string source)
@@ -65,12 +82,8 @@ namespace Dyalect
             if (!made.Success || made.Value is null)
                 return false;
 
-            if (ExecutionContext == null)
-                ExecutionContext = DyMachine.CreateExecutionContext(made.Value);
-            else
-                ExecutionContext.RuntimeContext.Refresh(made.Value);
-
-            return Eval(measureTime: false);
+            var ctx = GetExecutionContext(made.Value!);
+            return Eval(ctx, measureTime: false);
         }
 
         public bool Compile(string fileName, out Unit unit)
@@ -119,20 +132,18 @@ namespace Dyalect
             if (!Make(fileName, out var composition))
                 return false;
 
-            if (ExecutionContext is null)
-                ExecutionContext = DyMachine.CreateExecutionContext(composition!);
-
-            return Eval(measureTime);
+            var ctx = GetExecutionContext(composition!);
+            return Eval(ctx, measureTime);
         }
 
-        public bool Eval(bool measureTime)
+        public bool Eval(ExecutionContext ctx, bool measureTime)
         {
-#if !DEBUG
+#if !DEBUGs
             try
 #endif
             {
                 var dt = DateTime.Now;
-                var res = DyMachine.Execute(ExecutionContext!);
+                var res = DyMachine.Execute(ctx);
                 Printer.Output(res);
 
                 if (measureTime)
@@ -141,7 +152,7 @@ namespace Dyalect
                 Linker.Commit();
                 return true;
             }
-#if !DEBUG
+#if !DEBUGs
             catch (DyCodeException ex)
             {
                 Linker.Rollback();
