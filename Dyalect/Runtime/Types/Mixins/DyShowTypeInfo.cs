@@ -2,13 +2,9 @@
 using System.Collections.Generic;
 namespace Dyalect.Runtime.Types;
 
-internal class DyShowTypeInfo : DyMixin
+internal class DyShowTypeInfo : DyMixin<DyShowTypeInfo>
 {
-    public override string ReflectedTypeName => nameof(Dy.Show);
-
-    public override int ReflectedTypeId => Dy.Show;
-
-    public DyShowTypeInfo()
+    public DyShowTypeInfo() : base(Dy.Show)
     {
         Members.Add(Builtins.String, Unary(Builtins.String, Show));
     }

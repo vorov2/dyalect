@@ -1,13 +1,9 @@
 ﻿using Dyalect.Compiler;
 namespace Dyalect.Runtime.Types;
 
-internal class DyDisposableTypeInfo : DyMixin
+internal class DyDisposableTypeInfo : DyMixin<DyDisposableTypeInfo>
 {
-    public override string ReflectedTypeName => nameof(Dy.Disposable);
-
-    public override int ReflectedTypeId => Dy.Disposable;
-
-    public DyDisposableTypeInfo()
+    public DyDisposableTypeInfo() : base(Dy.Disposable)
     {
         Members.Add(Builtins.Dispose, Unary(Builtins.Dispose, Dispose));
     }

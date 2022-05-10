@@ -1,13 +1,9 @@
 ﻿using Dyalect.Compiler;
 namespace Dyalect.Runtime.Types;
 
-internal class DyIdentityTypeInfo : DyMixin
+internal class DyIdentityTypeInfo : DyMixin<DyIdentityTypeInfo>
 {
-    public override string ReflectedTypeName => nameof(Dy.Identity);
-
-    public override int ReflectedTypeId => Dy.Identity;
-
-    public DyIdentityTypeInfo()
+    public DyIdentityTypeInfo() : base(Dy.Identity)
     {
         Members.Add(Builtins.Clone, Unary(Builtins.Clone, GetIdentity));
     }

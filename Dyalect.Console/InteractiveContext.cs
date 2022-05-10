@@ -3,6 +3,7 @@ using Dyalect.Linker;
 using Dyalect.Parser;
 using Dyalect.Runtime;
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 
@@ -138,21 +139,23 @@ namespace Dyalect
 
         public bool Eval(ExecutionContext ctx, bool measureTime)
         {
-#if !DEBUGs
+#if !DEBUG
             try
 #endif
             {
-                var dt = DateTime.Now;
+                var sw = new Stopwatch();
+                sw.Start();
                 var res = DyMachine.Execute(ctx);
+                sw.Stop();
                 Printer.Output(res);
 
                 if (measureTime)
-                    Printer.SupplementaryOutput($"Time taken: {DateTime.Now - dt}");
+                    Printer.SupplementaryOutput($"Time taken: {sw.Elapsed:mm\\:ss\\.fffffff}");
 
                 Linker.Commit();
                 return true;
             }
-#if !DEBUGs
+#if !DEBUG
             catch (DyCodeException ex)
             {
                 Linker.Rollback();
@@ -168,7 +171,7 @@ namespace Dyalect
             catch (Exception ex)
             {
                 Linker.Rollback();
-                Printer.Error($"Unexpected failure: {Environment.NewLine}{ex}");
+                Printer.Error($"Critical failure: {Environment.NewLine}{ex}");
                 return false;
             }
 #endif

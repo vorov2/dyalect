@@ -5,7 +5,7 @@ using System.Linq;
 namespace Dyalect.Generators
 {
     [Generator]
-    public class DyTypeGenerator : ISourceGenerator
+    public class DyGenerator : ISourceGenerator
     {
         public void Execute(GeneratorExecutionContext ctx)
         {
@@ -21,16 +21,17 @@ namespace Dyalect.Generators
                 .Select(kv => kv.Item1.GetDeclaredSymbol(kv.v))
                 .OfType<IFieldSymbol>()
                 .Where(m => m.IsConst && m.ConstantValue is int)
-                .Select(f => ((int)f.ConstantValue, f.Name))
+                .Select(f => ((int)f.ConstantValue, f.Name, f.GetAttributes().Any(a => a.AttributeClass.ToString() == "Dyalect.Codegen.MixinAttribute")))
                 .OrderBy(kv => kv.Item1)
-                .Select(kv => kv.Name)
+                .Select(kv => (kv.Name, kv.Item3))
                 .ToArray();
 
-            static string GetClassName(string name) =>
-                name switch
+            static string GetClassName((string name, bool mixin) info) =>
+                info.name switch
                 {
                     "TypeInfo" => "new DyMetaTypeInfo()",
-                    _ => $"new Dy{name}TypeInfo()"
+                    _ when info.mixin => $"Dy{info.name}TypeInfo.Instance",
+                    _ => $"new Dy{info.name}TypeInfo()"
                 };
 
             var source = $@"using System;
@@ -43,7 +44,7 @@ partial class Dy
     {{
         types.AddRange
         (
-            new DyTypeInfo[] {{ null!, {string.Join(", ", dyTypes.Select(d => GetClassName(d)))} }},
+            new DyTypeInfo[] {{ null!, {string.Join(", ", dyTypes.Select(GetClassName))} }},
             0,
             {dyTypes.Length + 1}
         );
@@ -53,7 +54,7 @@ partial class Dy
     {{
         code = name switch
         {{
-            {string.Join(", ", dyTypes.Select(s => $"\"{s}\" => {s}"))},
+            {string.Join(", ", dyTypes.Select(s => $"\"{s.Name}\" => {s.Name}"))},
             _ => default
         }};
     }}
@@ -62,7 +63,7 @@ partial class Dy
     {{
         name = code switch
         {{
-            {string.Join(", ", dyTypes.Select(s => $"{s} => \"{s}\""))},
+            {string.Join(", ", dyTypes.Select(s => $"{s.Name} => \"{s.Name}\""))},
             _ => code.ToString()
         }};
     }}

@@ -1,4 +1,5 @@
 ﻿using Dyalect.Runtime.Types;
+using Dyalect.Codegen;
 namespace Dyalect;
 
 public static partial class Dy
@@ -22,17 +23,17 @@ public static partial class Dy
     public const int Variant = 17;
     public const int Interop = 18;
 
-    public const int Number = 19;
-    public const int Order = 20;
-    public const int Lookup = 21;
-    public const int Collection = 22;
-    public const int Show = 23;
-    public const int Equatable = 24;
-    public const int Sequence = 25;
-    public const int Identity = 26;
-    public const int Functor = 27;
-    public const int Disposable = 28;
-    public const int Container = 29;
+    [Mixin] public const int Number = 19;
+    [Mixin] public const int Order = 20;
+    [Mixin] public const int Lookup = 21;
+    [Mixin] public const int Collection = 22;
+    [Mixin] public const int Show = 23;
+    [Mixin] public const int Equatable = 24;
+    [Mixin] public const int Sequence = 25;
+    [Mixin] public const int Identity = 26;
+    [Mixin] public const int Functor = 27;
+    [Mixin] public const int Disposable = 28;
+    [Mixin] public const int Container = 29;
 
     internal static FastList<DyTypeInfo> GetAll()
     {

@@ -1,13 +1,9 @@
 ﻿using Dyalect.Compiler;
 namespace Dyalect.Runtime.Types;
 
-internal class DyFunctorTypeInfo : DyMixin
+internal class DyFunctorTypeInfo : DyMixin<DyFunctorTypeInfo>
 {
-    public override string ReflectedTypeName => nameof(Dy.Functor);
-
-    public override int ReflectedTypeId => Dy.Functor;
-
-    public DyFunctorTypeInfo()
+    public DyFunctorTypeInfo() : base(Dy.Functor)
     {
         Members.Add(Builtins.Call, Unary(Builtins.Call, SelfCall));
     }

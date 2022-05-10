@@ -1,22 +1,18 @@
 ﻿using Dyalect.Compiler;
 namespace Dyalect.Runtime.Types;
 
-internal class DyLookupTypeInfo : DyMixin
+internal class DyLookupTypeInfo : DyMixin<DyLookupTypeInfo>
 {
-    public override string ReflectedTypeName => nameof(Dy.Lookup);
-
-    public override int ReflectedTypeId => Dy.Lookup;
-
-    public DyLookupTypeInfo()
+    public DyLookupTypeInfo() : base(Dy.Lookup)
     {
         Members.Add(Builtins.Length, Unary(Builtins.Length, GetLength));
         Members.Add(Builtins.Get, Binary(Builtins.Get, Getter, "index"));
         SetSupportedOperations(Ops.Get | Ops.Len);
     }
 
-    private static DyObject GetLength(ExecutionContext ctx, DyObject self) =>
+    public static DyObject GetLength(ExecutionContext ctx, DyObject self) =>
         DyInteger.Get(((DyClass)self).Fields.Count);
 
-    private static DyObject Getter(ExecutionContext ctx, DyObject self, DyObject index) =>
+    public static DyObject Getter(ExecutionContext ctx, DyObject self, DyObject index) =>
         ((DyClass)self).Fields.GetItem(ctx, index);
 }

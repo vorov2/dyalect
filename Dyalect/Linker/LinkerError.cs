@@ -1,29 +1,28 @@
-﻿namespace Dyalect.Linker
+﻿namespace Dyalect.Linker;
+
+public enum LinkerError
 {
-    public enum LinkerError
-    {
-        None,
+    None,
 
-        ModuleNotFound = 400,
+    ModuleNotFound = 400,
 
-        UnableReadModule = 401,
+    UnableReadModule = 401,
 
-        UnableLoadAssembly = 402,
+    UnableLoadAssembly = 402,
 
-        DuplicateModuleName = 403,
+    DuplicateModuleName = 403,
 
-        AssemblyModuleNotFound = 404,
+    AssemblyModuleNotFound = 404,
 
-        AssemblyModuleLoadError = 405,
+    AssemblyModuleLoadError = 405,
 
-        InvalidAssemblyModule = 406,
+    InvalidAssemblyModule = 406,
 
-        UnableReadObjectFile = 407,
+    UnableReadObjectFile = 407,
 
-        ChecksumValidationFailed = 408,
+    ChecksumValidationFailed = 408,
 
-        AssemblyNotFound = 409,
+    AssemblyNotFound = 409,
 
-        InvalidForeignModule = 410
-    }
+    InvalidForeignModule = 410
 }
