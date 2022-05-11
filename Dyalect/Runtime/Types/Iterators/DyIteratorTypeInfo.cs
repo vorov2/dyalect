@@ -10,11 +10,7 @@ internal sealed partial class DyIteratorTypeInfo : DyTypeInfo
 
     public override int ReflectedTypeId => Dy.Iterator;
 
-    public DyIteratorTypeInfo()
-    {
-        AddMixins(Dy.Lookup, Dy.Container);
-    }
-
+    public DyIteratorTypeInfo() => AddMixins(Dy.Lookup, Dy.Container);
     #region Operations
     protected override DyObject AddOp(ExecutionContext ctx, DyObject left, DyObject right) => DyIterator.Create(Concat(ctx, left, right));
 

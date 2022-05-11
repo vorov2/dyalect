@@ -13,7 +13,7 @@ internal sealed partial class DyTupleTypeInfo : DyCollTypeInfo
 
     public DyTupleTypeInfo()
     {
-        AddMixins(Dy.Container, Dy.Order, Dy.Collection, Dy.Equatable, Dy.Sequence, Dy.Collection);
+        AddMixins(Dy.Container, Dy.Order, Dy.Collection, Dy.Equatable, Dy.Sequence, Dy.Show);
         SetSupportedOperations(Ops.Add);
     }
 

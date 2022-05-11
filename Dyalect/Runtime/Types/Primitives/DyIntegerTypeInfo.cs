@@ -11,7 +11,7 @@ internal sealed partial class DyIntegerTypeInfo : DyTypeInfo
 
     public DyIntegerTypeInfo()
     {
-        AddMixins(Dy.Number, Dy.Order);
+        AddMixins(Dy.Number, Dy.Order, Dy.Show, Dy.Equatable);
         SetSupportedOperations(Ops.And | Ops.Or | Ops.Xor | Ops.BitNot | Ops.Shl | Ops.Shr);
     }
 

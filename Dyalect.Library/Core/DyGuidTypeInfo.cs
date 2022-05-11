@@ -10,7 +10,7 @@ public sealed partial class DyGuidTypeInfo : DyForeignTypeInfo<CoreModule>
 
     public override string ReflectedTypeName => GuidType;
 
-    public DyGuidTypeInfo() => AddMixins(Dy.Order, Dy.Equatable);
+    public DyGuidTypeInfo() => AddMixins(Dy.Order, Dy.Equatable, Dy.Show);
 
     #region Operations
     protected override DyObject ToStringOp(ExecutionContext ctx, DyObject arg, DyObject format) =>

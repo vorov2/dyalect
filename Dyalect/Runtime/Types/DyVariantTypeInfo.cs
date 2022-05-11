@@ -8,10 +8,7 @@ internal sealed class DyVariantTypeInfo : DyTypeInfo
 
     public override int ReflectedTypeId => Dy.Variant;
 
-    public DyVariantTypeInfo()
-    {
-        AddMixins(Dy.Collection);
-    }
+    public DyVariantTypeInfo() => AddMixins(Dy.Collection, Dy.Show, Dy.Equatable);
 
     #region Operations
     protected override DyObject EqOp(ExecutionContext ctx, DyObject left, DyObject right)

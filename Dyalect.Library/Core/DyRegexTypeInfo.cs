@@ -11,7 +11,7 @@ public sealed partial class DyRegexTypeInfo : DyForeignTypeInfo
 {
     public override string ReflectedTypeName => "Regex";
 
-    public DyRegexTypeInfo() => AddMixins(Dy.Equatable);
+    public DyRegexTypeInfo() => AddMixins(Dy.Equatable, Dy.Show);
 
     #region Operations
     protected override DyObject ToStringOp(ExecutionContext ctx, DyObject arg, DyObject format) =>

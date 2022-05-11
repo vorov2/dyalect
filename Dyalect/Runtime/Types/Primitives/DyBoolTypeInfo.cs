@@ -8,10 +8,9 @@ internal sealed partial class DyBoolTypeInfo : DyTypeInfo
 
     public override int ReflectedTypeId => Dy.Bool;
 
-    #region Operations
-    protected override DyObject EqOp(ExecutionContext ctx, DyObject left, DyObject right) =>
-        ReferenceEquals(left, right) ? True : False;
+    public DyBoolTypeInfo() => AddMixins(Dy.Show);
 
+    #region Operations
     protected override DyObject ToStringOp(ExecutionContext ctx, DyObject arg, DyObject format) =>
         new DyString(ReferenceEquals(arg, True) ? "true" : "false");
 

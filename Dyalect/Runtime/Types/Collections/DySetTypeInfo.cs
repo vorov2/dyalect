@@ -10,10 +10,7 @@ internal sealed partial class DySetTypeInfo : DyTypeInfo
 
     public override int ReflectedTypeId => Dy.Set;
 
-    public DySetTypeInfo()
-    {
-        AddMixins(Dy.Lookup, Dy.Sequence, Dy.Sequence);
-    }
+    public DySetTypeInfo() => AddMixins(Dy.Lookup, Dy.Sequence, Dy.Show, Dy.Equatable);
 
     #region Operations
     protected override DyObject EqOp(ExecutionContext ctx, DyObject left, DyObject right)

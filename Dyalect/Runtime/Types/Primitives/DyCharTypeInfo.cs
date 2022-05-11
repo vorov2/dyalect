@@ -8,10 +8,7 @@ internal sealed partial class DyCharTypeInfo : DyTypeInfo
 
     public override int ReflectedTypeId => Dy.Char;
 
-    public DyCharTypeInfo()
-    {
-        AddMixins(Dy.Order);
-    }
+    public DyCharTypeInfo() => AddMixins(Dy.Order, Dy.Show, Dy.Equatable);
 
     #region Operations
     protected override DyObject AddOp(ExecutionContext ctx, DyObject left, DyObject right)

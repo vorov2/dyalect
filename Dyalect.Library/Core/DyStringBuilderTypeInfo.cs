@@ -12,7 +12,7 @@ public sealed partial class DyStringBuilderTypeInfo : DyForeignTypeInfo
 
     public override string ReflectedTypeName => StringBuilder;
 
-    public DyStringBuilderTypeInfo() => AddMixins(Dy.Lookup);
+    public DyStringBuilderTypeInfo() => AddMixins(Dy.Lookup, Dy.Show, Dy.Equatable);
 
     #region Operations
     public DyStringBuilder Create(StringBuilder sb) => new(this, sb);

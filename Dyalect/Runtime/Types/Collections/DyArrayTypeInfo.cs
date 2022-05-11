@@ -10,10 +10,7 @@ internal sealed partial class DyArrayTypeInfo : DyCollTypeInfo
 
     public override int ReflectedTypeId => Dy.Array;
 
-    public DyArrayTypeInfo()
-    {
-        AddMixins(Dy.Sequence, Dy.Collection, Dy.Container);
-    }
+    public DyArrayTypeInfo() => AddMixins(Dy.Sequence, Dy.Collection, Dy.Container, Dy.Show);
 
     #region Operations
     protected override DyObject ToStringOp(ExecutionContext ctx, DyObject arg, DyObject format)
