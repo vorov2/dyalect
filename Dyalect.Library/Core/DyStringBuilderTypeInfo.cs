@@ -22,7 +22,7 @@ public sealed partial class DyStringBuilderTypeInfo : DyForeignTypeInfo
 
     protected override DyObject GetOp(ExecutionContext ctx, DyObject arg, DyObject index)
     {
-        if (!(index is DyInteger dyi))
+        if (index is not DyInteger dyi)
             return ctx.InvalidType(index);
 
         var i = (int)dyi.Value;
