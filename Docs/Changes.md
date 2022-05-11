@@ -8,7 +8,7 @@
 # 0.45.1
   * Change: _Optimizations in type system._
   * Fix: _Lines in exception stack trace can be duplicated_ ([Issue #902](https://github.com/vorov2/dyalect/issues/902)).
-  * Fix: _Invalid override for `Length` still performs override_ [Issue #903](https://github.com/vorov2/dyalect/issues/903)).
+  * Fix: _Invalid override for `Length` still performs override_ ([Issue #903](https://github.com/vorov2/dyalect/issues/903)).
 
 # 0.45.0
   * Change: _Now it is not possible to use keyword `private` as identifier._
