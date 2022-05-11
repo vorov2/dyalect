@@ -1,13 +1,9 @@
 ﻿using Dyalect.Compiler;
 namespace Dyalect.Runtime.Types;
 
-internal class DyOrderTypeInfo : DyMixin
+internal class DyOrderMixin : DyMixin<DyOrderMixin>
 {
-    public override string ReflectedTypeName => nameof(Dy.Order);
-
-    public override int ReflectedTypeId => Dy.Order;
-
-    public DyOrderTypeInfo()
+    public DyOrderMixin() : base(Dy.Order)
     {
         Members.Add(Builtins.Gt, Binary(Builtins.Gt, Greater));
         Members.Add(Builtins.Lt, Binary(Builtins.Lt, Lesser));

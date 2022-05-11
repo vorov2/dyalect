@@ -1,7 +1,6 @@
 ﻿using Dyalect.Codegen;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 namespace Dyalect.Runtime.Types;
 
 [GeneratedType]
@@ -11,11 +10,7 @@ internal sealed partial class DySetTypeInfo : DyTypeInfo
 
     public override int ReflectedTypeId => Dy.Set;
 
-    public DySetTypeInfo()
-    {
-        AddMixins(Dy.Lookup);
-        SetSupportedOperations(Ops.Len | Ops.Iter | Ops.In);
-    }
+    public DySetTypeInfo() => AddMixins(Dy.Lookup, Dy.Sequence, Dy.Show, Dy.Equatable);
 
     #region Operations
     protected override DyObject EqOp(ExecutionContext ctx, DyObject left, DyObject right)

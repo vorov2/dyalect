@@ -9,7 +9,7 @@ internal sealed partial class DyFunctionTypeInfo : DyTypeInfo
 
     public override int ReflectedTypeId => Dy.Function;
 
-    public DyFunctionTypeInfo() => AddMixins(Dy.Functor);
+    public DyFunctionTypeInfo() => AddMixins(Dy.Functor, Dy.Show, Dy.Equatable);
 
     #region Operations
     protected override DyObject EqOp(ExecutionContext ctx, DyObject left, DyObject right) =>

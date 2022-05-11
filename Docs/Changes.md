@@ -1,7 +1,16 @@
+# 0.45.2
+  * Change: _Type system refactoring and clean-up._
+  * Change: _`Regex` should support `Equatable` mixin_ ([Issue #911](https://github.com/vorov2/dyalect/issues/911)).
+  * Change: _All types with non-reference equality should support `Equatable` mixin_ ([Issue #912](https://github.com/vorov2/dyalect/issues/912)).
+  * Change: _All mixins with non-standard `ToString` implementation should explicitly support `Show`_ ([Issue #910  ](https://github.com/vorov2/dyalect/issues/910)).
+  * Fix: _Mixin Number not closed for extensibility_ ([Issue #907](https://github.com/vorov2/dyalect/issues/907)).
+  * Fix: _Some built-in types have incorrect support for standard mixins_ ([Issue #908](https://github.com/vorov2/dyalect/issues/908)).
+  * Fix: _`StringBuilder` doesn't support `Lookup` mixin_ ([Issue #909](https://github.com/vorov2/dyalect/issues/909)).
+
 # 0.45.1
   * Change: _Optimizations in type system._
   * Fix: _Lines in exception stack trace can be duplicated_ ([Issue #902](https://github.com/vorov2/dyalect/issues/902)).
-  * Fix: _Invalid override for `Length` still performs override_ [Issue #903](https://github.com/vorov2/dyalect/issues/903)).
+  * Fix: _Invalid override for `Length` still performs override_ ([Issue #903](https://github.com/vorov2/dyalect/issues/903)).
 
 # 0.45.0
   * Change: _Now it is not possible to use keyword `private` as identifier._
@@ -32,7 +41,7 @@
   * Fix: _`Slice` for arrays and tuples does unnecessary allocations_ ([Issue #881](https://github.com/vorov2/dyalect/issues/881)).
   * Fix: _Method `Format` doesn't take into account format strings_ ([Issue #882](https://github.com/vorov2/dyalect/issues/882)).
 
-# 0.44.3
+# 0.44.3 
   * Change: _Type system refactoring._
   * Change: _Refactor `Regex` to use tuples for the results_ ([Issue #872](https://github.com/vorov2/dyalect/issues/872), [docs](https://github.com/vorov2/dyalect/wiki/Library.Core.Regex)).
   * Fix: _Passing arguments to a variant, undesirable side effects_ ([Issue #874](https://github.com/vorov2/dyalect/issues/874)).

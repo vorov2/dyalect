@@ -1,7 +1,6 @@
-﻿namespace Dyalect.Linker
+﻿namespace Dyalect.Linker;
+
+public enum LinkerWarning
 {
-    public enum LinkerWarning
-    {
-        NewerSourceFile = 500
-    }
+    NewerSourceFile = 500
 }

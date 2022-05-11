@@ -10,8 +10,7 @@ public abstract class SpanTypeInfo<T> : DyForeignTypeInfo<CoreModule>
     protected SpanTypeInfo(string typeName)
     {
         ReflectedTypeName = typeName;
-        AddMixins(Dy.Order);
-        SetSupportedOperations(Ops.Gt | Ops.Gte | Ops.Lt | Ops.Lte);
+        AddMixins(Dy.Order, Dy.Show, Dy.Equatable);
     }
 
     #region Operations

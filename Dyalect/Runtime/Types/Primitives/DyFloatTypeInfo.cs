@@ -9,12 +9,7 @@ internal sealed partial class DyFloatTypeInfo : DyTypeInfo
 
     public override int ReflectedTypeId => Dy.Float;
 
-    public DyFloatTypeInfo()
-    {
-        AddMixins(Dy.Number, Dy.Order);
-        SetSupportedOperations(Ops.Gt | Ops.Lt | Ops.Gte | Ops.Lte | Ops.Sub
-            | Ops.Div | Ops.Mul | Ops.Rem | Ops.Neg | Ops.Plus);
-    }
+    public DyFloatTypeInfo() => AddMixins(Dy.Number, Dy.Order, Dy.Show, Dy.Equatable);
 
     #region Operations
     protected override DyObject AddOp(ExecutionContext ctx, DyObject left, DyObject right)

@@ -1,13 +1,9 @@
 ﻿using Dyalect.Compiler;
 namespace Dyalect.Runtime.Types;
 
-internal class DyEquatableTypeInfo : DyMixin
+internal class DyEquatableMixin : DyMixin<DyEquatableMixin>
 {
-    public override string ReflectedTypeName => nameof(Dy.Equatable);
-
-    public override int ReflectedTypeId => Dy.Equatable;
-
-    public DyEquatableTypeInfo()
+    public DyEquatableMixin() : base(Dy.Equatable)
     {
         Members.Add(Builtins.Eq, Binary(Builtins.Eq, Equatable));
     }

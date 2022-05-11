@@ -1,15 +1,12 @@
 ﻿using Dyalect.Compiler;
 namespace Dyalect.Runtime.Types;
 
-internal class DyContainerTypeInfo : DyMixin
+internal class DyContainerMixin : DyMixin<DyContainerMixin>
 {
-    public override string ReflectedTypeName => nameof(Dy.Container);
-
-    public override int ReflectedTypeId => Dy.Container;
-
-    public DyContainerTypeInfo()
+    public DyContainerMixin() : base(Dy.Container)
     {
         Members.Add(Builtins.In, Binary(Builtins.In, IsIn, "value"));
+        SetSupportedOperations(Ops.In);
     }
 
     private static DyObject IsIn(ExecutionContext ctx, DyObject self, DyObject field)

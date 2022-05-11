@@ -16,13 +16,9 @@ internal sealed partial class Lang : ForeignUnit
     private readonly DyTuple? startupArguments;
     private const string VAR_CONSOLEOUTPUT = "sys.ConsoleOutput";
 
-    public Lang() : this(null) { }
+    public Lang() => FileName = "lang";
 
-    public Lang(DyTuple? args)
-    {
-        FileName = "lang";
-        startupArguments = args;
-    }
+    public Lang(DyTuple? args) : this() => startupArguments = args;
 
     protected override void Execute(ExecutionContext ctx) => Add("args", startupArguments ?? Nil);
 
@@ -33,7 +29,7 @@ internal sealed partial class Lang : ForeignUnit
     public static bool Equals(DyObject value, DyObject other) => ReferenceEquals(value, other);
 
     [StaticMethod("print")]
-    public static void Print(ExecutionContext ctx, [VarArg] DyTuple values, [Default(",")]string separator, [Default("\n")]DyObject terminator)
+    public static void Print(ExecutionContext ctx, [VarArg]DyTuple values, [Default(",")]string separator, [Default("\n")]DyObject terminator)
     {
         var fst = true;
         
@@ -108,12 +104,12 @@ internal sealed partial class Lang : ForeignUnit
     }
 
     [StaticMethod("caller")]
-    public static DyObject Caller(ExecutionContext ctx)
+    public static DyObject GetCaller(ExecutionContext ctx)
     {
         if (ctx.CallStack.Count > 2)
         {
-            var cp = ctx.CallStack[ctx.CallStack.Count - 2];
-            if (!ReferenceEquals(cp, global::Dyalect.Runtime.Caller.External))
+            var cp = ctx.CallStack[^2];
+            if (!ReferenceEquals(cp, Caller.External))
                 return cp.Function;
         }
 
@@ -262,7 +258,7 @@ internal sealed partial class Lang : ForeignUnit
     public static DyObject Eval(string source, DyTuple? args = null)
     {
         var sb = new StringBuilder();
-        sb.Append("func __x12(");
+        sb.Append("func __sys_x12(");
         
         if (args is not null)
         {
@@ -285,7 +281,7 @@ internal sealed partial class Lang : ForeignUnit
         sb.Append("){");
         sb.Append(source);
         sb.Append('}');
-        sb.Append("__x12");
+        sb.Append("__sys_x12");
 
         var linker = new DyLinker(FileLookup.Default, BuilderOptions.Default());
         var result = linker.Make(SourceBuffer.FromString(sb.ToString()));

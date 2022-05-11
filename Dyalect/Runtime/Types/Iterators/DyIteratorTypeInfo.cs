@@ -10,11 +10,7 @@ internal sealed partial class DyIteratorTypeInfo : DyTypeInfo
 
     public override int ReflectedTypeId => Dy.Iterator;
 
-    public DyIteratorTypeInfo()
-    {
-        SetSupportedOperations(Ops.Get | Ops.Len | Ops.Iter | Ops.In);
-    }
-
+    public DyIteratorTypeInfo() => AddMixins(Dy.Lookup, Dy.Container);
     #region Operations
     protected override DyObject AddOp(ExecutionContext ctx, DyObject left, DyObject right) => DyIterator.Create(Concat(ctx, left, right));
 
@@ -53,7 +49,7 @@ internal sealed partial class DyIteratorTypeInfo : DyTypeInfo
             _ => base.CastOp(ctx, self, targetType)
         };
 
-    private DyObject ConvertToSet(ExecutionContext ctx, DyObject self)
+    private static DyObject ConvertToSet(ExecutionContext ctx, DyObject self)
     {
         var seq = DyIterator.ToEnumerable(ctx, self);
 

@@ -9,11 +9,7 @@ internal sealed partial class DyDictionaryTypeInfo : DyTypeInfo
 
     public override int ReflectedTypeId => Dy.Dictionary;
 
-    public DyDictionaryTypeInfo()
-    {
-        AddMixins(Dy.Lookup, Dy.Collection, Dy.Container);
-        SetSupportedOperations(Ops.Get | Ops.Set | Ops.Len | Ops.Iter | Ops.In);
-    }
+    public DyDictionaryTypeInfo() => AddMixins(Dy.Collection, Dy.Container, Dy.Sequence, Dy.Show);
 
     #region Operations
     protected override DyObject LengthOp(ExecutionContext ctx, DyObject arg)

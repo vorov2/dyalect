@@ -13,6 +13,7 @@ public sealed partial class DyByteArrayTypeInfo : DyForeignTypeInfo
 
     public DyByteArrayTypeInfo()
     {
+        AddMixins(Dy.Show);
         SetSupportedOperations(Ops.Len);
     }
 

@@ -1,13 +1,9 @@
 ﻿using Dyalect.Compiler;
 namespace Dyalect.Runtime.Types;
 
-internal sealed class DyNumberTypeInfo : DyTypeInfo
+internal sealed class DyNumberMixin : DyMixin<DyNumberMixin>
 {
-    public override string ReflectedTypeName => nameof(Dy.Number);
-
-    public override int ReflectedTypeId => Dy.Number;
-
-    public DyNumberTypeInfo()
+    public DyNumberMixin() : base(Dy.Number)
     {
         Members.Add(Builtins.Add, Binary(Builtins.Add, Sum));
         Members.Add(Builtins.Sub, Binary(Builtins.Sub, Subtract));

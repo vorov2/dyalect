@@ -11,11 +11,7 @@ public sealed partial class DyResultTypeInfo : DyForeignTypeInfo
 
     public override string ReflectedTypeName => "Result";
 
-    public DyResultTypeInfo()
-    {
-        AddMixins(Dy.Lookup);
-        SetSupportedOperations(Ops.Get | Ops.Len);
-    }
+    public DyResultTypeInfo() => AddMixins(Dy.Lookup, Dy.Show);
 
     #region Operations
     protected override DyObject ToStringOp(ExecutionContext ctx, DyObject arg, DyObject format)
