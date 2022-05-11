@@ -58,7 +58,7 @@ define("ace/mode/dyalect_highlight_rules",["require","exports","module","ace/lib
     var DyalectHighlightRules = function () {
         var keywordMapper = this.createKeywordMapper({
             "variable.language": "this",
-            "keyword": "static|func|type|and|or|using|auto|let|var|for|while|do|when|match|is|in|if|else|private|return|yield|continue|break|set|not|throw|try|catch|base|nameof",
+            "keyword": "static|final|func|type|import|and|or|with|auto|let|var|for|while|do|when|match|is|in|if|else|private|return|yield|continue|break|get|set|not|throw|try|catch|base|nameof",
             "constant.language": "nil|true|false"
         }, "identifier");
 
