@@ -7,7 +7,7 @@ background: #272727;\
 color: #CCC\
 }\
 .ace-tomorrow-night-eighties .ace_print-margin {\
-width: 1px;\
+width: 0px;\
 background: #272727\
 }\
 .ace-tomorrow-night-eighties {\

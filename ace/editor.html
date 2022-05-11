@@ -18,8 +18,8 @@
         body {
             padding: 0px;
             margin: 0px;
-            background-color: black;
-            overflow:hidden;
+            background-color: #1c2130;
+            overflow: hidden;
         }
         #container {
             width: 100%;
@@ -31,11 +31,12 @@
             font-size: 15px !important;
             background-color: #1c2130; /*#2D2D2D*/
             height: calc(100% - 48px);
+            margin-top:5px;
         }
         .ace_gutter-layer {
             background-color: #1c2130 !important; /*#2D2D2D*/
         }
-        #cout {
+        #coutpanel {
             overflow: auto;
             border-left: solid 1px #494D59;
             background-color: #1c2130; /*#2D2D2D*/
@@ -46,10 +47,13 @@
             flex-grow: 1;
             height: calc(100% - 48px);
         }
+        #cout {
+            margin-top:5px;
+        }
         #toolbar {
             background-color: #393939;
             height: 40px;
-            border-bottom: solid 2px #161616;
+            border-bottom: solid 1px #161616;
             padding-top: 5px;
             padding-left: 5px;
             padding-right: 15px;
@@ -80,9 +84,10 @@
             font-family: "euclid_circular",sans-serif;
             font-size: 22px;
             font-weight: bold;
-            color: #D7BA7D;
+            color: #CB96F8;
             padding-left: 10px;
             padding-top: 8px;
+            float: left;
         }
         a {
             text-decoration:none;
@@ -96,11 +101,12 @@
             font-family: "euclid_circular",sans-serif;
             margin-right: 10px;
             margin-left: 10px;
-            margin-top: 2px;
+            margin-top: 1px;
+            padding: 5px;
         }
 
         .opt {
-            font-size: 14px;
+            font-size: 16px;
         }
 
         #splitpanel {
@@ -226,7 +232,7 @@
                     editor.clearSelection();
                 }
             }
-            req.open("GET", "samples/" + uri);
+            req.open("GET", "samples/" + uri + "?id=" + Math.random().toString(16).slice(2));
             req.send();
         }
     </script>
@@ -234,7 +240,10 @@
 <body onload="getVersion()">
     <div id="container">
         <div id="toolbar">
-            <a href="https://github.com/vorov2/dyalect"><span id="title">Dyalect&nbsp;<span id="version"></span></span></a>
+            <a href="https://github.com/vorov2/dyalect">
+                <div id="title">Dyalect&nbsp;<span id="version"></span>
+                </div>
+            </a>
             <select id="codeSamples"></select>
             <span id="button_run" onclick="runCode()">Run</span>
         </div>
@@ -244,7 +253,7 @@
 
 print("Hello world")
             </div>
-            <div id="cout"></div>
+            <div id="coutpanel"><pre id="cout"></pre></div>
         </div>
     </div>
     <script>

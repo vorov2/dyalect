@@ -11,5 +11,5 @@ for n in 0..(max-2) { //range from 0 to (max-2)
         m -= 1
     }
 }
-print("The first ten terms of the Van Eck sequence are: \(a[0..10])")
-print("Terms 991 to 1000 of the sequence are: \(a[991..999])")
+print("The first ten terms of the Van Eck sequence are: \(a[0..10].ToArray())")
+print("Terms 991 to 1000 of the sequence are: \(a[991..999].ToArray())")

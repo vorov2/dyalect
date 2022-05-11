@@ -14,9 +14,8 @@ let rng = [
 ]
  
 func overlap(left, right) =>
-    right.Max() >= left.Min()
-        when left.Max() > right.Max()
-        else left.Max() >= right.Min()
+    left.Max() > right.Max() ? right.Max() >= left.Min()
+        : left.Max() >= right.Min()
  
 func consolidate(left, right) => Pt(min(left.Min(), right.Min()), max(left.Max(), right.Max()))
  

@@ -1,7 +1,7 @@
 ﻿//http://rosettacode.org/wiki/Phrase_reversals#Dyalect
 let str = "rosetta code phrase reversal"
  
-//or you can use a built-in method String.reverse
+//or you can use a built-in method String.Reverse
 func reverse(str) {
     let xs = []
     for i in (str.Length()-1)^-1..0 { //Range with a step -1 down to 0
@@ -17,7 +17,7 @@ func reverseByWord(str) {
         xs.Add(reverse(w))
         xs.Add(" ")
     }
-    String.concat(values: xs)
+    String.Concat(values: xs)
 }
  
 func reverseWords(str) {    
