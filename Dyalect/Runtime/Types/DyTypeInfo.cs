@@ -972,7 +972,15 @@ public abstract class DyTypeInfo : DyObject
     protected void AddMixins(params int[] typeInfos)
     {
         for (var i = 0; i < typeInfos.Length; i++)
-            mixins.Add(typeInfos[i]);
+        {
+            var ti = Dy.GetMixinByCode(typeInfos[i]);
+            mixins.Add(ti.ReflectedTypeId);
+
+            foreach (var mj in ti.mixins)
+                mixins.Add(mj);
+
+            ops |= ti.ops;
+        }
     }
 
     protected void AddDefaultMixin(string name, string p1) =>

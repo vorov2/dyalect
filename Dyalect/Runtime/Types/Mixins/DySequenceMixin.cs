@@ -1,9 +1,9 @@
 ﻿using Dyalect.Compiler;
 namespace Dyalect.Runtime.Types;
 
-internal class DySequenceTypeInfo : DyMixin<DySequenceTypeInfo>
+internal class DySequenceMixin : DyMixin<DySequenceMixin>
 {
-    public DySequenceTypeInfo() : base(Dy.Sequence)
+    public DySequenceMixin() : base(Dy.Sequence)
     {
         Members.Add(Builtins.Iterate, Unary(Builtins.Iterate, Iterate));
         SetSupportedOperations(Ops.Iter);

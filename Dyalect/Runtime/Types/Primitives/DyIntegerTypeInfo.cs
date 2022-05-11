@@ -12,9 +12,7 @@ internal sealed partial class DyIntegerTypeInfo : DyTypeInfo
     public DyIntegerTypeInfo()
     {
         AddMixins(Dy.Number, Dy.Order);
-        SetSupportedOperations(Ops.Gt | Ops.Lt | Ops.Gte | Ops.Lte | Ops.Sub 
-            | Ops.Div | Ops.Mul | Ops.Rem | Ops.Neg | Ops.Plus | Ops.And | Ops.Or
-            | Ops.Xor | Ops.BitNot | Ops.Shl | Ops.Shr);
+        SetSupportedOperations(Ops.And | Ops.Or | Ops.Xor | Ops.BitNot | Ops.Shl | Ops.Shr);
     }
 
     #region Operations

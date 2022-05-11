@@ -12,8 +12,6 @@ internal sealed partial class DyFloatTypeInfo : DyTypeInfo
     public DyFloatTypeInfo()
     {
         AddMixins(Dy.Number, Dy.Order);
-        SetSupportedOperations(Ops.Gt | Ops.Lt | Ops.Gte | Ops.Lte | Ops.Sub
-            | Ops.Div | Ops.Mul | Ops.Rem | Ops.Neg | Ops.Plus);
     }
 
     #region Operations

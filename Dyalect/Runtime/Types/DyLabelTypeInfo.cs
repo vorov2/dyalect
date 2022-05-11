@@ -8,7 +8,7 @@ internal sealed class DyLabelTypeInfo : DyTypeInfo
 
     public DyLabelTypeInfo()
     {
-        SetSupportedOperations(Ops.In);
+        AddMixins(Dy.Container);
     }
 
     protected override DyObject InOp(ExecutionContext ctx, DyObject self, DyObject field) =>

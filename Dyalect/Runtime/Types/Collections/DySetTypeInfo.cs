@@ -1,7 +1,6 @@
 ﻿using Dyalect.Codegen;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 namespace Dyalect.Runtime.Types;
 
 [GeneratedType]
@@ -13,8 +12,7 @@ internal sealed partial class DySetTypeInfo : DyTypeInfo
 
     public DySetTypeInfo()
     {
-        AddMixins(Dy.Lookup);
-        SetSupportedOperations(Ops.Len | Ops.Iter | Ops.In);
+        AddMixins(Dy.Lookup, Dy.Sequence, Dy.Iterator);
     }
 
     #region Operations

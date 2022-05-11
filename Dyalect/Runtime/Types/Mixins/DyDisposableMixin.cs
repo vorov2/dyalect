@@ -1,9 +1,9 @@
 ﻿using Dyalect.Compiler;
 namespace Dyalect.Runtime.Types;
 
-internal class DyDisposableTypeInfo : DyMixin<DyDisposableTypeInfo>
+internal class DyDisposableMixin : DyMixin<DyDisposableMixin>
 {
-    public DyDisposableTypeInfo() : base(Dy.Disposable)
+    public DyDisposableMixin() : base(Dy.Disposable)
     {
         Members.Add(Builtins.Dispose, Unary(Builtins.Dispose, Dispose));
     }

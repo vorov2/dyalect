@@ -25,12 +25,12 @@ namespace Dyalect.Generators
                 .OrderBy(kv => kv.Item1)
                 .Select(kv => (kv.Name, kv.Item3))
                 .ToArray();
-
+            
             static string GetClassName((string name, bool mixin) info) =>
                 info.name switch
                 {
                     "TypeInfo" => "new DyMetaTypeInfo()",
-                    _ when info.mixin => $"Dy{info.name}TypeInfo.Instance",
+                    _ when info.mixin => $"Dy{info.name}Mixin.Instance",
                     _ => $"new Dy{info.name}TypeInfo()"
                 };
 
@@ -65,6 +65,15 @@ partial class Dy
         {{
             {string.Join(", ", dyTypes.Select(s => $"{s.Name} => \"{s.Name}\""))},
             _ => code.ToString()
+        }};
+    }}
+
+    static partial void GetMixinByCodeGenerated(int code, ref DyTypeInfo name)
+    {{
+        name = code switch
+        {{
+            {string.Join(", ", dyTypes.Where(s => s.Item2).Select(s => $"{s.Name} => Dy{s.Name}Mixin.Instance"))},
+            _ => throw new System.ArgumentException(""code"")
         }};
     }}
 }}";

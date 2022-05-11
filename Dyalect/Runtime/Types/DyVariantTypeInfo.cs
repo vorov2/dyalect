@@ -10,8 +10,7 @@ internal sealed class DyVariantTypeInfo : DyTypeInfo
 
     public DyVariantTypeInfo()
     {
-        AddMixins(Dy.Lookup);
-        SetSupportedOperations(Ops.Len | Ops.Get | Ops.Set);
+        AddMixins(Dy.Collection);
     }
 
     #region Operations

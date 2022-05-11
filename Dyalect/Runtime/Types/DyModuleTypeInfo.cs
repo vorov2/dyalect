@@ -11,8 +11,7 @@ internal sealed class DyModuleTypeInfo : DyTypeInfo
 
     public DyModuleTypeInfo()
     {
-        AddMixins(Dy.Lookup);
-        SetSupportedOperations(Ops.Get | Ops.Len | Ops.Iter | Ops.In);
+        AddMixins(Dy.Lookup, Dy.Sequence, Dy.Container);
     }
 
     #region Operations

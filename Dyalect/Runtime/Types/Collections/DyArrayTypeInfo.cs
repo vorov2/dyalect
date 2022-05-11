@@ -12,8 +12,7 @@ internal sealed partial class DyArrayTypeInfo : DyCollTypeInfo
 
     public DyArrayTypeInfo()
     {
-        AddMixins(Dy.Lookup, Dy.Collection);
-        SetSupportedOperations(Ops.Get | Ops.Set | Ops.Len | Ops.Iter | Ops.In);
+        AddMixins(Dy.Sequence, Dy.Collection, Dy.Container);
     }
 
     #region Operations

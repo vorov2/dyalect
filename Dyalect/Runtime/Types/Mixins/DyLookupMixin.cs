@@ -1,9 +1,9 @@
 ﻿using Dyalect.Compiler;
 namespace Dyalect.Runtime.Types;
 
-internal class DyLookupTypeInfo : DyMixin<DyLookupTypeInfo>
+internal class DyLookupMixin : DyMixin<DyLookupMixin>
 {
-    public DyLookupTypeInfo() : base(Dy.Lookup)
+    public DyLookupMixin() : base(Dy.Lookup)
     {
         Members.Add(Builtins.Length, Unary(Builtins.Length, GetLength));
         Members.Add(Builtins.Get, Binary(Builtins.Get, Getter, "index"));

@@ -11,7 +11,6 @@ internal sealed partial class DyCharTypeInfo : DyTypeInfo
     public DyCharTypeInfo()
     {
         AddMixins(Dy.Order);
-        SetSupportedOperations(Ops.Add | Ops.Sub | Ops.Gt | Ops.Lt | Ops.Gte | Ops.Lte);
     }
 
     #region Operations

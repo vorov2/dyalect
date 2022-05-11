@@ -1,5 +1,7 @@
 # 0.45.2
+  * Change: _Type system refactoring and clean-up._
   * Fix: _Mixin Number not closed for extensibility_ ([Issue #907](https://github.com/vorov2/dyalect/issues/907)).
+  * Fix: _Some built-in types have incorrect support for standard mixins_ ([Issue #908](https://github.com/vorov2/dyalect/issues/908)).
 
 # 0.45.1
   * Change: _Optimizations in type system._

@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 namespace Dyalect.Runtime.Types;
 
-internal class DyShowTypeInfo : DyMixin<DyShowTypeInfo>
+internal class DyShowMixin : DyMixin<DyShowMixin>
 {
-    public DyShowTypeInfo() : base(Dy.Show)
+    public DyShowMixin() : base(Dy.Show)
     {
         Members.Add(Builtins.String, Unary(Builtins.String, Show));
     }

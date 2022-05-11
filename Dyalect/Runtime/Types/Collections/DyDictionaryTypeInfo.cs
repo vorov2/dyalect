@@ -11,8 +11,7 @@ internal sealed partial class DyDictionaryTypeInfo : DyTypeInfo
 
     public DyDictionaryTypeInfo()
     {
-        AddMixins(Dy.Lookup, Dy.Collection, Dy.Container);
-        SetSupportedOperations(Ops.Get | Ops.Set | Ops.Len | Ops.Iter | Ops.In);
+        AddMixins(Dy.Collection, Dy.Container, Dy.Sequence);
     }
 
     #region Operations

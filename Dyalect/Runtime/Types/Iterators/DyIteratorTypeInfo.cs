@@ -12,7 +12,7 @@ internal sealed partial class DyIteratorTypeInfo : DyTypeInfo
 
     public DyIteratorTypeInfo()
     {
-        SetSupportedOperations(Ops.Get | Ops.Len | Ops.Iter | Ops.In);
+        AddMixins(Dy.Lookup, Dy.Container);
     }
 
     #region Operations
@@ -53,7 +53,7 @@ internal sealed partial class DyIteratorTypeInfo : DyTypeInfo
             _ => base.CastOp(ctx, self, targetType)
         };
 
-    private DyObject ConvertToSet(ExecutionContext ctx, DyObject self)
+    private static DyObject ConvertToSet(ExecutionContext ctx, DyObject self)
     {
         var seq = DyIterator.ToEnumerable(ctx, self);
 
