@@ -14,7 +14,6 @@ public sealed partial class DyResultTypeInfo : DyForeignTypeInfo
     public DyResultTypeInfo()
     {
         AddMixins(Dy.Lookup);
-        SetSupportedOperations(Ops.Get | Ops.Len);
     }
 
     #region Operations

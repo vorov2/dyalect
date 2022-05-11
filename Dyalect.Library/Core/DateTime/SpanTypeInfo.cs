@@ -11,7 +11,6 @@ public abstract class SpanTypeInfo<T> : DyForeignTypeInfo<CoreModule>
     {
         ReflectedTypeName = typeName;
         AddMixins(Dy.Order);
-        SetSupportedOperations(Ops.Gt | Ops.Gte | Ops.Lt | Ops.Lte);
     }
 
     #region Operations

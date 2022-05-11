@@ -1,7 +1,9 @@
 # 0.45.2
   * Change: _Type system refactoring and clean-up._
+  * Change: _`Regex` should support `Equatable` mixin_ ([Issue #911](https://github.com/vorov2/dyalect/issues/911)).
   * Fix: _Mixin Number not closed for extensibility_ ([Issue #907](https://github.com/vorov2/dyalect/issues/907)).
   * Fix: _Some built-in types have incorrect support for standard mixins_ ([Issue #908](https://github.com/vorov2/dyalect/issues/908)).
+  * Fix: _`StringBuilder` doesn't support `Lookup` mixin_ ([Issue #909](https://github.com/vorov2/dyalect/issues/909)).
 
 # 0.45.1
   * Change: _Optimizations in type system._

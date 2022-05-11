@@ -27,6 +27,11 @@
     assert(got: sb == StringBuilder("123"))
 #endregion
 
+#region "StringBuilder: indexer"
+    let sb = StringBuilder(1, 2, 3)
+    assert('2', sb[1])
+#endregion
+
 #region "StringBuilder: Insert"
     let sb = StringBuilder(true)
     sb.Insert(1, false)

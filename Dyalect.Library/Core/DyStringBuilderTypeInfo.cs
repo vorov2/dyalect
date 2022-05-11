@@ -12,16 +12,28 @@ public sealed partial class DyStringBuilderTypeInfo : DyForeignTypeInfo
 
     public override string ReflectedTypeName => StringBuilder;
 
-    public DyStringBuilderTypeInfo()
-    {
-        SetSupportedOperations(Ops.Len);
-    }
+    public DyStringBuilderTypeInfo() => AddMixins(Dy.Lookup);
 
     #region Operations
     public DyStringBuilder Create(StringBuilder sb) => new(this, sb);
 
     protected override DyObject ToStringOp(ExecutionContext ctx, DyObject arg, DyObject format) =>
         new DyString(((DyStringBuilder)arg).ToString());
+
+    protected override DyObject GetOp(ExecutionContext ctx, DyObject arg, DyObject index)
+    {
+        if (!(index is DyInteger dyi))
+            return ctx.InvalidType(index);
+
+        var i = (int)dyi.Value;
+        var self = (DyStringBuilder)arg;
+        i = i < 0 ? i + self.Builder.Length: i;
+
+        if (i < 0 || i >= self.Builder.Length)
+            return ctx.IndexOutOfRange(index);
+
+        return new DyChar(self.Builder[i]);
+    }
 
     protected override DyObject LengthOp(ExecutionContext ctx, DyObject arg) =>
         DyInteger.Get(((DyStringBuilder)arg).Builder.Length);
