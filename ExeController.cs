@@ -5,7 +5,6 @@ using Dyalect.Parser;
 using Dyalect.Runtime;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -45,7 +44,7 @@ namespace DyalectService
                 try
                 {
                     var phys = Path.Combine(webHostEnvironment.ContentRootPath, "ace");
-                    var lookup = FileLookup.Create(phys);
+                    var lookup = FileLookup.Create(BuilderOptions.Default(), phys);
                     var ret = Exe.Eval(SourceBuffer.FromString(source), BuilderOptions.Default(), lookup);
                     return new JsonResult(new { success = true, value = ret?.ToString(), cout = sw.ToString() });
                 }

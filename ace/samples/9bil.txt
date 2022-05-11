@@ -4,9 +4,15 @@ let cache = [[1]]
 func namesOfGod(n) {
     for l in cache.Length()..n {
         let r = [0]
-        for x in 1..l {
-            r.Add(r[r.Length() - 1] + cache[l - x][min(x, l - x)])
-        } when l != 1 else r.Add(r[r.Length() - 1] + cache[0][0])
+        
+        if l != 1 {
+            for x in 1..l {
+                r.Add(r[r.Length() - 1] + cache[l - x][min(x, l - x)])
+            }
+        } else {
+            r.Add(r[r.Length() - 1] + cache[0][0])
+        }
+        
         cache.Add(r)
     }
     cache[n]

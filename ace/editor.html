@@ -5,33 +5,46 @@
     <title></title>
     <script src="src/ace.js" type="text/javascript" charset="utf-8"></script>
     <style>
+        @font-face {
+            font-family: "euclid_circular";
+            src: url("assets/euclidcirculara-regular-webfont.woff2") format("woff2"), url("assets/euclidcirculara-regular-webfont.woff") format("woff");
+            font-weight: normal;
+            font-style: normal;
+            font-display: swap;
+        }
         html, body {
             height: 100%;
         }
         body {
             padding: 0px;
             margin: 0px;
-            background-color: #5B5B5B;
+            background-color: black;
+            overflow:hidden;
         }
         #container {
             width: 100%;
             height:100%;
         }
         #editor {
-            width: 100%;
-            height: 70%;
-            min-height: 100px;
+            width: 50%;
+            height: 100%;
+            font-size: 15px !important;
+            background-color: #1c2130; /*#2D2D2D*/
+            height: calc(100% - 48px);
+        }
+        .ace_gutter-layer {
+            background-color: #1c2130 !important; /*#2D2D2D*/
         }
         #cout {
-            height: calc(30% - 71px);
             overflow: auto;
-            border-top: solid 4px #161616;
-            background-color: #2D2D2D;
+            border-left: solid 1px #494D59;
+            background-color: #1c2130; /*#2D2D2D*/
             color: #CCCCCC;
             font: 12px/normal 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
-            font-size: 16px;
+            font-size: 15px;
             padding-left: 10px;
-            min-height:100px;
+            flex-grow: 1;
+            height: calc(100% - 48px);
         }
         #toolbar {
             background-color: #393939;
@@ -42,13 +55,16 @@
             padding-right: 15px;
         }
         #button_run {
-            color: #CCCCCC;
-            font-size: 22px;
-            font-family: Verdana;
-            height: 28px;
-            padding: 4px 4px 2px 40px;
-            background: url(play.svg) no-repeat left center;
+            color: #ffffff;
+            font-size: 14px;
+            font-family: "euclid_circular",sans-serif;
+            font-weight:bold;
             float: right;
+            background-color: #0556f3;
+            text-align: center;
+            line-height: 30px;
+            width: 60px;
+            border-radius:2px;
         }
         #button_run:hover {
             background-color: #5B5B5B;
@@ -61,8 +77,8 @@
             color: #D7BA7D;
         }
         #title {
-            font: 12px/normal 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
-            font-size: 30px;
+            font-family: "euclid_circular",sans-serif;
+            font-size: 22px;
             font-weight: bold;
             color: #D7BA7D;
             padding-left: 10px;
@@ -76,8 +92,8 @@
             background-color: #393939;
             color: #CCCCCC;
             float: right;
-            font-size: 22px;
-            font-family: Verdana;
+            font-size: 16px;
+            font-family: "euclid_circular",sans-serif;
             margin-right: 10px;
             margin-left: 10px;
             margin-top: 2px;
@@ -85,6 +101,11 @@
 
         .opt {
             font-size: 14px;
+        }
+
+        #splitpanel {
+            display:flex;
+            height:100%;
         }
     </style>
     <script type="text/javascript">
@@ -130,7 +151,7 @@
             req.onreadystatechange = function () {
                 if (req.readyState == 4) {
                     var obj = JSON.parse(req.responseText);
-                    var data = "<div style='font-size:10px;margin-bottom:5px;color:gray'>Dyalect console v0.5</div>" ;
+                    var data = "" ;
 
                     if (obj.cout != "") {
                         data += obj.cout.replaceAll("\n", "<br/>");
@@ -217,18 +238,20 @@
             <select id="codeSamples"></select>
             <span id="button_run" onclick="runCode()">Run</span>
         </div>
-        <div id="editor">//Welcome to Dyalect!
+        <div id="splitpanel">
+            <div id="editor">//Welcome to Dyalect!
 //Write your own code or choose a sample from the menu above
-        
-print("Hello world")</div>
-        <pre id="cout">
-        </pre>
+
+print("Hello world")
+            </div>
+            <div id="cout"></div>
+        </div>
     </div>
     <script>
         var editor = ace.edit("editor");
         editor.setTheme("ace/theme/tomorrow_night_eighties");
         editor.session.setMode("ace/mode/dyalect");
-        editor.setFontSize(16);
+        editor.setFontSize(15);
         editor.setOption("foldStyle", "manual");
     </script>
 </body>
