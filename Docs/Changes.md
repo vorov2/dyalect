@@ -1,5 +1,5 @@
 # 0.45.2
-  *
+  * Fix: _Mixin Number not closed for extensibility_ ([Issue #907](https://github.com/vorov2/dyalect/issues/907)).
 
 # 0.45.1
   * Change: _Optimizations in type system._
