@@ -12,7 +12,7 @@ public abstract class DyTypeInfo : DyObject
 
     public override string TypeName => nameof(Dy.TypeInfo);
 
-    protected void SetSupportedOperations(Ops ops) => this.ops = ops;
+    protected void SetSupportedOperations(Ops ops) => this.ops |= ops;
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private bool Support(Ops op) => (ops & op) == op;
@@ -29,7 +29,10 @@ public abstract class DyTypeInfo : DyObject
 
     public abstract int ReflectedTypeId { get; }
 
-    protected DyTypeInfo() : base(Dy.TypeInfo) => AddMixins(Dy.Object);
+    protected DyTypeInfo() : base(Dy.TypeInfo)
+    {
+        mixins.Add(Dy.Object);
+    }
 
     #region Binary Operations
     //x + y
@@ -972,15 +975,19 @@ public abstract class DyTypeInfo : DyObject
     protected void AddMixins(params int[] typeInfos)
     {
         for (var i = 0; i < typeInfos.Length; i++)
-        {
-            var ti = Dy.GetMixinByCode(typeInfos[i]);
-            mixins.Add(ti.ReflectedTypeId);
+            AddSingleMixin(typeInfos[i]);
+    }
 
-            foreach (var mj in ti.mixins)
-                mixins.Add(mj);
+    private void AddSingleMixin(int typeId)
+    {
+        var ti = Dy.GetMixinByCode(typeId);
+        mixins.Add(ti.ReflectedTypeId);
 
-            ops |= ti.ops;
-        }
+        foreach (var mj in ti.mixins)
+            if (mj != Dy.Object)
+                AddSingleMixin(mj);
+
+        ops |= ti.ops;
     }
 
     protected void AddDefaultMixin(string name, string p1) =>

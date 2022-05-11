@@ -6,6 +6,7 @@ internal class DyContainerMixin : DyMixin<DyContainerMixin>
     public DyContainerMixin() : base(Dy.Container)
     {
         Members.Add(Builtins.In, Binary(Builtins.In, IsIn, "value"));
+        SetSupportedOperations(Ops.In);
     }
 
     private static DyObject IsIn(ExecutionContext ctx, DyObject self, DyObject field)

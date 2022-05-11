@@ -12,7 +12,7 @@ internal sealed partial class DySetTypeInfo : DyTypeInfo
 
     public DySetTypeInfo()
     {
-        AddMixins(Dy.Lookup, Dy.Sequence, Dy.Iterator);
+        AddMixins(Dy.Lookup, Dy.Sequence, Dy.Sequence);
     }
 
     #region Operations

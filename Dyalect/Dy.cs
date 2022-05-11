@@ -61,7 +61,7 @@ public static partial class Dy
 
     public static DyTypeInfo GetMixinByCode(int code)
     {
-        DyTypeInfo mixin = DyLookupMixin.Instance;
+        DyTypeInfo mixin = null!;
         GetMixinByCodeGenerated(code, ref mixin);
         return mixin;
     }
