@@ -1,6 +1,6 @@
 ﻿//http://rosettacode.org/wiki/Van_Eck_sequence#Dyalect
 let max = 1000
-var a = Array.empty(max, 0) //an empty array filled with 0
+var a = Array.Empty(max, 0) //an empty array filled with 0
 for n in 0..(max-2) { //range from 0 to (max-2)
     var m = n - 1
     while m >= 0 {

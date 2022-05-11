@@ -1,6 +1,6 @@
 ﻿//http://rosettacode.org/wiki/McNuggets_problem#Dyalect
 func mcnugget(limit) {
-    let sv = Array.empty(limit + 1, false)
+    let sv = Array.Empty(limit + 1, false)
     
     for s in 0^6..limit { //range from 0 to limit with a step 6
         for n in s^9..limit { //range from s to limit with a step 9

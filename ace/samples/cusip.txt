@@ -1,13 +1,13 @@
 ﻿//http://rosettacode.org/wiki/CUSIP#Dyalect
 func isCusip(s) {
-    return false when s.len() != 9
+    return false when s.Length() != 9
     var sum = 0
     for i in 0..7 {
         let c = s[i]
         var v =
             match c {
-                '0'..'9' => c.order() - 48,
-                'A'..'Z' => c.order() - 64,
+                '0'..'9' => c.Order() - 48,
+                'A'..'Z' => c.Order() - 64,
                 '*' => 36,
                 '@' => 37,
                 '#' => 38,
@@ -16,7 +16,7 @@ func isCusip(s) {
         v *= 2 when i % 2 == 1
         sum += v / 10 + v % 10
     }
-    s[8].order() - 48 == (10 - (sum % 10)) % 10
+    s[8].Order() - 48 == (10 - (sum % 10)) % 10
 }
  
 let candidates = [

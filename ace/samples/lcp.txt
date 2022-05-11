@@ -1,6 +1,6 @@
 ﻿//http://rosettacode.org/wiki/Longest_common_prefix#Dyalect
 func lcp(sa...) { //function accepts variable number of arguments
-    return "" when sa.len() == 0 || !sa[0]
+    return "" when sa.Length() == 0 || !sa[0]
  
     var ret = ""
     var idx = 0
@@ -9,7 +9,7 @@ func lcp(sa...) { //function accepts variable number of arguments
         var thisLetter = '\0'
         
         for word in sa {
-            if idx == word.len() {
+            if idx == word.Length() {
                 return ret
             }
             if thisLetter == '\0' {

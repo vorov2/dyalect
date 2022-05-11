@@ -1,7 +1,7 @@
 ﻿//http://rosettacode.org/wiki/Abundant,_deficient_and_perfect_number_classifications#Dyalect
 func sieve(bound) {
     var (a, d, p) = (0, 0, 0)
-    let sum = Array.empty(bound + 1, 0)
+    let sum = Array.Empty(bound + 1, 0)
  
     for divisor in 1..(bound / 2) {
         var i = divisor + divisor
@@ -24,13 +24,13 @@ func sieve(bound) {
 }
  
 func division(bound) {
-    func Iterator.where(fn) {
+    func Iterator.Where(fn) {
         for x in this when fn(x) {
             yield x
         }
     }
     
-    func Iterator.sum() {
+    func Iterator.Sum() {
         var sum = 0
         for x in this {
             sum += x
@@ -42,8 +42,8 @@ func division(bound) {
     
     for i in 1..200 {
         var sum = ( 1 .. ((i + 1) / 2) )
-            .where(div => div != i && i % div == 0)
-            .sum()
+            .Where(div => div != i && i % div == 0)
+            .Sum()
         if sum < i {
             d += 1
         } else if sum > i {
@@ -55,10 +55,10 @@ func division(bound) {
  
     (abundant: a, deficient: d, perfect: p)
 }
- 
+
 func out(res) {
-    print("Abundant: \(res::abundant), Deficient: \(res::deficient), Perfect: \(res::perfect)");
+    print("Abundant: \(res.abundant), Deficient: \(res.deficient), Perfect: \(res.perfect)");
 }
- 
+
 out( sieve(200) )
 out( division(200) )

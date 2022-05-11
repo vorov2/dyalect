@@ -1,7 +1,7 @@
 ﻿//http://rosettacode.org/wiki/Levenshtein_distance#Dyalect
 func levenshtein(s, t) {
-    let (n, m) = (s.len(), t.len())
-    let d = Array.empty(n + 1, () => Array.empty(m + 1))
+    let (n, m) = (s.Length(), t.Length())
+    let d = Array.Empty(n + 1, () => Array.Empty(m + 1))
  
     return m when n == 0
     return n when m == 0
@@ -13,7 +13,7 @@ func levenshtein(s, t) {
     for j in 0..m {
         d[0][j] = j
     }
- 
+
     for j in 1..m {
         for i in 1..n {
             if s[i - 1] == t[j - 1] {
@@ -29,9 +29,9 @@ func levenshtein(s, t) {
  
     d[n][m]
 }
- 
+
 func run(x, y) {
     print("\(x) -> \(y) = \(levenshtein(x, y))")
 }
- 
+
 run("rosettacode", "raisethysword")

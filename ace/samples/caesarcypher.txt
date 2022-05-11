@@ -1,23 +1,23 @@
 ﻿//http://rosettacode.org/wiki/Caesar_cipher#Dyalect
-func Char.encrypt(code) {
-    return this when !this.isLetter()
-    let offset = (this.isUpper() ? 'A' : 'a').order()
-    Char((this.order() + code - offset) % 26 + offset)
+func Char.Encrypt(code) {
+    return this when !this.IsLetter()
+    let offset = (this.IsUpper() ? 'A' : 'a').Order()
+    Char((this.Order() + code - offset) % 26 + offset)
 }
- 
-func String.encrypt(code) {
+
+func String.Encrypt(code) {
     var xs = []
     for c in this {
-        xs.add(c.encrypt(code))
+        xs.Add(c.Encrypt(code))
     }
-    String.concat(values: xs)
+    String.Concat(values: xs)
 }
- 
-func String.decrypt(code) => this.encrypt(26 - code)
- 
+
+func String.Decrypt(code) => this.Encrypt(26 - code)
+
 var str = "Pack my box with five dozen liquor jugs."
 print(str)
-str = str.encrypt(5)
+str = str.Encrypt(5)
 print("Encrypted: \(str)")
-str = str.decrypt(5)
+str = str.Decrypt(5)
 print("Decrypted: \(str)")

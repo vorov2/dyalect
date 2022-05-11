@@ -2,7 +2,7 @@
 func happy(n) {
     let m = []
     while n > 1 {
-        m.add(n)
+        m.Add(n)
         var x = n
         n = 0
         while x > 0 {
@@ -10,7 +10,7 @@ func happy(n) {
             n += d * d
             x /= 10
         }
-        return false when m.indexOf(n) != -1
+        return false when m.IndexOf(n) != -1
     }
     true
 }

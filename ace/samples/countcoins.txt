@@ -1,6 +1,6 @@
 ﻿//http://rosettacode.org/wiki/Count_the_coins#Dyalect
 func countCoins(coins, n) {
-    let xs = Array.empty(n + 1, 0)
+    let xs = Array.Empty(n + 1, 0)
     xs[0] = 1
     for c in coins {
         var cj = c

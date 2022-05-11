@@ -1,76 +1,75 @@
 ﻿//http://rosettacode.org/wiki/Langton%27s_ant#Dyalect
-type Point(var Integer x, var Integer y)
-
-type Ant = {
-    let (north, east, west, south) = (0, 1, 2, 3)
-    let leftTurns  = [ west, north, south, east ]
-    let rightTurns = [ east, south, north, west ]
-    let xInc = [0, 1, -1, 0]
-    let yInc = [-1, 0, 0, 1]
-    var (position, origin, outOfBounds, direction, width, height) = (nil, nil, false, east, nil, nil)
-}
-
-static func Ant.Ant(Integer width, Integer height) {
-    this.ini.position = Point(0, 0)
-    this.ini.origin = Point(width / 2, height / 2)
-    this.ini.width = width
-    this.ini.height = height
-}
-
-func Ant.getItem(field) {
-    match field {
-        "position" => this.ini.position,
-        "origin" => this.ini.origin,
-        _ => Error.IndexOutOfRange()
-    }
-}
-
-func Ant.isOutOfBounds() => this.ini.outOfBounds
-
-func Ant.move() {
-    let pos = this.ini.position
-    pos::x += this.ini.xInc[this.ini.direction]
-    pos::y += this.ini.yInc[this.ini.direction]
-    let pt = Point(pos::x + this.ini.origin::x, pos::y + this.ini.origin::y)
-    this.ini.outOfBounds = 
-        pt::x < 0 ||
-        pt::x >= this.ini.width ||
-        pt::y < 0 ||
-        pt::y >= this.ini.height
-    return pos
-}
-
-func Ant.changeDirection(Bool left) {
-    this.ini.direction = left ? this.ini.leftTurns[this.ini.direction] : this.ini.rightTurns[this.ini.direction]
+let xInc = [0, 1, -1, 0]
+let yInc = [-1, 0, 0, 1]
+let north = 0
+let east = 1
+let west = 2
+let south = 3
+ 
+let leftTurns  = [ west, north, south, east ]
+let rightTurns = [ east, south, north, west ]
+ 
+func move(ant) {
+    ant.position.x += xInc[ant.direction]
+    ant.position.y += yInc[ant.direction]
 }
  
-func Array.step(ant) {
-    var ptCur = Point(ant::position::x + ant::origin::x, ant::position::y + ant::origin::y)
-    var leftTurn = this[ptCur::x][ptCur::y]
-    ant.changeDirection(leftTurn)
-    this[ptCur::x][ptCur::y] = !this[ptCur::x][ptCur::y]
-    ant.move()
+func Array.Step(ant) {
+    var ptCur = (var x: ant.position.x + ant.origin.x, var y: ant.position.y + ant.origin.y)
+    var leftTurn = this[ptCur.x][ptCur.y]
+    ant.direction =
+        if leftTurn  {
+            leftTurns[ant.direction] 
+        } else {
+            rightTurns[ant.direction]
+        }
+    this[ptCur.x][ptCur.y] = !this[ptCur.x][ptCur.y]
+    move(ant)
+    ptCur = (x: ant.position.x + ant.origin.x, y: ant.position.y + ant.origin.y)
+    ant.outOfBounds = 
+        ptCur.x < 0 ||
+        ptCur.x >= ant.width ||
+        ptCur.y < 0 ||
+        ptCur.y >= ant.height
+    ant.position
+}
+ 
+func newAnt(width, height) {
+    (
+        var position: (var x: 0, var y: 0),
+        var origin: (x: width / 2, y: height / 2),
+        var outOfBounds: false,
+        var isBlack: [],
+        var direction: east,
+        var width: width,
+        var height: height
+    )
 }
  
 func run() {
-    let (w, h) = (100, 100)
-    let blacks = Array.empty(w, () => Array.empty(h, false))
-    let ant = Ant(w, h)
+    let w = 100
+    let h = 100
+    let blacks = Array.Empty(w, () => Array.Empty(h, false))
+    let ant = newAnt(w, h)
  
-    while !ant.isOutOfBounds() {
-        blacks.step(ant)
+    while !ant.outOfBounds {
+        blacks.Step(ant)
     }
  
-    var iRow = 0
+    var iRow = 0;
  
     while iRow < w {
         var iCol = 0;
-        let ln = []
+        var ln = ""
         while iCol < h {
-            ln.add(blacks[iCol][iRow] ? "#" : " ")
+            ln += if blacks[iCol][iRow] {
+                "#"
+            } else {
+                " "
+            }
             iCol += 1
         }
-        print(String(values: ln))
+        print(ln)
         iRow += 1
     }
 }

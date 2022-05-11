@@ -1,7 +1,7 @@
 ﻿//http://rosettacode.org/wiki/The_Name_Game#Dyalect
 func printVerse(name) {
-    let x = name[..1].upper() + name[1..].lower();
-    let y = "AEIOU".indexOf(x[0]) > -1 ? x.lower() : x[1..]
+    let x = name[..1].Upper() + name[1..].Lower();
+    let y = "AEIOU".IndexOf(x[0]) > -1 ? x.Lower() : x[1..]
     let b = x[0] is 'B' ? y : "b" + y
     let f = x[0] is 'F' ? y : "f" + y
     let m = x[0] is 'M' ? y : "m" + y

@@ -20,7 +20,7 @@ func eval(code) {
     )
  
     for c in code {
-        opcodes[c.upper()]()
+        opcodes[c.Upper()]()
     }
 }
 

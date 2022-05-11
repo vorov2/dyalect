@@ -4,30 +4,30 @@ let str = "rosetta code phrase reversal"
 //or you can use a built-in method String.reverse
 func reverse(str) {
     let xs = []
-    for i in (str.len()-1)^-1..0 { //Range with a step -1 down to 0
-        xs.add(str[i])
+    for i in (str.Length()-1)^-1..0 { //Range with a step -1 down to 0
+        xs.Add(str[i])
     }
-    String.concat(values: xs)
+    String.Concat(values: xs)
 }
  
 func reverseByWord(str) {
-    let words = str.split(" ")
+    let words = str.Split(" ")
     let xs = []
     for w in words {
-        xs.add(reverse(w))
-        xs.add(" ")
+        xs.Add(reverse(w))
+        xs.Add(" ")
     }
     String.concat(values: xs)
 }
  
 func reverseWords(str) {    
-    let words = str.split(" ")
+    let words = str.Split(" ")
     let xs = []
-    for i in (words.len()-1)^-1..0 {
-        xs.add(words[i])
-        xs.add(" ")
+    for i in (words.Length()-1)^-1..0 {
+        xs.Add(words[i])
+        xs.Add(" ")
     }
-    String.concat(values: xs)
+    String.Concat(values: xs)
 }
  
 print("1. \(reverse(str))")

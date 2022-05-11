@@ -1,6 +1,6 @@
 ﻿//http://rosettacode.org/wiki/Babbage_problem#Dyalect
 let res =
-    for i in 2..Integer.max() when i * i % 1000000 == 269696 {
+    for i in 2..Integer.Max when i * i % 1000000 == 269696 {
         break i
     }
 print("\(res) is the smallest number that ends with 269696")

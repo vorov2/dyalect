@@ -1,7 +1,5 @@
 ﻿//http://rosettacode.org/wiki/Calculating_the_value_of_e#Dyalect
 func calculateE(epsilon = 1.0e-15) {
-    func abs(n) => n < 0 ? -n : n
-    
     var fact = 1
     var e = 2.0
     var e0 = 0.0

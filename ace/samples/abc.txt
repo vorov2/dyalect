@@ -3,11 +3,11 @@ func blockable(str) {
     let blocks = [
         "BO", "XK", "DQ", "CP", "NA", "GT", "RE", "TG", "QD", "FS",
         "JW", "HU", "VI", "AN", "OB", "ER", "FS", "LY", "PC", "ZM" ]
-    let strUp = str.upper()
+    let strUp = str.Upper()
     var final = ""
  
     for c in strUp {
-        for j in blocks.indices() when blocks[j].startsWith(c) || blocks[j].endsWith(c) {
+        for j in blocks.Indices() when blocks[j].StartsWith(c) || blocks[j].EndsWith(c) {
             final += c
             blocks[j] = ""
             break

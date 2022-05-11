@@ -1,5 +1,5 @@
 ﻿//http://rosettacode.org/wiki/100_doors#Dyalect
-var doors = Array.empty(100, false)
+var doors = Array.Empty(100, false)
 
 for p in 0..99 {
     for d in 0..99 when (d + 1) % (p + 1) == 0 {
@@ -7,6 +7,6 @@ for p in 0..99 {
     }
 }
 
-for d in doors.indices() when doors[d] {
+for d in doors.Indices() when doors[d] {
     print("Door \(d+1): Open")
 }

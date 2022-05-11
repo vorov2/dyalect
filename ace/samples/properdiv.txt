@@ -16,7 +16,7 @@ for i in 1..10 {
 var (num, max) = (0,0)
  
 for i in 1..1000 {
-    let count = properDivs(i).len()
+    let count = properDivs(i).Length()
     set (num, max) = (i, count) when count > max
 }
  
