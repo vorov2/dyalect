@@ -1,3 +1,6 @@
+# 0.46.0
+  *
+
 # 0.45.2
   * Change: _Type system refactoring and clean-up._
   * Change: _`Regex` should support `Equatable` mixin_ ([Issue #911](https://github.com/vorov2/dyalect/issues/911)).
