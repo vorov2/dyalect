@@ -18,7 +18,6 @@ internal sealed partial class DyTupleTypeInfo : DyCollTypeInfo
     }
 
     #region Operations
-    //TODO: reconsider logic
     protected override DyObject AddOp(ExecutionContext ctx, DyObject left, DyObject right)
     {
         var arr = new List<DyObject>();
@@ -255,7 +254,6 @@ internal sealed partial class DyTupleTypeInfo : DyCollTypeInfo
     }
 
     [InstanceMethod]
-    //TODO: candidate for removal
     internal static DyObject Sort(ExecutionContext ctx, DyTuple self, DyFunction? comparer = null)
     {
         var sortComparer = new SortComparer(comparer, ctx);
@@ -333,7 +331,6 @@ internal sealed partial class DyTupleTypeInfo : DyCollTypeInfo
         new DyTuple(new[] { first, second, third });
 
     [StaticMethod(Method.Concat)]
-    //TODO: candidate for removal
     internal static DyObject StaticConcat(ExecutionContext ctx, params DyObject[] values) =>
         new DyTuple(DyCollection.ConcatValues(ctx, values));
 
