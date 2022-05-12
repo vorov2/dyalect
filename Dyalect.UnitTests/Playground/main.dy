@@ -1,10 +1,2 @@
 ﻿//import test
-func foo() {
-	Interop.GetType("Foo")
-}
-
-func bar() {
-	foo()
-}
-
-bar()
+func Tuple.Length() {}

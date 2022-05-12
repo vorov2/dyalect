@@ -19,9 +19,11 @@ public static class ErrorGenerators
         return Nil;
     }
 
-    public static DyObject UnableOverload(this ExecutionContext ctx, DyTypeInfo typeInfo, string name)
+    public static DyObject OverloadProhibited(this ExecutionContext ctx, DyTypeInfo typeInfo, string name)
     {
-        ctx.Error = new(DyError.UnableOverload, typeInfo.ReflectedTypeName, name);
+        var str = name.IndexOfAny(Builtins.OperatorSymbols.ToCharArray()) != -1 ? $"{typeInfo.ReflectedTypeName} {name}"
+            : $"{typeInfo.ReflectedTypeName}.{name}";
+        ctx.Error = new(DyError.OverloadProhibited, str);
         return Nil;
     }
 

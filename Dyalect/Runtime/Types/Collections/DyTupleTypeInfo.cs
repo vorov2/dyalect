@@ -121,7 +121,7 @@ internal sealed partial class DyTupleTypeInfo : DyCollTypeInfo
     {
         if ((string)name is Builtins.Get or Builtins.Set or Builtins.Length)
         {
-            ctx.UnableOverload(this, (string)name);
+            ctx.OverloadProhibited(this, (string)name);
             return;
         }
 

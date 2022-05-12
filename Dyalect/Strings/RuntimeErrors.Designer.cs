@@ -484,6 +484,24 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Unable to overload a method, method is final..
+        /// </summary>
+        internal static string OverloadProhibited_0 {
+            get {
+                return ResourceManager.GetString("OverloadProhibited.0", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unable to overload a method &quot;{0}&quot;, method is final..
+        /// </summary>
+        internal static string OverloadProhibited_1 {
+            get {
+                return ResourceManager.GetString("OverloadProhibited.1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Parsing failed..
         /// </summary>
         internal static string ParsingFailed_0 {
@@ -606,24 +624,6 @@ namespace Dyalect.Strings {
         internal static string TypeClosed_1 {
             get {
                 return ResourceManager.GetString("TypeClosed.1", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Unable to overload a method, method is final..
-        /// </summary>
-        internal static string UnableOverload_0 {
-            get {
-                return ResourceManager.GetString("UnableOverload.0", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Unable to overload a method &quot;{0}.{1}&quot;, method is final..
-        /// </summary>
-        internal static string UnableOverload_2 {
-            get {
-                return ResourceManager.GetString("UnableOverload.2", resourceCulture);
             }
         }
         

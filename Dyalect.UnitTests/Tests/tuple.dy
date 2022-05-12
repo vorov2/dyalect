@@ -369,3 +369,27 @@
     let ys = xs.Alter('f', 'o', 'o', y: 22, z: 3)
     assert((x: 1, y: 22, 'f', 'o', 'o', z: 3), ys)
 #endregion
+
+#region "OverloadProhibited 1"
+    try {
+        func Tuple.Length() {}
+        assert(got: false)
+    } catch {
+        @OverloadProhibited => assert(got: true)
+    }
+#endregion
+
+#region "OverloadProhibited 2"
+    try {
+        func get Tuple[index] {}
+        assert(got: false)
+    } catch {
+        @OverloadProhibited => assert(got: true)
+    }
+    try {
+        func set Tuple[index, value] {}
+        assert(got: false)
+    } catch {
+        @OverloadProhibited => assert(got: true)
+    }
+#endregion
