@@ -1,5 +1,4 @@
 ﻿//import test
-type Foo()
-final func get Foo[index] { }
+let v = "str"
 
-func get Foo[index] {}
+mixins(v).Iterate().Map(typeName).ToArray()//["Object", "Lookup", "Order", "Equatable", "Sequence", "Container", "Show"]

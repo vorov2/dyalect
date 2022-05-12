@@ -1005,6 +1005,8 @@ public abstract class DyTypeInfo : DyObject
         ops |= ti.ops;
     }
 
+    internal IEnumerable<int> GetMixins() => mixins;
+
     protected void AddDefaultMixin(string name, string p1) =>
         Members.Add(name, new DyBinaryFunction(name, (ctx, _, _) => ctx.NotImplemented(name), p1));
 
