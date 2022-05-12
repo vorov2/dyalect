@@ -1,2 +1,5 @@
 ﻿//import test
-func Tuple.Length() {}
+type Foo()
+final func get Foo[index] { }
+
+func get Foo[index] {}

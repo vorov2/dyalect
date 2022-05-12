@@ -105,7 +105,7 @@ PRODUCTIONS
     Identifier = lcaseToken | ucaseToken.
 
     IdentifierOrKeyword = Identifier | "auto" | "var" | "let" | "lazy" | "func" | "return" | "private" | "continue"
-        | "static" | "break" | "yield" | "if" | "for" | "while" | "type" | "in" | "do" | "with".
+        | "static" | "final" | "break" | "yield" | "if" | "for" | "while" | "type" | "in" | "do" | "with".
 
     Qualident<out string name, out Qualident type> =
         (. type = null; string str1 = null; string str2 = null; string str3 = null; .)
@@ -421,10 +421,11 @@ PRODUCTIONS
         ).
 
     Function<out DNode node> =
-        (. node = null; var st = false; DRecursiveBlock rec = null; .)
+        (. node = null; var st = false; var fin = false; DRecursiveBlock rec = null; .)
         (
-            [ "static" (. st = true; .) ] 
-            "func" FunctionBody<st, out node>
+            [ "final" (. fin = true; .) ]
+            [ "static" (. st = true; .) ]
+            "func" FunctionBody<st, fin, out node>
         )
         {
             (.
@@ -434,16 +435,16 @@ PRODUCTIONS
                     rec.Functions.Add((DFunctionDeclaration)node);
                 }
             .)
-            "and" FunctionBody<false, out node> (. rec.Functions.Add((DFunctionDeclaration)node); .)
+            "and" FunctionBody<st, fin, out node> (. rec.Functions.Add((DFunctionDeclaration)node); .)
         }
         (. node = rec ?? node; .).
 
-    FunctionBody<bool st, out DNode node> =
+    FunctionBody<bool st, bool fin, out DNode node> =
         (. node = null; var get = false; var set = false; .)
         (
             [ "get" (. get = true; .) | "set" (. set = true; .) ]
             (.
-                var f = new DFunctionDeclaration(t) { IsStatic = st, Getter = get, Setter = set };
+                var f = new DFunctionDeclaration(t) { IsStatic = st, IsFinal = fin, Getter = get, Setter = set };
                 functions.Push(f);
             .)
             Qualident<out var name, out Qualident type>

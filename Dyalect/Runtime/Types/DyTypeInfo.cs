@@ -481,7 +481,7 @@ public abstract class DyTypeInfo : DyObject
         {
             var set = Builtins.GetSetterName(name);
 
-            if (Members.TryGetValue(set, out var get) && !get.Auto)
+            if (StaticMembers.TryGetValue(set, out var old) && !old.Auto)
             {
                 ctx.InvalidOverload(set);
                 return;
@@ -490,6 +490,14 @@ public abstract class DyTypeInfo : DyObject
 
         if (StaticMembers.TryGetValue(name, out var oldfun))
         {
+            //Method is sealed, overload is prohibited
+            if (oldfun.Final)
+            {
+                ctx.OverloadProhibited(this, (string)name);
+                return;
+            }
+
+            //A non-property cannot be overriden by a property and vice versa
             if (oldfun.Auto != func.Auto)
             {
                 ctx.InvalidOverload(name);
@@ -581,16 +589,21 @@ public abstract class DyTypeInfo : DyObject
 
         SetBuiltin(ctx, (string)name, func);
 
+        if (ctx.HasErrors)
+            return;
+
         if (Builtins.IsSetter(name))
         {
             var set = Builtins.GetSetterName(name);
 
+            if (
                 //Length cannot be a property if a type supports Len
-            if ((set == Builtins.Length && Support(Ops.Len))
+                (set == Builtins.Length && Support(Ops.Len))
                 //ToString can never be a property
                 || set == Builtins.String
                 //A non-property cannot be overriden by a property
-                || (Members.TryGetValue(set, out var get) && !get.Auto))
+                || (Members.TryGetValue(set, out var get) && !get.Auto)
+                )
             {
                 ctx.InvalidOverload(set);
                 return;
@@ -599,12 +612,14 @@ public abstract class DyTypeInfo : DyObject
 
         if (Members.TryGetValue(name, out var oldfun))
         {
+            //Function is sealed, overloading is prohibited
             if (oldfun.Final)
             {
                 ctx.OverloadProhibited(this, (string)name);
                 return;
             }
 
+            //A non-property cannot be overriden by a property and vice versa
             if (oldfun.Auto != func.Auto)
             {
                 ctx.InvalidOverload(name);

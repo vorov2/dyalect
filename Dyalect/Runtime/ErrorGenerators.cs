@@ -21,9 +21,20 @@ public static class ErrorGenerators
 
     public static DyObject OverloadProhibited(this ExecutionContext ctx, DyTypeInfo typeInfo, string name)
     {
-        var str = name.IndexOfAny(Builtins.OperatorSymbols.ToCharArray()) != -1 ? $"{typeInfo.ReflectedTypeName} {name}"
-            : $"{typeInfo.ReflectedTypeName}.{name}";
-        ctx.Error = new(DyError.OverloadProhibited, str);
+        name = Builtins.NameToOperator(name);
+
+        if (Builtins.IsSetter(name))
+            name = $"set {typeInfo.ReflectedTypeName}.{name}";
+        else if (name == Builtins.Get)
+            name = $"{typeInfo.ReflectedTypeName}[]";
+        else if (name == Builtins.Set)
+            name = $"set {typeInfo.ReflectedTypeName}[]";
+        else if (name.IndexOfAny(Builtins.OperatorSymbols.ToCharArray()) != -1)
+            name = $"{typeInfo.ReflectedTypeName} {name}";
+        else
+            name = $"{typeInfo.ReflectedTypeName}.{name}";
+
+        ctx.Error = new(DyError.OverloadProhibited, name);
         return Nil;
     }
 

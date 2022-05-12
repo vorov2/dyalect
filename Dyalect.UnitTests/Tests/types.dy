@@ -649,3 +649,25 @@
     assert((x: 1, y: 2, z: 3), f as Tuple)
     assert("[\"x\": 1, \"y\": 2, \"z\": 3]", (f as Dictionary).ToString())
 #endregion
+
+#region "Final methods 1"
+    type Foo()
+    final func get Foo[index] { }
+    try {
+        func get Foo[index] {}
+        assert(got: false)
+    } catch {
+        @OverloadProhibited => assert(got: true)
+    }
+#endregion
+
+#region "Final methods 2"
+    type Foo()
+    final static func Foo.Bar() { }
+    try {
+        static func Foo.Bar() { }
+        assert(got: false)
+    } catch {
+        @OverloadProhibited => assert(got: true)
+    }
+#endregion

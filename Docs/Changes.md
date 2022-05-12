@@ -1,5 +1,6 @@
 # 0.46.0
   * Change: _Disallow override of tuple indexer and `Length` method_ ([Issue #906](https://github.com/vorov2/dyalect/issues/906)).
+  * Add: _Consider non-overridable methods_ ([Issue #900](https://github.com/vorov2/dyalect/issues/900), [docs](https://github.com/vorov2/dyalect/wiki/Custom-types#extending)).
 
 # 0.45.2
   * Change: _Type system refactoring and clean-up._
