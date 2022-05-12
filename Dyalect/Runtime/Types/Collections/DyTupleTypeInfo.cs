@@ -199,11 +199,6 @@ internal sealed partial class DyTupleTypeInfo : DyCollTypeInfo
     }
 
     [InstanceMethod]
-    //TODO: candidate for removal
-    internal static DyObject Concat(ExecutionContext ctx, params DyObject[] values) =>
-        new DyTuple(DyCollection.ConcatValues(ctx, values));
-
-    [InstanceMethod]
     internal static DyObject Insert(DyTuple self, int index, DyObject value)
     {
         index = index < 0 ? self.Count + index : index;

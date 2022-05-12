@@ -1,4 +1,4 @@
 ﻿//import test
-let v = "str"
 
-mixins(v).Iterate().Map(typeName).ToArray()//["Object", "Lookup", "Order", "Equatable", "Sequence", "Container", "Show"]
+let xs = (1,2,3)
+xs.Concat((4,5))
