@@ -271,7 +271,7 @@ internal sealed partial class DyTupleTypeInfo : DyCollTypeInfo
     internal static DyObject[] ToArray(DyCollection self) => self.ToArray();
 
     [InstanceMethod]
-    internal static DyObject Compact(ExecutionContext ctx, DyTuple self, DyObject? predicate = null)
+    internal static DyObject Compact(ExecutionContext ctx, DyTuple self, DyFunction? predicate = null)
     {
         var xs = new List<DyObject>();
 

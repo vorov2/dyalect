@@ -1,4 +1,4 @@
-# Test session from 12/05/2022 16:59
+# Test session from 13/05/2022 21:40
 
 ## Summary:
 825 passed, 1 failed in 28 file(s)
@@ -791,13 +791,13 @@
 * &#9745; **Constructor**
 * &#9745; **Methods: Slice**
 * &#9745; **Methods: ToTuple**
-* &#9746; **Methods: Sort**: Operation "Sort" is not supported by the type "Tuple".
+* &#9745; **Methods: Sort**
 * &#9745; **Methods: static sort**
 * &#9745; **Single element tuple**
 * &#9745; **Negative indices**
 * &#9745; **Methods: Add**
 * &#9745; **Methods: Remove**
-* &#9745; **Methods: RemoveField**
+* &#9746; **Methods: RemoveField**: Operation "RemoveField" is not supported by the type "Tuple".
 * &#9745; **Methods: RemoveAt**
 * &#9745; **Methods: Insert**
 * &#9745; **Addition 1**
