@@ -139,8 +139,23 @@ internal sealed partial class DyFloatTypeInfo : DyTypeInfo
 
     protected override DyObject PlusOp(ExecutionContext ctx, DyObject arg) => arg;
 
-    protected override DyObject ToStringOp(ExecutionContext ctx, DyObject self, DyObject format) =>
-        new DyString(((DyFloat)self).Value.ToString(SystemCulture.NumberFormat));
+    protected override DyObject ToStringOp(ExecutionContext ctx, DyObject self, DyObject format)
+    {
+        if (format.TypeId is not Dy.String and not Dy.Char and not Dy.Nil)
+            return ctx.InvalidType(format);
+
+        try
+        {
+            var value = ((DyFloat)self).Value;
+            return new DyString(format.TypeId is Dy.Nil
+                ? value.ToString(SystemCulture.NumberFormat)
+                : value.ToString(format.ToString(), SystemCulture.NumberFormat));
+        }
+        catch (FormatException)
+        {
+            return ctx.ParsingFailed();
+        }
+    }
 
     protected override DyObject CastOp(ExecutionContext ctx, DyObject self, DyTypeInfo targetType) =>
         targetType.ReflectedTypeId switch

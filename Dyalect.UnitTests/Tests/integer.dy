@@ -52,3 +52,8 @@
     assert("12", x as String)
     assert(true, x as Bool)
 #endregion
+
+#region "Format"
+    let x = 2147483647
+    assert("2,147,483,647", x.ToString("##,#"))
+#endregion

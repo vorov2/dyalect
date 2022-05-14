@@ -168,5 +168,5 @@
 #region "mixins"
     let v = "str"
     let xs = mixins(v).Iterate().Map(typeName).ToArray()
-    assert(["Object", "Lookup", "Order", "Equatable", "Sequence", "Container", "Show"], xs)
+    assert(["Object", "Lookup", "Order", "Equatable", "Sequence", "Show"], xs)
 #endregion

@@ -2,6 +2,7 @@
   * Change: _Disallow override of tuple indexer and `Length` method_ ([Issue #906](https://github.com/vorov2/dyalect/issues/906)).
   * Add: _Consider non-overridable methods_ ([Issue #900](https://github.com/vorov2/dyalect/issues/900), [docs](https://github.com/vorov2/dyalect/wiki/Custom-types#extending)).
   * Add: _A function to obtain a list of supported mixins_ ([Issue #913](https://github.com/vorov2/dyalect/issues/913), [docs](https://github.com/vorov2/dyalect/wiki/Standard-functions#mixins)).
+  * Add: _Support for custom format strings for integers and floats_ ([Issue #883](https://github.com/vorov2/dyalect/issues/883)).
   * Fix: _Instance method `Tuple.Concat` doesn't work_ ([Issue #915](https://github.com/vorov2/dyalect/issues/915)).
 
 # 0.45.2
