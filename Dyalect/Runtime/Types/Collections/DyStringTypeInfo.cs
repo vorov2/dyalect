@@ -25,7 +25,7 @@ internal sealed partial class DyStringTypeInfo : DyCollTypeInfo
 
     public DyStringTypeInfo()
     {
-        AddMixins(Dy.Lookup, Dy.Order, Dy.Equatable, Dy.Sequence, Dy.Container, Dy.Show);
+        AddMixins(Dy.Lookup, Dy.Order, Dy.Equatable, Dy.Sequence, Dy.Show);
         SetSupportedOperations(Ops.Add);
     }
 

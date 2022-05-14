@@ -327,4 +327,7 @@
   <data name="InvalidDictionary" xml:space="preserve">
     <value>Invalid dictionary literal.</value>
   </data>
+  <data name="FinalOnlyMethods" xml:space="preserve">
+    <value>Only methods can be declared as "final".</value>
+  </data>
 </root>

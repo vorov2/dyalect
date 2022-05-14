@@ -164,3 +164,9 @@
     assert("Nothing here!", 12.ToString())
     assert("12", toString(12))
 #endregion
+
+#region "mixins"
+    let v = "str"
+    let xs = mixins(v).Iterate().Map(typeName).ToArray()
+    assert(["Object", "Lookup", "Order", "Equatable", "Sequence", "Show"], xs)
+#endregion

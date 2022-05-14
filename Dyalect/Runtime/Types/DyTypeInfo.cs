@@ -481,7 +481,7 @@ public abstract class DyTypeInfo : DyObject
         {
             var set = Builtins.GetSetterName(name);
 
-            if (Members.TryGetValue(set, out var get) && !get.Auto)
+            if (StaticMembers.TryGetValue(set, out var old) && !old.Auto)
             {
                 ctx.InvalidOverload(set);
                 return;
@@ -490,6 +490,14 @@ public abstract class DyTypeInfo : DyObject
 
         if (StaticMembers.TryGetValue(name, out var oldfun))
         {
+            //Method is sealed, overload is prohibited
+            if (oldfun.Final)
+            {
+                ctx.OverloadProhibited(this, (string)name);
+                return;
+            }
+
+            //A non-property cannot be overriden by a property and vice versa
             if (oldfun.Auto != func.Auto)
             {
                 ctx.InvalidOverload(name);
@@ -581,16 +589,21 @@ public abstract class DyTypeInfo : DyObject
 
         SetBuiltin(ctx, (string)name, func);
 
+        if (ctx.HasErrors)
+            return;
+
         if (Builtins.IsSetter(name))
         {
             var set = Builtins.GetSetterName(name);
 
+            if (
                 //Length cannot be a property if a type supports Len
-            if ((set == Builtins.Length && Support(Ops.Len))
+                (set == Builtins.Length && Support(Ops.Len))
                 //ToString can never be a property
                 || set == Builtins.String
                 //A non-property cannot be overriden by a property
-                || (Members.TryGetValue(set, out var get) && !get.Auto))
+                || (Members.TryGetValue(set, out var get) && !get.Auto)
+                )
             {
                 ctx.InvalidOverload(set);
                 return;
@@ -599,12 +612,14 @@ public abstract class DyTypeInfo : DyObject
 
         if (Members.TryGetValue(name, out var oldfun))
         {
+            //Function is sealed, overloading is prohibited
             if (oldfun.Final)
             {
-                ctx.UnableOverload(this, (string)name);
+                ctx.OverloadProhibited(this, (string)name);
                 return;
             }
 
+            //A non-property cannot be overriden by a property and vice versa
             if (oldfun.Auto != func.Auto)
             {
                 ctx.InvalidOverload(name);
@@ -625,7 +640,7 @@ public abstract class DyTypeInfo : DyObject
             case Builtins.Add:
                 if (add is not null && add.Final)
                 {
-                    ctx.UnableOverload(this, name);
+                    ctx.OverloadProhibited(this, name);
                     return;
                 }
                 ops |= Ops.Add;
@@ -634,7 +649,7 @@ public abstract class DyTypeInfo : DyObject
             case Builtins.Sub:
                 if (sub is not null && sub.Final)
                 {
-                    ctx.UnableOverload(this, name);
+                    ctx.OverloadProhibited(this, name);
                     return;
                 }
                 ops |= Ops.Sub;
@@ -643,7 +658,7 @@ public abstract class DyTypeInfo : DyObject
             case Builtins.Mul:
                 if (mul is not null && mul.Final)
                 {
-                    ctx.UnableOverload(this, name);
+                    ctx.OverloadProhibited(this, name);
                     return;
                 }
                 ops |= Ops.Mul;
@@ -652,7 +667,7 @@ public abstract class DyTypeInfo : DyObject
             case Builtins.Div:
                 if (div is not null && div.Final)
                 {
-                    ctx.UnableOverload(this, name);
+                    ctx.OverloadProhibited(this, name);
                     return;
                 }
                 ops |= Ops.Div;
@@ -661,7 +676,7 @@ public abstract class DyTypeInfo : DyObject
             case Builtins.Rem:
                 if (rem is not null && rem.Final)
                 {
-                    ctx.UnableOverload(this, name);
+                    ctx.OverloadProhibited(this, name);
                     return;
                 }
                 ops |= Ops.Rem;
@@ -670,7 +685,7 @@ public abstract class DyTypeInfo : DyObject
             case Builtins.Shl:
                 if (shl is not null && shl.Final)
                 {
-                    ctx.UnableOverload(this, name);
+                    ctx.OverloadProhibited(this, name);
                     return;
                 }
                 ops |= Ops.Shl;
@@ -679,7 +694,7 @@ public abstract class DyTypeInfo : DyObject
             case Builtins.Shr:
                 if (shr is not null && shr.Final)
                 {
-                    ctx.UnableOverload(this, name);
+                    ctx.OverloadProhibited(this, name);
                     return;
                 }
                 ops |= Ops.Shr;
@@ -688,7 +703,7 @@ public abstract class DyTypeInfo : DyObject
             case Builtins.And:
                 if (and is not null && and.Final)
                 {
-                    ctx.UnableOverload(this, name);
+                    ctx.OverloadProhibited(this, name);
                     return;
                 }
                 ops |= Ops.And;
@@ -697,7 +712,7 @@ public abstract class DyTypeInfo : DyObject
             case Builtins.Or:
                 if (or is not null && or.Final)
                 {
-                    ctx.UnableOverload(this, name);
+                    ctx.OverloadProhibited(this, name);
                     return;
                 }
                 ops |= Ops.Or;
@@ -706,7 +721,7 @@ public abstract class DyTypeInfo : DyObject
             case Builtins.Xor:
                 if (xor is not null && xor.Final)
                 {
-                    ctx.UnableOverload(this, name);
+                    ctx.OverloadProhibited(this, name);
                     return;
                 }
                 ops |= Ops.Xor;
@@ -715,7 +730,7 @@ public abstract class DyTypeInfo : DyObject
             case Builtins.Eq:
                 if (eq is not null && eq.Final)
                 {
-                    ctx.UnableOverload(this, name);
+                    ctx.OverloadProhibited(this, name);
                     return;
                 }
                 eq = func;
@@ -723,7 +738,7 @@ public abstract class DyTypeInfo : DyObject
             case Builtins.Neq:
                 if (neq is not null && neq.Final)
                 {
-                    ctx.UnableOverload(this, name);
+                    ctx.OverloadProhibited(this, name);
                     return;
                 }
                 neq = func;
@@ -731,7 +746,7 @@ public abstract class DyTypeInfo : DyObject
             case Builtins.Gt:
                 if (gt is not null && gt.Final)
                 {
-                    ctx.UnableOverload(this, name);
+                    ctx.OverloadProhibited(this, name);
                     return;
                 }
                 ops |= Ops.Gt;
@@ -740,7 +755,7 @@ public abstract class DyTypeInfo : DyObject
             case Builtins.Lt:
                 if (lt is not null && lt.Final)
                 {
-                    ctx.UnableOverload(this, name);
+                    ctx.OverloadProhibited(this, name);
                     return;
                 }
                 ops |= Ops.Lt;
@@ -749,7 +764,7 @@ public abstract class DyTypeInfo : DyObject
             case Builtins.Gte:
                 if (gte is not null && gte.Final)
                 {
-                    ctx.UnableOverload(this, name);
+                    ctx.OverloadProhibited(this, name);
                     return;
                 }
                 ops |= Ops.Gte;
@@ -758,7 +773,7 @@ public abstract class DyTypeInfo : DyObject
             case Builtins.Lte:
                 if (lte is not null && lte.Final)
                 {
-                    ctx.UnableOverload(this, name);
+                    ctx.OverloadProhibited(this, name);
                     return;
                 }
                 ops |= Ops.Lte;
@@ -767,7 +782,7 @@ public abstract class DyTypeInfo : DyObject
             case Builtins.Neg:
                 if (neg is not null && neg.Final)
                 {
-                    ctx.UnableOverload(this, name);
+                    ctx.OverloadProhibited(this, name);
                     return;
                 }
                 ops |= Ops.Neg;
@@ -776,7 +791,7 @@ public abstract class DyTypeInfo : DyObject
             case Builtins.Not:
                 if (not is not null && not.Final)
                 {
-                    ctx.UnableOverload(this, name);
+                    ctx.OverloadProhibited(this, name);
                     return;
                 }
                 not = func;
@@ -784,7 +799,7 @@ public abstract class DyTypeInfo : DyObject
             case Builtins.BitNot:
                 if (bitnot is not null && bitnot.Final)
                 {
-                    ctx.UnableOverload(this, name);
+                    ctx.OverloadProhibited(this, name);
                     return;
                 }
                 ops |= Ops.BitNot;
@@ -793,7 +808,7 @@ public abstract class DyTypeInfo : DyObject
             case Builtins.Plus:
                 if (plus is not null && plus.Final)
                 {
-                    ctx.UnableOverload(this, name);
+                    ctx.OverloadProhibited(this, name);
                     return;
                 }
                 ops |= Ops.Plus;
@@ -802,7 +817,7 @@ public abstract class DyTypeInfo : DyObject
             case Builtins.Set:
                 if (set is not null && set.Final)
                 {
-                    ctx.UnableOverload(this, name);
+                    ctx.OverloadProhibited(this, name);
                     return;
                 }
                 ops |= Ops.Set;
@@ -811,7 +826,7 @@ public abstract class DyTypeInfo : DyObject
             case Builtins.Get:
                 if (get is not null && get.Final)
                 {
-                    ctx.UnableOverload(this, name);
+                    ctx.OverloadProhibited(this, name);
                     return;
                 }
                 ops |= Ops.Get;
@@ -825,7 +840,7 @@ public abstract class DyTypeInfo : DyObject
                 }
                 if (iter is not null && iter.Final)
                 {
-                    ctx.UnableOverload(this, name);
+                    ctx.OverloadProhibited(this, name);
                     return;
                 }
                 ops |= Ops.Iter;
@@ -839,7 +854,7 @@ public abstract class DyTypeInfo : DyObject
                 }
                 if (@in is not null && @in.Final)
                 {
-                    ctx.UnableOverload(this, name);
+                    ctx.OverloadProhibited(this, name);
                     return;
                 }
                 ops |= Ops.In;
@@ -853,7 +868,7 @@ public abstract class DyTypeInfo : DyObject
                 }
                 if (clone is not null && clone.Final)
                 {
-                    ctx.UnableOverload(this, name);
+                    ctx.OverloadProhibited(this, name);
                     return;
                 }
                 clone = func;
@@ -866,7 +881,7 @@ public abstract class DyTypeInfo : DyObject
                 }
                 if (len is not null && len.Final)
                 {
-                    ctx.UnableOverload(this, name);
+                    ctx.OverloadProhibited(this, name);
                     return;
                 }
                 ops |= Ops.Len;
@@ -880,7 +895,7 @@ public abstract class DyTypeInfo : DyObject
                 }
                 if (tos is not null && tos.Final)
                 {
-                    ctx.UnableOverload(this, name);
+                    ctx.OverloadProhibited(this, name);
                     return;
                 }
                 tos = func;
@@ -989,6 +1004,8 @@ public abstract class DyTypeInfo : DyObject
 
         ops |= ti.ops;
     }
+
+    internal IEnumerable<int> GetMixins() => mixins;
 
     protected void AddDefaultMixin(string name, string p1) =>
         Members.Add(name, new DyBinaryFunction(name, (ctx, _, _) => ctx.NotImplemented(name), p1));

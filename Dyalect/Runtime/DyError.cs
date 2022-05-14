@@ -68,5 +68,5 @@ public enum DyError
 
     IOFailed = 632,
 
-    UnableOverload = 633
+    OverloadProhibited = 633
 }

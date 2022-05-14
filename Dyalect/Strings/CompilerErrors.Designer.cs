@@ -169,6 +169,15 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Only methods can be declared as &quot;final&quot;..
+        /// </summary>
+        internal static string FinalOnlyMethods {
+            get {
+                return ResourceManager.GetString("FinalOnlyMethods", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Function &quot;{0}&quot; is deprecated..
         /// </summary>
         internal static string FunctionDeprecated {

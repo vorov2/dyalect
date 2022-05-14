@@ -183,8 +183,23 @@ internal sealed partial class DyIntegerTypeInfo : DyTypeInfo
 
     protected override DyObject BitwiseNotOp(ExecutionContext ctx, DyObject arg) => new DyInteger(~((DyInteger)arg).Value);
 
-    protected override DyObject ToStringOp(ExecutionContext ctx, DyObject arg, DyObject format) =>
-        new DyString(((DyInteger)arg).Value.ToString(SystemCulture.NumberFormat));
+    protected override DyObject ToStringOp(ExecutionContext ctx, DyObject self, DyObject format)
+    {
+        if (format.TypeId is not Dy.String and not Dy.Char and not Dy.Nil)
+            return ctx.InvalidType(format);
+
+        try
+        {
+            var value = ((DyInteger)self).Value;
+            return new DyString(format.TypeId is Dy.Nil 
+                ? value.ToString(SystemCulture.NumberFormat)
+                : value.ToString(format.ToString(), SystemCulture.NumberFormat));
+        }
+        catch (FormatException)
+        {
+            return ctx.ParsingFailed();
+        }
+    }
 
     protected override DyObject CastOp(ExecutionContext ctx, DyObject self, DyTypeInfo targetType) =>
         targetType.ReflectedTypeId switch

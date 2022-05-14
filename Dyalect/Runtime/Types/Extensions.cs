@@ -31,6 +31,8 @@ public static class Extensions
         return true;
     }
 
+    public static DyTypeInfo GetTypeInfo(this DyObject self, ExecutionContext ctx) => ctx.RuntimeContext.Types[self.TypeId];
+
     internal static DyVariant ToError(this DyObject self)
     {
         if (self is DyVariant v)

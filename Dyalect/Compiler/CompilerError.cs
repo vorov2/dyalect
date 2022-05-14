@@ -132,5 +132,7 @@ public enum CompilerError
 
     InterpolatedStringDefaultValue = 264,
 
-    InvalidDictionary = 265
+    InvalidDictionary = 265,
+
+    FinalOnlyMethods = 266
 }

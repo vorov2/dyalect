@@ -22,6 +22,13 @@ internal sealed partial class Lang : ForeignUnit
 
     protected override void Execute(ExecutionContext ctx) => Add("args", startupArguments ?? Nil);
 
+    [StaticMethod("mixins")]
+    public static DyObject[] GetMixins(ExecutionContext ctx, DyObject value)
+    {
+        var ti = value.GetTypeInfo(ctx);
+        return ti.GetMixins().Select(i => ctx.RuntimeContext.Types[i]).ToArray();
+    }
+
     [StaticMethod("toString")]
     public static string DirectToString(DyObject value) => value.ToString();
 

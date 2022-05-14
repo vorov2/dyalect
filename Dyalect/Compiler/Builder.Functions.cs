@@ -384,6 +384,9 @@ partial class Builder
         if (node.IsStatic && node.TypeName is null)
             AddError(CompilerError.StaticOnlyMethods, node.Location, node.Name!);
 
+        if (node.IsFinal && node.TypeName is null)
+            AddError(CompilerError.FinalOnlyMethods, node.Location, node.Name!);
+
         var startLabel = cw.DefineLabel();
         var funEndLabel = cw.DefineLabel();
 
@@ -484,5 +487,8 @@ partial class Builder
         
         if (node.Getter && !node.IsIndexer)
             cw.FunAttr(FunAttr.Auto);
+
+        if (node.IsFinal)
+            cw.FunAttr(FunAttr.Final);
     }
 }

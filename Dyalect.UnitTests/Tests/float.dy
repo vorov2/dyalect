@@ -50,3 +50,8 @@
     assert("12.2", x as String)
     assert(true, x as Bool)
 #endregion
+
+#region "Format"
+    let x = 0.45678
+    assert(".46", x.ToString("#.##"))
+#endregion
