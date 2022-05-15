@@ -43,7 +43,7 @@ public class ExeController : ControllerBase
         {
             try
             {
-                var phys = Path.Combine(webHostEnvironment.ContentRootPath, "ace");
+                var phys = Path.Combine(webHostEnvironment.ContentRootPath, "dya");
                 var lookup = FileLookup.Create(BuilderOptions.Default(), phys);
                 var linker = new DyLinker(lookup, BuilderOptions.Default());
                 var res = linker.Make(SourceBuffer.FromString(source));

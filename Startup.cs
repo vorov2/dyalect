@@ -34,8 +34,8 @@ public class Startup
         app.UseStaticFiles(new StaticFileOptions
         {
             FileProvider = new PhysicalFileProvider(
-                Path.Combine(env.ContentRootPath, "ace")),
-            RequestPath = "/ace"
+                Path.Combine(env.ContentRootPath, "dya")),
+            RequestPath = "/dya"
         });
         app.UseRouting();
         app.UseAuthorization();
