@@ -52,7 +52,12 @@ namespace Dyalect
                 Printer.LineFeed();
                 return Compile(options);
             }
-            else if (options.FileNames != null && options.FileNames.Length > 0)
+            else if (options.GenerateIL)
+            {
+                Printer.LineFeed();
+                return GenerateIL(options);
+            }
+            else if (options.FileNames is not null && options.FileNames.Length > 0)
             {
                 Printer.LineFeed();
                 var i = 0;
@@ -131,6 +136,31 @@ namespace Dyalect
                     continue;
                 }
 #endif
+            }
+
+            return true;
+        }
+
+        private static bool GenerateIL(DyaOptions options)
+        {
+            var ctx = new InteractiveContext(options);
+
+            foreach (var f in options.GetFileNames())
+            {
+                if (!ctx.Compile(f, out var unit))
+                {
+                    Printer.Error($"Compilation of file \"{f}\" skipped.");
+                    continue;
+                }
+
+                var fi = new FileInfo(f);
+                
+                if (fi.Directory is not null)
+                    Printer.Output($"{fi.Directory.Name}/{fi.Name} (size {unit.Ops.Count}):");
+                else
+                    Printer.Output($"{fi.Name} (size {unit.Ops.Count}):");
+
+                Printer.Output(ILGenerator.Generate(unit));
             }
 
             return true;

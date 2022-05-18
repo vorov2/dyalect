@@ -1,7 +1,10 @@
 ﻿#optimizer enable
+let x = 42
 
-for x in 1..10 {
-    //break x when x > 5
+func foo() {
+    x + x
 }
 
-nil
+for x in 1..10 {
+    break x when x > 5
+}

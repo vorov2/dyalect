@@ -15,9 +15,10 @@
       "commandName": "Project",
       "commandLineArgs": "C:\\temp\\dyalect\\main.dy"
     },
-    "WSL": {
-      "commandName": "WSL2",
-      "distributionName": ""
+    "Generate IL": {
+      "commandName": "Project",
+      "commandLineArgs": "..\\Dyalect.UnitTests\\Playground\\main.dy -il",
+      "distributionName": "..\\Dyalect.UnitTests\\Playground\\main.dy -il"
     }
   }
 }

@@ -37,17 +37,17 @@ public class Unit
 
     internal Unit Clone(DebugInfo di) => new(this, di);
 
-    internal int Id { get; set; }
+    public int Id { get; internal set; }
 
-    internal FastList<Reference> References { get; }
+    public FastList<Reference> References { get; }
 
-    internal FastList<int> UnitIds { get; }
+    public FastList<int> UnitIds { get; }
 
-    internal FastList<HashString> Strings { get; }
+    public FastList<HashString> Strings { get; }
 
-    internal FastList<DyObject> Objects { get; }
+    public FastList<DyObject> Objects { get; }
 
-    internal FastList<Op> Ops { get; }
+    public FastList<Op> Ops { get; }
 
     public string? FileName { get; internal set; }
 

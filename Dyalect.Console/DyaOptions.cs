@@ -24,6 +24,9 @@ namespace Dyalect
         [Binding("c", "compile", Help = "Compiles all provided files. By default an object file is placed in the same directory as compiled file (with a .dyo extension). In order to change an output directory, use -out switch.", Category = COMPILER)]
         public bool Compile { get; set; }
 
+        [Binding("il", Help = "Compiles all provided files and outputs IL (intermediate assembly) to console.", Category = COMPILER)]
+        public bool GenerateIL { get; set; }
+
         [Binding("debug", Help = "Compile in debug mode.", Category = COMPILER)]
         public bool Debug { get; set; }
 
