@@ -1,6 +1,7 @@
-﻿#optimizer disable
-import lib = libtest
+﻿#optimizer enable
 
-var fb = lib.Foobar(12, 2)
-assert(12, fb[0])
-assert(2, fb[1])
+for x in 1..10 {
+    //break x when x > 5
+}
+
+nil

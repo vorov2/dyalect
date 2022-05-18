@@ -137,6 +137,7 @@ partial class Builder
         EndScope();
     }
 
+    //Optimization for a simple 'for' cycle
     private bool TryOptimizeFor(DFor node, Hints hints, CompilerContext ctx)
     {
         if (options.NoOptimizations
