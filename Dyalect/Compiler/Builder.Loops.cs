@@ -74,6 +74,10 @@ partial class Builder
             BlockExit = cw.DefineLabel(),
             BlockBreakExit = cw.DefineLabel()
         };
+
+        if (TryOptimizeFor(node, hints, ctx))
+            return;
+
         StartScope(ScopeKind.Loop, node.Location);
         hints = hints.Remove(Last);
 
@@ -131,5 +135,100 @@ partial class Builder
         PopIf(hints);
         cw.Nop();
         EndScope();
+    }
+
+    //Optimization for a simple 'for' cycle
+    private bool TryOptimizeFor(DFor node, Hints hints, CompilerContext ctx)
+    {
+        if (options.NoOptimizations
+            || node.Guard is not null
+            || node.Pattern.NodeType is not NodeType.NamePattern and not NodeType.WildcardPattern
+            || node.Target.NodeType is not NodeType.Range)
+            return false;
+
+        var incName = node.Pattern.GetName();
+
+        if (incName is not null && incName.Length > 0 && char.IsUpper(incName[0]))
+            return false;
+        
+        var range = (DRange)node.Target;
+
+        if (range.From is null)
+            return false;
+
+        long step;
+        var downTo = false;
+
+        if (range.Step is not null && range.Step.NodeType is not NodeType.Integer)
+        {
+            if (range.Step is not DUnaryOperation u
+                || u.Operator is not UnaryOperator.Neg
+                || u.Node.NodeType is not NodeType.Integer)
+                return false;
+
+            step = -((DIntegerLiteral)u.Node).Value;
+            downTo = true;
+        }
+        else if (range.Step is not null)
+            step = ((DIntegerLiteral)range.Step).Value;
+        else
+            step = 1L;
+
+        int to = -1;
+
+        if (range.To is not null)
+        {
+            Build(range.To, Push, ctx);
+            to = AddVariable();
+            cw.PopVar(to);
+        }
+
+        StartScope(ScopeKind.Loop, node.Location);
+        var inc = incName is null ? AddVariable() : AddVariable(incName, node.Pattern.Location, VarFlags.None);
+
+        Build(range.From, Push, ctx);
+        var iter = cw.DefineLabel();
+        var skipIter = cw.DefineLabel();
+        cw.Br(skipIter);
+        cw.MarkLabel(iter);
+        cw.PushVar(new ScopeVar(inc));
+        cw.Push(step);
+        cw.Add();
+
+        cw.MarkLabel(skipIter);
+
+        if (to != -1)
+            cw.Dup();
+
+        cw.PopVar(inc);
+
+        if (to != -1)
+        {
+            cw.PushVar(new ScopeVar(to));
+
+            if (downTo && range.Exclusive)
+                cw.Gt();
+            else if (downTo)
+                cw.GtEq();
+            else if (range.Exclusive)
+                cw.Lt();
+            else
+                cw.LtEq();
+
+            cw.Brfalse(ctx.BlockExit);
+        }
+
+        Build(node.Body, hints.Remove(Last).Remove(Push), ctx);
+        cw.MarkLabel(ctx.BlockSkip);
+        cw.Br(iter);
+
+        AddLinePragma(node);
+        cw.MarkLabel(ctx.BlockExit);
+        cw.PushNil();
+        cw.MarkLabel(ctx.BlockBreakExit);
+        PopIf(hints);
+        cw.Nop();
+        EndScope();
+        return true;
     }
 }

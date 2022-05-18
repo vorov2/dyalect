@@ -1,3 +1,8 @@
+# 0.46.1
+  * Change: _Optimization of `for` cycle for simple cases._
+  * Fix: _Pretty print of `for` cycle AST node corrected._
+  * Fix: _Module member access doesn't work with disabled optimizer_ ([Issue #917](https://github.com/vorov2/dyalect/issues/917)).
+
 # 0.46.0
   * Change: _Disallow override of tuple indexer and `Length` method_ ([Issue #906](https://github.com/vorov2/dyalect/issues/906)).
   * Add: _Consider non-overridable methods_ ([Issue #900](https://github.com/vorov2/dyalect/issues/900), [docs](https://github.com/vorov2/dyalect/wiki/Custom-types#extending)).
