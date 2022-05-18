@@ -67,5 +67,15 @@ internal sealed class DyModuleTypeInfo : DyTypeInfo
 
         return (sv.Data & VarFlags.Private) != VarFlags.Private ? True : False;
     }
+
+    internal override DyObject GetInstanceMember(DyObject self, HashString name, ExecutionContext ctx)
+    {
+        var mod = (DyModule)self;
+
+        if (!mod.TryGetMember(ctx, (string)name, out var value))
+            return base.GetInstanceMember(self, name, ctx);
+
+        return value!;
+    }
     #endregion
 }

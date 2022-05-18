@@ -186,8 +186,6 @@ partial class Builder
         var inc = incName is null ? AddVariable() : AddVariable(incName, node.Pattern.Location, VarFlags.None);
 
         Build(range.From, Push, ctx);
-        cw.PopVar(inc);
-
         var iter = cw.DefineLabel();
         var skipIter = cw.DefineLabel();
         cw.Br(skipIter);
@@ -195,6 +193,8 @@ partial class Builder
         cw.PushVar(new ScopeVar(inc));
         cw.Push(step);
         cw.Add();
+
+        cw.MarkLabel(skipIter);
 
         if (to != -1)
             cw.Dup();
@@ -217,7 +217,6 @@ partial class Builder
             cw.Brfalse(ctx.BlockExit);
         }
 
-        cw.MarkLabel(skipIter);
         Build(node.Body, hints.Remove(Last).Remove(Push), ctx);
         cw.MarkLabel(ctx.BlockSkip);
         cw.Br(iter);

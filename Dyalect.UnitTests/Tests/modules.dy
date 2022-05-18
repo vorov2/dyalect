@@ -85,6 +85,17 @@
     assert(2, fb[1])
 #endregion
 
+#region "Types from module and optimizer"
+    #optimizer disable
+    var fb = lib.Foobar(12, 2)
+    assert(12, fb[0])
+    assert(2, fb[1])
+    #optimizer enable
+    fb = lib.Foobar(12, 2)
+    assert(12, fb[0])
+    assert(2, fb[1])
+#endregion
+
 #region "Extending external type"
     func Foobar.GetVal1() {
         "Foobar"

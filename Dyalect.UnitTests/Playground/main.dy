@@ -1,20 +1,6 @@
-﻿import core
-let max = 100*1000*1000
+﻿#optimizer disable
+import lib = libtest
 
-var dt = DateTime.Now()
-
-#optimizer enable
-for _ in 0^2..max {
-
-}
-
-print(DateTime.Now() - dt)
-
-dt = DateTime.Now()
-
-#optimizer disable
-for _ in 0^2..max {
-
-}
-
-print(DateTime.Now() - dt)
+var fb = lib.Foobar(12, 2)
+assert(12, fb[0])
+assert(2, fb[1])
