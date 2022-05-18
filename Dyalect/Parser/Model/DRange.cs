@@ -17,7 +17,6 @@ namespace Dyalect.Parser.Model
         internal override void ToString(StringBuilder sb)
         {
             From?.ToString(sb);
-            sb.Append("..");
 
             if (Step is not null)
             {
@@ -28,6 +27,7 @@ namespace Dyalect.Parser.Model
             if (Exclusive)
                 sb.Append('<');
 
+            sb.Append("..");
             To?.ToString(sb);
         }
     }

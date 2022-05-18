@@ -1,4 +1,20 @@
-﻿//import test
+﻿import core
+let max = 100*1000*1000
 
-let xs = (1,2,3)
-xs.Concat((4,5))
+var dt = DateTime.Now()
+
+#optimizer enable
+for _ in 0^2..max {
+
+}
+
+print(DateTime.Now() - dt)
+
+dt = DateTime.Now()
+
+#optimizer disable
+for _ in 0^2..max {
+
+}
+
+print(DateTime.Now() - dt)
