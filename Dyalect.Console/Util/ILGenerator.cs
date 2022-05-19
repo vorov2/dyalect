@@ -4,7 +4,6 @@ using Dyalect.Parser;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-
 namespace Dyalect.Util;
 
 public static class ILGenerator
