@@ -22,6 +22,8 @@ public static class ILGenerator
 
             if (sb.Length > 0)
             {
+                builder.AppendLine();
+            
                 if (u.FileName is not null)
                 {
                     if (u.FileName.IndexOfAny(cz) == -1)
@@ -33,9 +35,9 @@ public static class ILGenerator
                     }
                 }
                 else
-                    builder.AppendLine($"{u.Ops.Count}:");
+                    builder.AppendLine($"Size {u.Ops.Count}:");
 
-                builder.AppendLine(sb.ToString());
+                builder.Append(sb);
             }
         }
 

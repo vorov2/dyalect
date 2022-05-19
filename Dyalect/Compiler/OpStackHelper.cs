@@ -51,7 +51,6 @@ internal static class OpStackHelper
         -1, //Popvar
         -1, //Ret
         1,  //Dup
-        0,  //SyncPoint
         0,  //Fail
         1,  //NewFun
         1,  //NewFunV

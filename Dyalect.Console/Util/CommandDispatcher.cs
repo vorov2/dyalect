@@ -116,7 +116,6 @@ namespace Dyalect.Util
         {
             if (ctx.RuntimeContext is not null && ctx.RuntimeContext.Composition is not null)
             {
-                Printer.LineFeed();
                 var str = ILGenerator.Generate(ctx.RuntimeContext.Composition.Units);
                 Console.Write(str);
             }
@@ -130,7 +129,7 @@ namespace Dyalect.Util
 
             if (ctx.RuntimeContext is null)
             {
-                Printer.Output("...none");
+                Printer.Output("<none>");
                 return;
             }
 

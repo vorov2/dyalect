@@ -49,7 +49,6 @@ public enum OpCode
     Popvar,     //-1
     Ret,        //0
     Dup,        //1
-    SyncPoint,  //0 //TODO: Remove
     Fail,       //-1
     NewFun,     //0
     NewFunV,    //0

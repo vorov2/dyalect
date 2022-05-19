@@ -273,7 +273,6 @@ internal sealed class CodeWriter
     public void LtEq() => Emit(Op.LtEq);
     public void Ret() => Emit(Op.Ret);
     public void Dup() => Emit(Op.Dup);
-    public void SyncPoint() => Emit(Op.SyncPoint);
     public void Fail() => Emit(Op.Fail);
     public void Term() => Emit(Op.Term);
     public void IsNull() => Emit(Op.IsNull);
