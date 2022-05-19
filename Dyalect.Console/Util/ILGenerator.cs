@@ -1,13 +1,47 @@
 ﻿using Dyalect.Compiler;
+using Dyalect.Debug;
 using Dyalect.Parser;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
-using System.Text.RegularExpressions;
-using Dyalect.Debug;
+
 namespace Dyalect.Util;
 
 public static class ILGenerator
 {
+    private static readonly char[] cz = new char[] { '\\', '/' };
+
+    public static string Generate(IEnumerable<Unit> units)
+    {
+        var builder = new StringBuilder();
+
+        foreach (var u in units)
+        {
+            var sb = new StringBuilder();
+            Generate(sb, u);
+
+            if (sb.Length > 0)
+            {
+                if (u.FileName is not null)
+                {
+                    if (u.FileName.IndexOfAny(cz) == -1)
+                        builder.AppendLine($"{u.FileName} (size {u.Ops.Count}):");
+                    else
+                    {
+                        var fi = new FileInfo(u.FileName);
+                        builder.AppendLine($"{fi.Directory?.Name}/{fi.Name} (size {u.Ops.Count}):");
+                    }
+                }
+                else
+                    builder.AppendLine($"{u.Ops.Count}:");
+
+                builder.AppendLine(sb.ToString());
+            }
+        }
+
+        return builder.ToString();
+    }
+
     public static string Generate(Unit unit)
     {
         var sb = new StringBuilder();
@@ -40,21 +74,35 @@ public static class ILGenerator
         return false;
     }
 
+    private static string GetFunName(FunSym funSym)
+    {
+        if (funSym.Name is not null && funSym.TypeName is not null)
+            return $"{funSym.TypeName}.{funSym.Name}";
+        else if (funSym.Name is not null)
+            return funSym.Name;
+        else
+            return "lambda@" + funSym.Handle;
+    }
+
     private static string GetFunSym(Unit unit, Op op)
     {
         var fs = unit.Symbols.Functions[op.Data];
-        return fs.Name is null ? "<unnamed>" : fs.Name;
+        return GetFunName(fs);
     }
+
+    private static string FormatOffset(int offset) => offset.ToString().PadLeft(5, '0');
 
     private static void Generate(StringBuilder sb, Unit unit)
     {
+        var funs = new Stack<FunSym>();
+
         for (var i = 0; i < unit.Ops.Count; i++)
         {
             var op = unit.Ops[i];
-            sb.Append(i.ToString().PadLeft(5, '0'));
+            sb.Append(FormatOffset(i));
             sb.Append(": ");
             sb.Append(op.Code.ToString());
-
+            
             switch (op.Code)
             {
                 case OpCode.PushI8:
@@ -73,44 +121,55 @@ public static class ILGenerator
                 case OpCode.Brtrue:
                 case OpCode.Brterm:
                 case OpCode.Brfalse:
+                case OpCode.Start:
+                    sb.Append(" " + FormatOffset(op.Data));
+                    break;
                 case OpCode.Pushext:
-                case OpCode.NewIter:
-                case OpCode.RunMod:
                 case OpCode.Type:
+                case OpCode.RunMod:
+                case OpCode.NewIter:
+                    sb.Append(" " + op.Data);
+                    break;
                 case OpCode.RgDI:
                 case OpCode.RgFI:
                 case OpCode.FunPrep:
                 case OpCode.FunArgIx:
                 case OpCode.FunCall:
                 case OpCode.NewTuple:
-                case OpCode.Start:
-                case OpCode.FunAttr:
                 case OpCode.StdCall:
                 case OpCode.NewArgs:
                 case OpCode.NewDict:
-                    sb.Append($" #{op.Data}");
+                    sb.Append(" " + op.Data);
+                    break;
+                case OpCode.FunAttr:
+                    if ((op.Data & 0x01) == 0x01)
+                        sb.Append(" Auto");
+                    if ((op.Data & 0x02) == 0x02)
+                        sb.Append(" Variadic");
+                    if ((op.Data & 0x04) == 0x04)
+                        sb.Append(" Final");
                     break;
                 case OpCode.Poploc:
                 case OpCode.Pushloc:
                     {
                         if (TryGetVarSym(i, unit, op, true, out var vs))
-                            sb.Append($" {vs!.Name}");
+                            sb.Append(" " + vs!.Name);
                         else
-                            sb.Append($" #{op.Data}");
+                            sb.Append(" #" + op.Data);
                     }
                     break;
                 case OpCode.Popvar:
                 case OpCode.Pushvar:
                     {
                         if (TryGetVarSym(i, unit, op, false, out var vs))
-                            sb.Append($" {vs!.Name}");
+                            sb.Append(" " + vs!.Name);
                         else
-                            sb.Append($" #{op.Data}");
+                            sb.Append(" #" + op.Data);
                     }
                     break;
                 case OpCode.NewFun:
                 case OpCode.NewFunV:
-                    sb.Append($" {GetFunSym(unit, op)}");
+                    sb.Append(" " + GetFunSym(unit, op));
                     break;
                 case OpCode.SetMemberS:
                 case OpCode.SetMember:
@@ -123,11 +182,24 @@ public static class ILGenerator
                 case OpCode.CtorCheck:
                 case OpCode.GetPriv:
                 case OpCode.SetPriv:
-                    sb.Append($" {StringUtil.Escape((string)unit.Strings[op.Data])}");
+                    sb.Append(" " + StringUtil.Escape((string)unit.Strings[op.Data]));
                     break;
                 case OpCode.Contains:
-                    sb.Append($" {StringUtil.Escape(unit.Objects[op.Data].ToObject().ToString() ?? "")}");
+                    sb.Append(" " + StringUtil.Escape(unit.Objects[op.Data].ToObject().ToString() ?? ""));
                     break;
+            }
+
+            var funSym = unit.Symbols?.FindFunSymByStart(i - 1);
+
+            if (funSym is not null)
+            {
+                sb.Append($" //Start of {GetFunName(funSym)}");
+                funs.Push(funSym);
+            }
+            else if (funs.Count > 0 && funs.Peek().EndOffset == i + 1)
+            {
+                funSym = funs.Pop();
+                sb.Append($" //End of {GetFunName(funSym)}");
             }
 
             sb.AppendLine();

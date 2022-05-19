@@ -1,3 +1,6 @@
+# 0.46.2
+  * Add: _Write IL generator_ ([Issue #375](https://github.com/vorov2/dyalect/issues/375), [docs](https://github.com/vorov2/dyalect/wiki/Dyalect-console)).
+
 # 0.46.1
   * Change: _Optimization of `for` cycle for simple cases._
   * Fix: _Pretty print of `for` cycle AST node corrected._

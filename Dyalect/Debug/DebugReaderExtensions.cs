@@ -4,6 +4,14 @@ namespace Dyalect.Debug;
 
 public static class DebugReaderExtensions
 {
+    public static FunSym? FindFunSymByStart(this DebugInfo syms, int offset)
+    {
+        foreach (var f in syms.Functions.Values)
+            if (offset == f.StartOffset)
+                return f;
+        return null;
+    }
+
     public static FunSym? FindFunSym(this DebugInfo syms, int offset)
     {
         foreach (var f in syms.Functions.Values)

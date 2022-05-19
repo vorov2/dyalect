@@ -111,6 +111,17 @@ namespace Dyalect.Util
             Printer.Output(ctx.Options.ToString());
         }
 
+        [Binding("il", Help = "Generates IL (intermediate assembly) for all code in the current session.")]
+        public void GenerateIL(object _)
+        {
+            if (ctx.RuntimeContext is not null && ctx.RuntimeContext.Composition is not null)
+            {
+                Printer.LineFeed();
+                var str = ILGenerator.Generate(ctx.RuntimeContext.Composition.Units);
+                Console.Write(str);
+            }
+        }
+
         [Binding("dump", Help = "Dumps global variables and prints their values.")]
         public void Dump(object _)
         {

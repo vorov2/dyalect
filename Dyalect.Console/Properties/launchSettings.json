@@ -17,7 +17,7 @@
     },
     "Generate IL": {
       "commandName": "Project",
-      "commandLineArgs": "..\\Dyalect.UnitTests\\Playground\\main.dy -il",
+      "commandLineArgs": "..\\Dyalect.UnitTests\\Playground\\main.dy -il -out c:/temp/",
       "distributionName": "..\\Dyalect.UnitTests\\Playground\\main.dy -il"
     }
   }

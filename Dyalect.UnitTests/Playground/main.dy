@@ -5,6 +5,12 @@ func foo() {
     x + x
 }
 
+func bar() {
+    func doItWithMe() {
+        let x = 2
+    }
+}
+
 for x in 1..10 {
     break x when x > 5
 }
