@@ -1,5 +1,6 @@
 # 0.46.2
   * Change: _Several run-time errors are changed for better clarity._
+  * Change: _Several parser error messages are corrected for better clarity._
   * Add: _Write IL generator_ ([Issue #375](https://github.com/vorov2/dyalect/issues/375), [docs](https://github.com/vorov2/dyalect/wiki/Dyalect-console)).
   * Fix: _Iterators do not raise an error in a case of invalid index_ ([Issue #919](https://github.com/vorov2/dyalect/issues/919)).
 

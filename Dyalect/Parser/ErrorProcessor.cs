@@ -11,7 +11,8 @@ namespace Dyalect.Parser
         private static readonly Dictionary<string, ParserError> errors =
             new()
             {
-                 { "invalid StandardOperators", InvalidStandardOperators }
+                 { "funcToken expected", ExpectedFunction }
+                ,{ "invalid StandardOperators", InvalidStandardOperators }
                 ,{ "invalid FunctionName", InvalidFunctionName}
                 ,{ "invalid Identifier", InvalidIdentifier }
                 ,{ "invalid IdentifierOrKeyword", InvalidIdentifier }
