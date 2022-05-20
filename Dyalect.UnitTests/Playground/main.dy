@@ -1,16 +1,15 @@
-﻿#optimizer enable
-let x = 42
+﻿type TinyInt(Integer value) {
+    throw @Overflow(value) when value is <1 or >10
+} with Lookup, Show
 
-func foo() {
-    x + x
-}
+func TinyInt as Integer => this.value
+ 
+func TinyInt + (other) => TinyInt(this.value + other as Integer)
+ 
+func TinyInt * (other) => TinyInt(this.value * other as Integer)
+ 
+func TinyInt - (other) => TinyInt(this.value - other as Integer)
+ 
+func TinyInt / (other) => TinyInt(this.value / other as Integer)
 
-func bar() {
-    func doItWithMe() {
-        let x = 2
-    }
-}
-
-for x in 1..10 {
-    break x when x > 5
-}
+TinyInt(5)

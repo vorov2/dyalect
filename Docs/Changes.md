@@ -3,6 +3,7 @@
   * Change: _Several parser error messages are corrected for better clarity._
   * Add: _Write IL generator_ ([Issue #375](https://github.com/vorov2/dyalect/issues/375), [docs](https://github.com/vorov2/dyalect/wiki/Dyalect-console)).
   * Fix: _Iterators do not raise an error in a case of invalid index_ ([Issue #919](https://github.com/vorov2/dyalect/issues/919)).
+  * Fix: _Mixin `Show` can generate invalid string representation for type annotations_ ([Issue #920](https://github.com/vorov2/dyalect/issues/920)).
 
 # 0.46.1
   * Change: _Optimization of `for` cycle for simple cases._

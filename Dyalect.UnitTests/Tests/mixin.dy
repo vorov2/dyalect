@@ -142,10 +142,16 @@
     assert("Show", typeName(Show))
 #endregion
 
-#region "Show"
+#region "Show 1"
     type Foo(x, y) with Show
     let f = Foo(1, 2)
     assert("Foo(x: 1, y: 2)", f.ToString())
+#endregion
+
+#region "Show 2"
+    type Int(Integer x) with Show
+    let x = Int(42)
+    assert("Int(x: 42)", x.ToString())
 #endregion
 
 #region "Object: GetType"
