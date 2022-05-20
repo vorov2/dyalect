@@ -24,7 +24,7 @@ internal sealed partial class DyIteratorTypeInfo : DyTypeInfo
     protected override DyObject GetOp(ExecutionContext ctx, DyObject self, DyObject index)
     {
         if (index is not DyInteger ix)
-            return Nil;
+            return ctx.IndexOutOfRange(index);
 
         var i = (int)ix.Value;
 

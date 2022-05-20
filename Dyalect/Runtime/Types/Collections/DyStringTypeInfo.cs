@@ -82,11 +82,10 @@ internal sealed partial class DyStringTypeInfo : DyCollTypeInfo
 
     protected override DyObject GetOp(ExecutionContext ctx, DyObject self, DyObject index)
     {
-        if (index.TypeId != Dy.Integer)
-            return ctx.InvalidType(index);
+        if (index is not DyInteger i)
+            return ctx.IndexOutOfRange(index);
 
         var str = (DyString)self;
-        var i = (DyInteger)index;
         var ix = (int)(i.Value < 0 ? str.Count + i.Value : i.Value);
 
         if (ix < 0 || ix >= str.Count)

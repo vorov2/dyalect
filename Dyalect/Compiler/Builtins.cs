@@ -42,6 +42,8 @@ internal static class Builtins
             BitOr => "|||",
             Neg => "- (unary)",
             Plus => "+ (unary)",
+            Get => "get",
+            Set => "set",
             _ => op
         };
 

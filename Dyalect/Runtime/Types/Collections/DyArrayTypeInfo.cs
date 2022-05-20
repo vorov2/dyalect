@@ -49,7 +49,7 @@ internal sealed partial class DyArrayTypeInfo : DyCollTypeInfo
             return arr[ix];
         }
 
-        return ctx.InvalidType(index);
+        return ctx.IndexOutOfRange(index);
     }
 
     protected override DyObject SetOp(ExecutionContext ctx, DyObject self, DyObject index, DyObject value)
