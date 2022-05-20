@@ -1,15 +1,28 @@
-﻿type TinyInt(Integer value) {
-    throw @Overflow(value) when value is <1 or >10
-} with Lookup, Show
-
-func TinyInt as Integer => this.value
+﻿var bazCallCount = 0
  
-func TinyInt + (other) => TinyInt(this.value + other as Integer)
+func baz() {
+    bazCallCount += 1
+    if bazCallCount == 1 {
+        throw @BazCall1()
+    } else if bazCallCount == 2 {
+        throw @BazCall2
+    }
+}
  
-func TinyInt * (other) => TinyInt(this.value * other as Integer)
+func bar() {
+    baz()
+}
  
-func TinyInt - (other) => TinyInt(this.value - other as Integer)
+func foo() {
+    var calls = 2
+    while calls > 0 {
+        try {
+            bar()
+        } catch {
+            @BazCall1() => print("BazzCall1 caught.")
+        }
+        calls -= 1
+    }
+}
  
-func TinyInt / (other) => TinyInt(this.value / other as Integer)
-
-TinyInt(5)
+foo()
