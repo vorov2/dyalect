@@ -1226,6 +1226,7 @@ partial class Builder
         PushIf(hints);
     }
 
+    //Optimization for binding in the form "let (x, y) = (1, 2)"
     private bool CanBeOptimized(DBindingBase node, Hints hints, CompilerContext ctx)
     {
         if (options.NoOptimizations 

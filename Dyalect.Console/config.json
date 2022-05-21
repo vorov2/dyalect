@@ -1,5 +1,5 @@
 ﻿{
-    "debug": true,
+    "debug": false,
     "onlyfailed": true,
     "testresults": "..\\Docs\\TestResult.md",
     "useMarkdown":  true

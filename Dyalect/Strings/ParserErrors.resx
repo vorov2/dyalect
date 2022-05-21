@@ -210,4 +210,7 @@
   <data name="InvalidIndex" xml:space="preserve">
     <value>Invalid indexing expression.</value>
   </data>
+  <data name="ExpectedFunction" xml:space="preserve">
+    <value>Expected function declaration.</value>
+  </data>
 </root>

@@ -357,7 +357,12 @@ public static class ErrorGenerators
         if (!Enum.TryParse<DyError>(err.Constructor, true, out var res))
         {
             if (err.Fields.Count > 0)
-                return err.Fields[0].ToString() ?? err.Constructor;
+            {
+                var dat = err.Fields[0].ToString();
+
+                if (dat is not null)
+                    return err.Constructor + $"({dat})";
+            }
 
             return err.Constructor;
         }

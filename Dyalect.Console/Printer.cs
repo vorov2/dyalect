@@ -29,7 +29,7 @@ internal static class Printer
             return;
         }
 
-        if (res.Value == DyNil.Instance || res.Value is null)
+        if (res.Value is DyNil || res.Value is null)
             return;
 
         var fmt = Format(res.Value, res.Context);

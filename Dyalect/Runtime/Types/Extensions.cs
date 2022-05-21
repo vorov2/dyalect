@@ -270,11 +270,13 @@ public static class Extensions
                 if (lab.Mutable)
                     sb.Append("var ");
 
-                foreach (var ta in lab.EnumerateAnnotations())
-                {
-                    sb.Append(ta.ToString());
-                    sb.Append(' ');
-                }
+
+                //TODO: validate removal
+                //foreach (var ta in lab.EnumerateAnnotations())
+                //{
+                //    sb.Append(ta.ReflectedTypeName);
+                //    sb.Append(' ');
+                //}
 
                 if (!char.IsLower(lab.Label[0]) || lab.Label.IndexOfAny(invalidChars) != -1)
                     sb.Append(StringUtil.Escape(lab.Label));

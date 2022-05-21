@@ -1,7 +1,9 @@
-﻿using Dyalect.Linker;
+﻿using Dyalect.Compiler;
+using Dyalect.Linker;
 using Dyalect.UnitTesting;
 using Dyalect.Util;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -52,7 +54,12 @@ namespace Dyalect
                 Printer.LineFeed();
                 return Compile(options);
             }
-            else if (options.FileNames != null && options.FileNames.Length > 0)
+            else if (options.GenerateIL)
+            {
+                Printer.LineFeed();
+                return GenerateIL(options);
+            }
+            else if (options.FileNames is not null && options.FileNames.Length > 0)
             {
                 Printer.LineFeed();
                 var i = 0;
@@ -92,22 +99,23 @@ namespace Dyalect
             return tr.RunTests(options.GetFileNames());
         }
 
-        private static bool Compile(DyaOptions options)
+        private static bool Compile(DyaOptions options, bool generateIL = false)
         {
             var ctx = new InteractiveContext(options);
+            var ext = generateIL ? ".il" : ".dyo";
 
             foreach (var f in options.GetFileNames())
             {
                 var outFile = options.OutputDirectory;
 
                 if (string.IsNullOrWhiteSpace(outFile))
-                    outFile = Path.Combine(Path.GetDirectoryName(f)!, Path.GetFileNameWithoutExtension(f) + ".dyo");
+                    outFile = Path.Combine(Path.GetDirectoryName(f)!, Path.GetFileNameWithoutExtension(f) + ext);
                 else
                 {
                     if (!Directory.Exists(outFile))
                         Directory.CreateDirectory(outFile);
 
-                    outFile = Path.Combine(outFile, Path.GetFileNameWithoutExtension(f) + ".dyo");
+                    outFile = Path.Combine(outFile, Path.GetFileNameWithoutExtension(f) + ext);
                 }
 
                 if (!File.Exists(f) || !ctx.Compile(f, out var unit))
@@ -120,7 +128,10 @@ namespace Dyalect
                 try
 #endif
                 {
-                    ObjectFileWriter.Write(outFile, unit);
+                    if (generateIL)
+                        File.WriteAllText(outFile, ILGenerator.Generate(unit));
+                    else
+                        ObjectFileWriter.Write(outFile, unit);
                     Printer.Information($"Compilation completed. File saved: \"{outFile}\"");
                 }
 #if !DEBUG
@@ -131,6 +142,33 @@ namespace Dyalect
                     continue;
                 }
 #endif
+            }
+
+            return true;
+        }
+
+        private static bool GenerateIL(DyaOptions options)
+        {
+            var ctx = new InteractiveContext(options);
+
+            if (options.OutputDirectory is not null)
+                Compile(options, generateIL: true);
+            else
+            {
+                var xs = new List<Unit>();
+
+                foreach (var f in options.GetFileNames())
+                {
+                    if (!ctx.Compile(f, out var unit))
+                    {
+                        Printer.Error($"Compilation of file \"{f}\" skipped.");
+                        continue;
+                    }
+
+                    xs.Add(unit);
+                }
+
+                Printer.Output(ILGenerator.Generate(xs));
             }
 
             return true;

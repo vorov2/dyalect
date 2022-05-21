@@ -2,7 +2,7 @@
 using System.Reflection;
 namespace Dyalect.Compiler;
 
-internal sealed class Op
+public sealed class Op
 {
     public static readonly Op Nop = new(OpCode.Nop);
     public static readonly Op Str = new(OpCode.Str);
@@ -42,7 +42,6 @@ internal sealed class Op
     public static readonly Op LtEq = new(OpCode.LtEq);
     public static readonly Op Ret = new(OpCode.Ret);
     public static readonly Op Dup = new(OpCode.Dup);
-    public static readonly Op SyncPoint = new(OpCode.SyncPoint);
     public static readonly Op Fail = new(OpCode.Fail);
     public static readonly Op Term = new(OpCode.Term);
     public static readonly Op Yield = new(OpCode.Yield);

@@ -64,6 +64,8 @@
 
         InvalidApplicationOperator = 40,
 
-        InvalidIndex = 41
+        InvalidIndex = 41,
+
+        ExpectedFunction = 42
     }
 }

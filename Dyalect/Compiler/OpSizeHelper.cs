@@ -51,7 +51,6 @@ internal static class OpSizeHelper
         1, //Popvar
         0, //Ret
         0, //Dup
-        0, //SyncPoint
         0, //Fail
         1, //NewFun
         1, //NewFunV
