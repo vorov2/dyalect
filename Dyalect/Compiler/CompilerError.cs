@@ -134,5 +134,7 @@ public enum CompilerError
 
     InvalidDictionary = 265,
 
-    FinalOnlyMethods = 266
+    FinalOnlyMethods = 266,
+
+    MethodNested = 267
 }

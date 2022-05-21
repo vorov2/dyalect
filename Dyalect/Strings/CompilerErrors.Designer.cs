@@ -358,6 +358,15 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Methods cannot be nested in other functions..
+        /// </summary>
+        internal static string MethodNested {
+            get {
+                return ResourceManager.GetString("MethodNested", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Methods can&apos;t be recursive. Declare a regular function instead..
         /// </summary>
         internal static string MethodNotRecursive {
