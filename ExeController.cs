@@ -96,7 +96,7 @@ public class ExeController : ControllerBase
             }
         });
 
-        if (!result.Wait(1000))
+        if (!result.Wait(2000))
             return new JsonResult(new { success = false, cout = sw.ToString(), messages = new string[] { "Execution timed out." } });
 
         return result.Result;
