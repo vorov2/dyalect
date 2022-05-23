@@ -1,8 +1,6 @@
-﻿func fact(n) =>
-    n is 0 ? 1 : (n^-1..<0).Fold(1, (acc, val) => acc * val)
+﻿type Employee()
 
-print << fact(3)
-print << fact(4)
-print << fact(6)
+func Employee.ToString() => "Employee"
 
-(0..10).Fold(accumulator: (init, val) => init + val)
+let e = Employee()
+e.ToString()
