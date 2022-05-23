@@ -4,7 +4,7 @@ internal static class Meta
 {
     public static readonly System.DateTime Epoch = new(2019, 4, 17);
 
-    public const string Version = "0.46.2";
+    public const string Version = "0.46.3";
 
     public const string Product = "Dyalect";
 

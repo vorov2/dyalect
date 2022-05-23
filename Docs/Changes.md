@@ -1,3 +1,6 @@
+# 0.46.3
+  * Fix: _A method can be nested in another function_ ([Issue #922](https://github.com/vorov2/dyalect/issues/922)).
+
 # 0.46.2
   * Change: _Several run-time errors are changed for better clarity._
   * Change: _Several parser error messages are corrected for better clarity._

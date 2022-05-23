@@ -330,4 +330,7 @@
   <data name="FinalOnlyMethods" xml:space="preserve">
     <value>Only methods can be declared as "final".</value>
   </data>
+  <data name="MethodNested" xml:space="preserve">
+    <value>Methods cannot be nested in other functions.</value>
+  </data>
 </root>

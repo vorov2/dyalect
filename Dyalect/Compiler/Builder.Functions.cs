@@ -56,6 +56,9 @@ partial class Builder
 
             if (node.TypeName is not null)
             {
+                if (ctx.Function is not null)
+                    AddError(CompilerError.MethodNested, node.Location);
+
                 if (node.TargetTypeName is not null)
                 {
                     if (node.IsStatic || node.Setter || node.Getter)
