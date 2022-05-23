@@ -1,9 +1,7 @@
 ﻿using Dyalect.Runtime.Types;
+namespace Dyalect.Util;
 
-namespace Dyalect.Util
+public interface IOptionBag
 {
-    public interface IOptionBag
-    {
-        DyTuple? UserArguments { get; set; }
-    }
+    DyTuple? UserArguments { get; set; }
 }

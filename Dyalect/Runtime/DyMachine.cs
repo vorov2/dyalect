@@ -7,7 +7,7 @@ namespace Dyalect.Runtime;
 
 public static partial class DyMachine
 {
-    private const int MAX_NESTED_CALLS = 200;
+    private const int MaxNestedCalls = 200;
 
     private static DyNativeFunction Global(int unitId) => new(null, unitId, 0, FastList<DyObject[]>.Empty, -1);
 
@@ -65,7 +65,7 @@ public static partial class DyMachine
     {
         ctx.CallCnt++;
 
-        if (ctx.CallCnt > MAX_NESTED_CALLS)
+        if (ctx.CallCnt > MaxNestedCalls)
             throw new DyRuntimeException(RuntimeErrors.StackOverflow_0);
         
         DyObject? first, second = null, third = null;

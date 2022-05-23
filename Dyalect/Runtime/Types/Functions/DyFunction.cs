@@ -37,7 +37,7 @@ public abstract class DyFunction : DyObject
             return ((DyUnaryFunction)this).CallUnary(ctx, self);
 
         var func = BindToInstance(ctx, self);
-        ctx.EtaFunction = func;
+        ctx.CallBackFunction = func;
         ctx.Error = DyVariant.Eta;
         return Nil;
     }
@@ -49,7 +49,7 @@ public abstract class DyFunction : DyObject
             return ((DyBinaryFunction)this).CallBinary(ctx, self, arg);
 
         var func = BindToInstance(ctx, self);
-        ctx.EtaFunction = func;
+        ctx.CallBackFunction = func;
         ctx.Error = DyVariant.Eta;
         return Nil;
     }
@@ -61,7 +61,7 @@ public abstract class DyFunction : DyObject
             return ((DyTernaryFunction)this).CallTernary(ctx, self, arg1, arg2);
 
         var func = BindToInstance(ctx, self);
-        ctx.EtaFunction = func;
+        ctx.CallBackFunction = func;
         ctx.Error = DyVariant.Eta;
         return Nil;
     }

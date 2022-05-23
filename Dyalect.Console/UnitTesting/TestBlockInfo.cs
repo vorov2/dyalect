@@ -1,15 +1,13 @@
 ﻿using Dyalect.Parser.Model;
+namespace Dyalect.UnitTesting;
 
-namespace Dyalect.UnitTesting
+public sealed class TestBlockInfo
 {
-    public sealed class TestBlockInfo
-    {
-        public DRegion? Block { get; init; }
+    public DRegion? Block { get; init; }
 
-        public string? Error { get; init; }
+    public string? Error { get; init; }
 
-        public string FileName { get; }
+    public string FileName { get; }
 
-        public TestBlockInfo(string fileName) => FileName = fileName;
-    }
+    public TestBlockInfo(string fileName) => FileName = fileName;
 }

@@ -11,8 +11,8 @@ partial class DyMachine
         if (ReferenceEquals(ctx.Error, DyVariant.Eta))
         {
             ctx.CallStack.Push(new Caller(function, offset, evalStack, locals));
-            function = (DyNativeFunction)ctx.EtaFunction!;
-            ctx.EtaFunction = null;
+            function = (DyNativeFunction)ctx.CallBackFunction!;
+            ctx.CallBackFunction = null;
             ctx.Error = null;
             locals = function.CreateLocals(ctx);
             if (arg1 is not null) locals[0] = arg1;

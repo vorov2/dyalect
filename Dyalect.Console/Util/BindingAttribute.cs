@@ -1,16 +1,15 @@
 ﻿using System;
 
-namespace Dyalect.Util
+namespace Dyalect.Util;
+
+[AttributeUsage(AttributeTargets.Property | AttributeTargets.Method, Inherited = false)]
+public sealed class BindingAttribute : Attribute
 {
-    [AttributeUsage(AttributeTargets.Property | AttributeTargets.Method, Inherited = false)]
-    public sealed class BindingAttribute : Attribute
-    {
-        public BindingAttribute(params string[] names) => Names = names;
+    public string[] Names { get; }
 
-        public string[] Names { get; }
+    public string? Help { get; set; }
 
-        public string? Help { get; set; }
+    public string? Category { get; set; }
 
-        public string? Category { get; set; }
-    }
+    public BindingAttribute(params string[] names) => Names = names;
 }
