@@ -749,3 +749,16 @@
         @IndexOutOfRange => assert(got: true)
     }
 #endregion
+
+#region "Methods: Fold 1"
+    let res = (0..10).Fold(accumulator: (init, val) => init + val)
+    assert(55, res)
+#endregion
+
+#region "Methods: Fold 2"
+    func fact(n) =>
+        n is 0 ? 1 : (n^-1..<0).Fold(1, (acc, val) => acc * val)
+    assert(6) << fact(3)
+    assert(24) << fact(4)
+    assert(720) << fact(6)
+#endregion

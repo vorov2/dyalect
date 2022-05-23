@@ -1,3 +1,6 @@
+# 0.46.4
+  * Add: _Add `Iterator.Fold` method_ ([Issue #927](https://github.com/vorov2/dyalect/issues/927), [docs](https://github.com/vorov2/dyalect/wiki/Iterators#fold)).
+
 # 0.46.3
   * Fix: _A method can be nested in another function_ ([Issue #922](https://github.com/vorov2/dyalect/issues/922)).
 

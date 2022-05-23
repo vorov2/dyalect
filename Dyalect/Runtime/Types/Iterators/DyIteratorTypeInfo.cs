@@ -89,6 +89,15 @@ internal sealed partial class DyIteratorTypeInfo : DyTypeInfo
     }
 
     [InstanceMethod]
+    internal static DyObject Fold(ExecutionContext ctx, IEnumerable<DyObject> self, [Default]DyObject seed, DyFunction accumulator)
+    {
+        if (seed is not null)
+            return self.Aggregate(seed, (seed, val) => accumulator.Call(ctx, seed, val));
+        else
+            return self.Aggregate((seed, val) => accumulator.Call(ctx, seed, val));
+    }
+
+    [InstanceMethod]
     internal static IEnumerable<DyObject> Take(IEnumerable<DyObject> self, int count) => self.Take(count < 0 ? 0 : count);
 
     [InstanceMethod]
