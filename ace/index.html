@@ -56,19 +56,24 @@
             padding-left: 5px;
             padding-right: 15px;
         }
-        #button_run {
+        .button_run_disabled, .button_run {
             color: #ffffff;
             font-size: 14px;
             font-family: "euclid_circular",sans-serif;
             font-weight:bold;
             float: right;
-            background-color: #0556f3;
             text-align: center;
             line-height: 30px;
             width: 60px;
             border-radius:2px;
         }
-        #button_run:hover {
+        .button_run_disabled {
+            background-color: #B70000;
+        }
+        .button_run {
+            background-color: #0556f3;
+        }
+        .button_run:hover {
             background-color: #5B5B5B;
             cursor:pointer;
         }
@@ -148,6 +153,12 @@
         ];
 
         function runCode() {
+            var self = document.getElementById("button_run");
+
+            if (self.className != "button_run") {
+                return;
+            }
+
             var cout = document.getElementById("cout");
             var editor = ace.edit("editor");
             cout.innerHTML = "";
@@ -173,10 +184,13 @@
                         }
                     }
 
+                    self.className = "button_run";
                     cout.innerHTML = data;
                     cout.scrollTop = cout.scrollHeight;
                 }
             }
+            cout.innerHTML = "Executing code...";
+            self.className = "button_run_disabled";
             req.open("POST", "/exe");
             req.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
             req.send("source=" + encodeURIComponent(editor.getValue()));
@@ -243,7 +257,7 @@
                 </div>
             </a>
             <select id="codeSamples"></select>
-            <span id="button_run" onclick="runCode()">Run</span>
+            <span id="button_run" class="button_run" onclick="runCode()">Run</span>
         </div>
         <div id="splitpanel">
             <div id="editor">//Welcome to Dyalect!

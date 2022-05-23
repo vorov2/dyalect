@@ -19,6 +19,7 @@ namespace DyalectService;
 public class ExeController : ControllerBase
 {
     private readonly IWebHostEnvironment webHostEnvironment;
+    private const int TimeLimit = 2000;
 
     public ExeController(IWebHostEnvironment webHostEnvironment) => this.webHostEnvironment = webHostEnvironment;
 
@@ -96,8 +97,8 @@ public class ExeController : ControllerBase
             }
         });
 
-        if (!result.Wait(2000))
-            return new JsonResult(new { success = false, cout = sw.ToString(), messages = new string[] { "Execution timed out." } });
+        if (!result.Wait(TimeLimit))
+            return new JsonResult(new { success = false, cout = sw.ToString(), messages = new string[] { $"Execution timed out. Time limit: {TimeLimit}ms" } });
 
         return result.Result;
     }
