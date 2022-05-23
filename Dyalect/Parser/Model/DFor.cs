@@ -1,33 +1,31 @@
 ﻿using System.Text;
+namespace Dyalect.Parser.Model;
 
-namespace Dyalect.Parser.Model
+public sealed class DFor : DNode
 {
-    public sealed class DFor : DNode
+    public DFor(Location loc) : base(NodeType.For, loc) { }
+
+    public DPattern Pattern { get; set; } = null!;
+
+    public DNode Target { get; set; } = null!;
+
+    public DNode? Guard { get; set; }
+
+    public DNode Body { get; set; } = null!;
+
+    internal override void ToString(StringBuilder sb)
     {
-        public DFor(Location loc) : base(NodeType.For, loc) { }
+        sb.Append("for ");
+        Pattern.ToString(sb);
+        sb.Append(" in ");
+        Target.ToString(sb);
 
-        public DPattern Pattern { get; set; } = null!;
-
-        public DNode Target { get; set; } = null!;
-
-        public DNode? Guard { get; set; }
-
-        public DNode Body { get; set; } = null!;
-
-        internal override void ToString(StringBuilder sb)
+        if (Guard is not null)
         {
-            sb.Append("for ");
-            Pattern.ToString(sb);
-            sb.Append(" in ");
-            Target.ToString(sb);
-
-            if (Guard is not null)
-            {
-                sb.Append(" when ");
-                Guard.ToString(sb);
-            }
-
-            Body.ToString(sb);
+            sb.Append(" when ");
+            Guard.ToString(sb);
         }
+
+        Body.ToString(sb);
     }
 }

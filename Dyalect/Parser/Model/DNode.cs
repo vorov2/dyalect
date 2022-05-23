@@ -1,31 +1,20 @@
-﻿using System.Collections.Generic;
-using System.Text;
+﻿using System.Text;
+namespace Dyalect.Parser.Model;
 
-namespace Dyalect.Parser.Model
+public abstract class DNode
 {
-    public abstract class DNode
+    public NodeType NodeType { get; }
+
+    public Location Location { get; }
+
+    protected DNode(NodeType type, Location loc) => (NodeType, Location) = (type, loc);
+
+    public override string ToString()
     {
-        protected DNode(NodeType type, Location loc) => (NodeType, Location) = (type, loc);
-
-        public NodeType NodeType { get; }
-
-        public Location Location { get; }
-
-        public override string ToString()
-        {
-            var sb = new StringBuilder();
-            ToString(sb);
-            return sb.ToString();
-        }
-
-        protected internal virtual string? GetName() => null;
-
-        protected internal virtual int GetElementCount() => -1;
-
-        protected internal virtual List<DNode>? ListElements() => null;
-
-        protected internal virtual bool HasAuto() => false;
-
-        internal abstract void ToString(StringBuilder sb);
+        var sb = new StringBuilder();
+        ToString(sb);
+        return sb.ToString();
     }
+
+    internal abstract void ToString(StringBuilder sb);
 }

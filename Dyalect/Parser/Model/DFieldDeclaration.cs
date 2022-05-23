@@ -1,19 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Text;
+namespace Dyalect.Parser.Model;
 
-namespace Dyalect.Parser.Model
+public sealed class DFieldDeclaration : DNode, INamedNode
 {
-    public sealed class DFieldDeclaration : DNode
-    {
-        public DFieldDeclaration(Location loc) : base(NodeType.Field, loc) { }
+    public DFieldDeclaration(Location loc) : base(NodeType.Field, loc) { }
 
-        public bool IsPrivate => Name?.Length > 0 && Name[0] == '_';
+    public bool IsPrivate => Name?.Length > 0 && Name[0] == '_';
 
-        public string Name { get; set; } = null!;
+    public string Name { get; set; } = null!;
 
-        protected internal override string? GetName() => Name;
+    public string NodeName => Name;
 
-        internal override void ToString(StringBuilder sb) => sb.Append(Name);
-    }
+    internal override void ToString(StringBuilder sb) => sb.Append(Name);
 }

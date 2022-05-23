@@ -1,22 +1,20 @@
 ﻿using System.Text;
+namespace Dyalect.Parser.Model;
 
-namespace Dyalect.Parser.Model
+public sealed class DBreak : DNode
 {
-    public sealed class DBreak : DNode
+    public DBreak(Location loc) : base(NodeType.Break, loc) { }
+
+    public DNode? Expression { get; set; }
+
+    internal override void ToString(StringBuilder sb)
     {
-        public DBreak(Location loc) : base(NodeType.Break, loc) { }
+        sb.Append("break");
 
-        public DNode? Expression { get; set; }
-
-        internal override void ToString(StringBuilder sb)
+        if (Expression is not null)
         {
-            sb.Append("break");
-
-            if (Expression is not null)
-            {
-                sb.Append(' ');
-                Expression.ToString(sb);
-            }
+            sb.Append(' ');
+            Expression.ToString(sb);
         }
     }
 }

@@ -569,7 +569,7 @@ partial class Builder
 
     private void ValidateMatch(DMatch match)
     {
-        var count = match.Expression is not null ? match.Expression.GetElementCount() : -1;
+        var count = match.Expression is not INodeContainer nc ? -1 : nc.NodeCount;
 
         for (var i = 0; i < match.Entries.Count; i++)
         {
@@ -601,8 +601,9 @@ partial class Builder
 
     private void CheckPattern(DPattern e, int matchCount)
     {
-        int c;
-        if (matchCount > -1 && (c = e.GetElementCount()) > -1)
+        var c = e is INodeContainer nc ? nc.NodeCount : -1;
+
+        if (matchCount > -1 && c > -1)
         {
             if (e.NodeType == NodeType.TuplePattern && matchCount != c)
                 AddWarning(CompilerWarning.PatternNeverMatch, e.Location, e);
@@ -617,14 +618,6 @@ partial class Builder
             || node is DAsPattern pas && IsIrrefutable(pas.Pattern)
             || node is DAndPattern dand && IsIrrefutable(dand.Left) && IsIrrefutable(dand.Right)
             || node is DOrPattern dor && IsIrrefutable(dor.Left) && IsIrrefutable(dor.Right);
-
-    private bool IsPureBinding(DPattern node)
-    {
-        foreach (var n in node.ListElements()!)
-            if (n.NodeType != NodeType.NamePattern && n.NodeType != NodeType.WildcardPattern)
-                return false;
-        return true;
-    }
 
     private bool CanFollow(List<DNode> now, List<DNode> prev)
     {

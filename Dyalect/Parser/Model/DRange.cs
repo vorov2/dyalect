@@ -1,34 +1,32 @@
 ﻿using System.Text;
+namespace Dyalect.Parser.Model;
 
-namespace Dyalect.Parser.Model
+public sealed class DRange : DNode
 {
-    public sealed class DRange : DNode
+    public DRange(Location loc) : base(NodeType.Range, loc) { }
+
+    public bool Exclusive { get; set; }
+
+    public DNode? From { get; set; }
+
+    public DNode? To { get; set; }
+    
+    public DNode? Step { get; set; }
+
+    internal override void ToString(StringBuilder sb)
     {
-        public DRange(Location loc) : base(NodeType.Range, loc) { }
+        From?.ToString(sb);
 
-        public bool Exclusive { get; set; }
-
-        public DNode? From { get; set; }
-
-        public DNode? To { get; set; }
-        
-        public DNode? Step { get; set; }
-
-        internal override void ToString(StringBuilder sb)
+        if (Step is not null)
         {
-            From?.ToString(sb);
-
-            if (Step is not null)
-            {
-                sb.Append('^');
-                Step.ToString(sb);
-            }
-            
-            if (Exclusive)
-                sb.Append('<');
-
-            sb.Append("..");
-            To?.ToString(sb);
+            sb.Append('^');
+            Step.ToString(sb);
         }
+        
+        if (Exclusive)
+            sb.Append('<');
+
+        sb.Append("..");
+        To?.ToString(sb);
     }
 }

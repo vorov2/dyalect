@@ -1,33 +1,31 @@
 ﻿using System.Collections.Generic;
 using System.Text;
+namespace Dyalect.Parser.Model;
 
-namespace Dyalect.Parser.Model
+public sealed class DDirective : DNode
 {
-    public sealed class DDirective : DNode
+    public DDirective(Location loc) : base(NodeType.Directive, loc) { }
+
+    public string Key { get; set; } = null!;
+
+    public List<object> Attributes { get; } = new();
+
+    internal override void ToString(StringBuilder sb)
     {
-        public DDirective(Location loc) : base(NodeType.Directive, loc) { }
+        sb.Append('#');
+        sb.Append(Key);
 
-        public string Key { get; set; } = null!;
-
-        public List<object> Attributes { get; } = new();
-
-        internal override void ToString(StringBuilder sb)
+        if (Attributes.Count > 0)
         {
-            sb.Append('#');
-            sb.Append(Key);
+            sb.Append(" (");
 
-            if (Attributes.Count > 0)
+            foreach (var o in Attributes)
             {
-                sb.Append(" (");
-
-                foreach (var o in Attributes)
-                {
-                    sb.Append(o?.ToString());
-                    sb.Append(' ');
-                }
-
-                sb.Append(')');
+                sb.Append(o?.ToString());
+                sb.Append(' ');
             }
+
+            sb.Append(')');
         }
     }
 }

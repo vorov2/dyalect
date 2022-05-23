@@ -449,7 +449,7 @@ partial class Builder
         if (node.Target.NodeType == NodeType.Name && !node.PrivateAccess
             && !hints.Has(Pop) && !options.NoOptimizations)
         {
-            var nm = node.Target.GetName()!;
+            var nm = ((DName)node.Target).Value;
             var err = GetVariable(nm, out var sv);
 
             if (err is CompilerError.None
@@ -599,8 +599,8 @@ partial class Builder
                 Build(el, hints.Append(Push), ctx);
                 string? name;
 
-                if ((name = el.GetName()) is not null)
-                    cw.Tag(name);
+                if (el is INamedNode nn)
+                    cw.Tag(nn.NodeName);
             }
         }
     }
@@ -762,7 +762,7 @@ partial class Builder
 
     private void Build(DApplication node, Hints hints, CompilerContext ctx)
     {
-        var name = node.Target.NodeType == NodeType.Name ? node.Target.GetName() : null;
+        var name = node.Target.NodeType == NodeType.Name ? ((DName)node.Target).Value : null;
         var sv = ScopeVar.Empty;
 
         if (name is not null)
@@ -1062,7 +1062,7 @@ partial class Builder
     {
         for (var i = 0; i < nodes.Count; i++)
         {
-            if (nodes[i].HasAuto())
+            if (nodes[i] is DBinding b && b.AutoClose)
                 return true;
         }
 
@@ -1136,7 +1136,7 @@ partial class Builder
         if (node.Pattern.NodeType != NodeType.NamePattern)
             AddError(CompilerError.InvalidLazyBinding, node.Location);
 
-        var name = node.Pattern.GetName()!;
+        var name = ((DNamePattern)node.Pattern).Name;
 
         if (ReferenceEquals(currentScope, globalScope))
             globalLazy.Add(name);
@@ -1177,12 +1177,12 @@ partial class Builder
         {
             AddLinePragma(node);
             var flags = node.Constant ? VarFlags.Const : VarFlags.None;
-            var nam = node.Pattern.GetName();
+            var nam = ((DNamePattern)node.Pattern).Name;
             var a = AddVariable(nam!, node.Location, flags);
             cw.PopVar(a);
 
             if (node.AutoClose)
-                currentScope.Autos.Enqueue((a >> 8, nam!));
+                currentScope.Autos.Enqueue((a >> 8, nam));
         }
         else
         {
@@ -1195,7 +1195,7 @@ partial class Builder
                 nh = nh.Append(Const);
 
             if (node.Init != null)
-                CheckPattern(node.Pattern, node.Init.GetElementCount());
+                CheckPattern(node.Pattern, node.Init is INodeContainer nc ? nc.NodeCount : -1);
 
             BuildPattern(node.Pattern, nh, ctx);
             var skip = cw.DefineLabel();
@@ -1232,7 +1232,9 @@ partial class Builder
         if (options.NoOptimizations 
             || node.Init is null || node.Init.NodeType != NodeType.Tuple 
             || node.Pattern.NodeType != NodeType.TuplePattern
-            || node.Init.GetElementCount() != node.Pattern.GetElementCount())
+            || node.Init is not INodeContainer nc1
+            || node.Pattern is not INodeContainer nc2
+            || nc1.NodeCount != nc2.NodeCount)
             return false;
         
         var init = (DTupleLiteral)node.Init;
@@ -1250,7 +1252,7 @@ partial class Builder
         for (var i = 0; i < pat.Elements.Count; i++)
         {
             var e = pat.Elements[pat.Elements.Count - i - 1];
-            var nm = e.GetName()!;
+            var nm = e is INamedNode n ? n.NodeName : null;
 
             if (nm is null)
                 cw.Pop();
@@ -1396,7 +1398,7 @@ partial class Builder
         switch (node.NodeType)
         {
             case NodeType.Name:
-                var name = node.GetName();
+                var name = ((DName)node).NodeName;
 
                 if (name is not null)
                 {
