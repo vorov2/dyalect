@@ -9,7 +9,6 @@ public sealed class Op
     public static readonly Op Get = new(OpCode.Get);
     public static readonly Op Set = new(OpCode.Set);
     public static readonly Op This = new(OpCode.This);
-    public static readonly Op Unbox = new(OpCode.Unbox);
     public static readonly Op Type = new(OpCode.Type);
     public static readonly Op Pop = new(OpCode.Pop);
     public static readonly Op PushNil = new(OpCode.PushNil);

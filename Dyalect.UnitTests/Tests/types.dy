@@ -88,10 +88,10 @@
         let data = args
     }
     func Bar.Length() {
-        ini.data.Length()
+        this!data.Length()
     }
     func get Bar[index] {
-        ini.data[index]
+        this!data[index]
     }
     var obj = Bar(1, 2, 3)
     var res = match obj {
@@ -189,16 +189,16 @@
     }
     let ref = Cell.Cell
     func Cell.SetValue(value) {
-        ini.internal = value
+        this!internal = value
     }
     func Cell.GetValue() {
-        ini.internal
+        this!internal
     }
     func get Cell[index] {
         if index is not 0 {
             throw @IndexOutOfRange()
         }
-        ini.internal
+        this!internal
     }
     func Cell.Length() {
         1
@@ -263,7 +263,7 @@
     type Record(fields...) {
         let data = fields
     }
-    func get Record[index] => ini.data[index]
+    func get Record[index] => this!data[index]
     var p = Record(name: "John", age: 33)
     assert("John", p["name"])
     assert(33, p.age)
@@ -384,12 +384,12 @@
         let buffer = []
     } with Lookup
 
-    func StringBuilder.Append(val) => ini.buffer.Add(val.ToString())
-    func StringBuilder.Clear() => ini.buffer.Clear()
-    func StringBuilder.ToString() => String.Concat(values: ini.buffer)
+    func StringBuilder.Append(val) => this!buffer.Add(val.ToString())
+    func StringBuilder.Clear() => this!buffer.Clear()
+    func StringBuilder.ToString() => String.Concat(values: this!buffer)
     func StringBuilder.Length() {
         var count = 0
-        for x in ini.buffer {
+        for x in this!buffer {
             count += x.Length()
         }
         return count
@@ -511,8 +511,8 @@
         var box
     }
 
-    func get Foo.Box() => ini.box
-    func set Foo.Box(value) => ini.box = value
+    func get Foo.Box() => this!box
+    func set Foo.Box(value) => this!box = value
 
     let f = Foo()
     assert(42, f.Box ?? 42)
@@ -587,7 +587,7 @@
         throw @InvalidValue(x) when x == 0
         let num = abs(x)
     } with Lookup
-    func Nat as Integer => ini.num
+    func Nat as Integer => this!num
     var x = Nat(12)
     assert(12, x as Integer)
     x = Nat(-24)

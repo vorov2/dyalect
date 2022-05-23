@@ -1,5 +1,6 @@
 # 0.46.4
   * Change: _Code refactoring._
+  * Change: _`Unbox` opcode is no longer used and decomissioned._
   * Add: _Add `Iterator.Fold` method_ ([Issue #927](https://github.com/vorov2/dyalect/issues/927), [docs](https://github.com/vorov2/dyalect/wiki/Iterators#fold)).
   * Fix: _Method invocation has an error that can cause VM to crush_ ([Issue #928](https://github.com/vorov2/dyalect/issues/928)).
 

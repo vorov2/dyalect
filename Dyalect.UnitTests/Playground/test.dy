@@ -8,9 +8,9 @@
 }
 
 func Foo.Test() {
-    ini.y += ini.y
-    ini.z = 100
-    print("y=\(ini.y),z=\(ini.z)")
+    this!y += this!y
+    this!z = 100
+    print("y=\(this!y),z=\(this!z)")
 }
 
 type Maybe = {
