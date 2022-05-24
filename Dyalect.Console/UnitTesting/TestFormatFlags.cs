@@ -1,14 +1,12 @@
 ﻿using System;
+namespace Dyalect.UnitTesting;
 
-namespace Dyalect.UnitTesting
+[Flags]
+public enum TestFormatFlags
 {
-    [Flags]
-    public enum TestFormatFlags
-    {
-        None = 0x00,
+    None = 0x00,
 
-        OnlyFailed = 0x01,
+    OnlyFailed = 0x01,
 
-        Markdown = 0x02
-    }
+    Markdown = 0x02
 }

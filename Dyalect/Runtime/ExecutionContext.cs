@@ -1,48 +1,55 @@
 ﻿using Dyalect.Debug;
 using Dyalect.Runtime.Types;
 using System.Collections.Generic;
-using System.Linq;
-
 namespace Dyalect.Runtime;
 
-public class ExecutionContext
+public sealed class ExecutionContext
 {
     internal int RgDI; //RgDI register
     internal int RgFI; //RgFI register
     internal int CallCnt; //Call counter
 
-    internal ExecutionContext(CallStack callStack, RuntimeContext rtx)
-    {
-        CallStack = callStack;
-        CatchMarks = new();
-        RuntimeContext = rtx;
-    }
+    internal int UnitId { get; set; }
 
-    public RuntimeContext RuntimeContext { get; }
-
-    public bool HasErrors => Error != null;
-
-    public ExecutionContext Clone() => new(CallStack, RuntimeContext);
+    internal int CallerUnitId { get; set; }
 
     internal CallStack CallStack { get; }
 
-    internal SectionStack CatchMarks { get; }
+    public RuntimeContext RuntimeContext { get; }
 
-    internal DyFunction? EtaFunction { get; set; }
+    internal ExecutionContext(CallStack callStack, RuntimeContext rtx) =>
+        (CallStack, CatchMarks, RuntimeContext) = (callStack, new(), rtx);
 
-    internal DyObject InvokeEtaFunction(params DyObject[] args)
+    internal ExecutionContext(RuntimeContext rtx) : this(new(), rtx) { }
+
+    public ExecutionContext Clone() => new(CallStack, RuntimeContext);
+
+    #region CallBack
+    internal DyFunction? CallBackFunction { get; set; }
+
+    internal DyObject InvokeCallBackFunction(params DyObject[] args)
     {
-        var fn = EtaFunction!;
-        EtaFunction = null;
+        var fn = CallBackFunction!;
+        CallBackFunction = null;
         Error = null;
         return fn.Call(this, args);
     }
+    #endregion
+
+    #region Critical sections
+    internal SectionStack CatchMarks { get; }
+
+    internal Stack<int>? Sections { get; set; }
+    #endregion
+
+    #region Errors
+    public bool HasErrors => Error != null;
 
     private DyVariant? _error;
-    internal virtual DyVariant? Error
+    public DyVariant? Error
     {
         get => _error;
-        set
+        internal set
         {
             if (_error is null || value is null)
                 _error = value;
@@ -52,11 +59,6 @@ public class ExecutionContext
     internal Stack<StackPoint>? ErrorDump { get; set; }
 
     internal CallStackTrace? Trace { get; set; }
-
-    internal Stack<int>? Sections { get; set; }
-
-    internal int UnitId;
-    internal int CallerUnitId;
 
     public DyVariant? PopError()
     {
@@ -74,8 +76,7 @@ public class ExecutionContext
             throw new DyCodeException(err);
         }
     }
-
-    public T Type<T>() where T : DyTypeInfo => RuntimeContext.Types.OfType<T>().First();
+    #endregion
 
     #region Context variables
     private readonly object syncRoot = new();

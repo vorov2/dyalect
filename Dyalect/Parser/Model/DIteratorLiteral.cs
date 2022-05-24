@@ -1,28 +1,26 @@
 ﻿using System.Collections.Generic;
 using System.Text;
+namespace Dyalect.Parser.Model;
 
-namespace Dyalect.Parser.Model
+public sealed class DIteratorLiteral : DNode
 {
-    public sealed class DIteratorLiteral : DNode
+    public DIteratorLiteral(Location loc) : base(NodeType.Iterator, loc) { }
+
+    public DYieldBlock YieldBlock { get; set; } = null!;
+
+    internal override void ToString(StringBuilder sb)
     {
-        public DIteratorLiteral(Location loc) : base(NodeType.Iterator, loc) { }
-
-        public DYieldBlock YieldBlock { get; set; } = null!;
-
-        internal override void ToString(StringBuilder sb)
-        {
-            sb.Append("yields {");
-            YieldBlock.ToString(sb);
-            sb.Append('}');
-        }
+        sb.Append("yields {");
+        YieldBlock.ToString(sb);
+        sb.Append('}');
     }
+}
 
-    public sealed class DYieldBlock : DNode
-    {
-        public DYieldBlock(Location loc) : base(NodeType.YieldBlock, loc) { }
+public sealed class DYieldBlock : DNode
+{
+    public DYieldBlock(Location loc) : base(NodeType.YieldBlock, loc) { }
 
-        public List<DNode> Elements { get; } = new();
+    public List<DNode> Elements { get; } = new();
 
-        internal override void ToString(StringBuilder sb) => Elements.ToString(sb);
-    }
+    internal override void ToString(StringBuilder sb) => Elements.ToString(sb);
 }

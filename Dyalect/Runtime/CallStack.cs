@@ -7,8 +7,8 @@ internal sealed class CallStack : IEnumerable<Caller>
 {
     private const int DefaultSize = 6;
 
-    private Caller[] array;
     private readonly int initialSize;
+    private Caller[] array;
 
     public int Count { get; private set; }
 
@@ -20,11 +20,7 @@ internal sealed class CallStack : IEnumerable<Caller>
 
     public CallStack() : this(DefaultSize) { }
 
-    private CallStack(int size)
-    {
-        this.initialSize = size;
-        array = new Caller[size];
-    }
+    private CallStack(int size) => (initialSize, array) = (size, new Caller[size]);
 
     public IEnumerator<Caller> GetEnumerator() => array.Take(Count).GetEnumerator();
 

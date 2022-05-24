@@ -2,7 +2,7 @@
 
 public class BuildMessage
 {
-    private const string ERR_FORMAT = "{0}({1},{2}): {3} D{4}: {5}";
+    private const string ErrorFormat = "{0}({1},{2}): {3} D{4}: {5}";
 
     public BuildMessage(string message, BuildMessageType type, int code, int line, int col, string? file)
     {
@@ -21,7 +21,7 @@ public class BuildMessage
             : Type == BuildMessageType.Hint ? "Information"
             : "";
         var scode = Code.ToString().PadLeft(3, '0');
-        return string.Format(ERR_FORMAT, GetFileName(), Line, Column, stype, scode, Message);
+        return string.Format(ErrorFormat, GetFileName(), Line, Column, stype, scode, Message);
     }
 
     protected string GetFileName() => File ?? "<memory>";

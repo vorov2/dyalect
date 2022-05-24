@@ -83,7 +83,7 @@ partial class Builder
 
         var inc = false;
 
-        if (node.Pattern.NodeType == NodeType.NamePattern && !char.IsUpper(node.Pattern.GetName()![0]!))
+        if (node.Pattern.NodeType == NodeType.NamePattern && !char.IsUpper(((DNamePattern)node.Pattern).Name[0]!))
             inc = true;
 
         var sys = AddVariable();
@@ -105,7 +105,7 @@ partial class Builder
 
         if (inc)
         {
-            var ai = AddVariable(node.Pattern.GetName()!, node.Pattern.Location, VarFlags.None);
+            var ai = AddVariable(((DNamePattern)node.Pattern).Name!, node.Pattern.Location, VarFlags.None);
             cw.PopVar(ai);
         }
         else
@@ -146,7 +146,7 @@ partial class Builder
             || node.Target.NodeType is not NodeType.Range)
             return false;
 
-        var incName = node.Pattern.GetName();
+        var incName = node.Pattern is INamedNode nn ? nn.NodeName : null;
 
         if (incName is not null && incName.Length > 0 && char.IsUpper(incName[0]))
             return false;

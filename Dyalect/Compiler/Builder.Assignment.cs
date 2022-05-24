@@ -124,7 +124,9 @@ partial class Builder
 
         if (node.Target.NodeType == node.Value.NodeType
             && node.Target.NodeType == NodeType.Name
-            && node.Target.GetName() == node.Value.GetName()
+            && node.Target is INamedNode nn1
+            && node.Value is INamedNode nn2
+            && nn1.NodeName == nn2.NodeName
             && node.AutoAssign is null)
             AddWarning(CompilerWarning.AssignmentSameVariable, node.Location);
     }

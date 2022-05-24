@@ -7,7 +7,7 @@ namespace Dyalect.Runtime;
 
 public static partial class DyMachine
 {
-    private const int MAX_NESTED_CALLS = 200;
+    private const int MaxNestedCalls = 200;
 
     private static DyNativeFunction Global(int unitId) => new(null, unitId, 0, FastList<DyObject[]>.Empty, -1);
 
@@ -65,7 +65,7 @@ public static partial class DyMachine
     {
         ctx.CallCnt++;
 
-        if (ctx.CallCnt > MAX_NESTED_CALLS)
+        if (ctx.CallCnt > MaxNestedCalls)
             throw new DyRuntimeException(RuntimeErrors.StackOverflow_0);
         
         DyObject? first, second = null, third = null;
@@ -105,9 +105,6 @@ public static partial class DyMachine
                     break;
                 case OpCode.This:
                     evalStack.Push(function.Self!);
-                    break;
-                case OpCode.Unbox:
-                    evalStack.Push(function.Self is DyClass c ? c.Inits : DyTuple.Empty);
                     break;
                 case OpCode.Term:
                     if (evalStack.Size is > 1 or 0)
@@ -281,22 +278,22 @@ public static partial class DyMachine
                 case OpCode.Neg:
                     first = evalStack.Peek();
                     evalStack.Replace(types[first.TypeId].Neg(ctx, first));
-                    if (ctx.Error is not null) goto HANDLE;
+                    if (ctx.Error is not null) goto HANDLE0;
                     break;
                 case OpCode.Not:
                     first = evalStack.Peek();
                     evalStack.Replace(types[first.TypeId].Not(ctx, first));
-                    if (ctx.Error is not null) goto HANDLE;
+                    if (ctx.Error is not null) goto HANDLE0;
                     break;
                 case OpCode.BitNot:
                     first = evalStack.Peek();
                     evalStack.Replace(types[first.TypeId].BitwiseNot(ctx, first));
-                    if (ctx.Error is not null) goto HANDLE;
+                    if (ctx.Error is not null) goto HANDLE0;
                     break;
                 case OpCode.Len:
                     first = evalStack.Peek();
                     evalStack.Replace(types[first.TypeId].Length(ctx, first));
-                    if (ctx.Error is not null) goto HANDLE;
+                    if (ctx.Error is not null) goto HANDLE0;
                     break;
                 case OpCode.Dup:
                     evalStack.Dup();
@@ -429,7 +426,7 @@ public static partial class DyMachine
                 case OpCode.Str:
                     first = evalStack.Peek();
                     evalStack.Replace(types[first.TypeId].ToString(ctx, first));
-                    if (ctx.Error is not null) goto HANDLE;
+                    if (ctx.Error is not null) goto HANDLE0;
                     break;
                 case OpCode.RunMod:
                     ExecuteModule(unit.UnitIds[op.Data], ctx);
@@ -675,6 +672,7 @@ public static partial class DyMachine
                     first = evalStack.Pop();
                     third = evalStack.Pop();
                     evalStack.Push(new DyClass((DyClassInfo)second, (string)unit.Strings[op.Data], (DyTuple)first, (DyTuple)third, unit));
+                    third = null;
                     break;
                 case OpCode.NewType:
                     clsInfo = new DyClassInfo((string)unit.Strings[op.Data], types.Count);
@@ -698,6 +696,8 @@ public static partial class DyMachine
             }
         }
         goto CYCLE;
+    HANDLE0:
+        second = null;
     HANDLE:
         evalStack.Pop();
         if (TryCall(ctx, offset, ref second, ref third, ref function, ref locals, ref evalStack))

@@ -1,11 +1,10 @@
-﻿namespace Dyalect.Parser.Model
+﻿namespace Dyalect.Parser.Model;
+
+public enum UnaryOperator
 {
-    public enum UnaryOperator
-    {
-        None,
-        Not,
-        Neg,
-        Plus,
-        BitwiseNot
-    }
+    None,
+    Not,
+    Neg,
+    Plus,
+    BitwiseNot
 }

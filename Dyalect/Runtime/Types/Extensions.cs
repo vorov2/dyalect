@@ -101,7 +101,7 @@ public static class Extensions
             var ret = format is null ? t.ToString(ctx, self) : t.ToStringWithFormat(ctx, self, format);
 
             if (ReferenceEquals(ctx.Error, DyVariant.Eta))
-                ret = format is null ? ctx.InvokeEtaFunction() : ctx.InvokeEtaFunction(format);
+                ret = format is null ? ctx.InvokeCallBackFunction() : ctx.InvokeCallBackFunction(format);
 
             return ret is DyString s ? s : new DyString(ret.ToString());
         }
@@ -113,7 +113,7 @@ public static class Extensions
         var ret = type.Eq(ctx, left, right);
 
         if (ReferenceEquals(ctx.Error, DyVariant.Eta))
-            ret = ctx.InvokeEtaFunction(right);
+            ret = ctx.InvokeCallBackFunction(right);
 
         return ret.IsTrue();
     }
@@ -124,7 +124,7 @@ public static class Extensions
         var ret = type.Neq(ctx, left, right);
 
         if (ReferenceEquals(ctx.Error, DyVariant.Eta))
-            ret = ctx.InvokeEtaFunction(right);
+            ret = ctx.InvokeCallBackFunction(right);
 
         return ret.IsTrue();
     }
@@ -135,7 +135,7 @@ public static class Extensions
         var ret = type.Lt(ctx, left, right);
 
         if (ReferenceEquals(ctx.Error, DyVariant.Eta))
-            ret = ctx.InvokeEtaFunction(right);
+            ret = ctx.InvokeCallBackFunction(right);
 
         return ret.IsTrue();
     }
@@ -146,7 +146,7 @@ public static class Extensions
         var ret = type.Lte(ctx, left, right);
 
         if (ReferenceEquals(ctx.Error, DyVariant.Eta))
-            ret = ctx.InvokeEtaFunction(right);
+            ret = ctx.InvokeCallBackFunction(right);
 
         return ret.IsTrue();
     }
@@ -157,7 +157,7 @@ public static class Extensions
         var ret = type.Gt(ctx, left, right);
 
         if (ReferenceEquals(ctx.Error, DyVariant.Eta))
-            ret = ctx.InvokeEtaFunction(right);
+            ret = ctx.InvokeCallBackFunction(right);
 
         return ret.IsTrue();
     }
@@ -168,7 +168,7 @@ public static class Extensions
         var ret = type.Gte(ctx, left, right);
 
         if (ReferenceEquals(ctx.Error, DyVariant.Eta))
-            ret = ctx.InvokeEtaFunction(right);
+            ret = ctx.InvokeCallBackFunction(right);
 
         return ret.IsTrue();
     }
@@ -180,7 +180,7 @@ public static class Extensions
         var ret = type.Add(ctx, self, right);
 
         if (ReferenceEquals(ctx.Error, DyVariant.Eta))
-            ret = ctx.InvokeEtaFunction(right);
+            ret = ctx.InvokeCallBackFunction(right);
 
         return ret;
     }
@@ -191,7 +191,7 @@ public static class Extensions
         var ret = type.Add(ctx, left, right);
 
         if (ReferenceEquals(ctx.Error, DyVariant.Eta))
-            ret = ctx.InvokeEtaFunction(right);
+            ret = ctx.InvokeCallBackFunction(right);
 
         return ret;
     }
@@ -202,7 +202,7 @@ public static class Extensions
         var ret = type.Neg(ctx, self);
 
         if (ReferenceEquals(ctx.Error, DyVariant.Eta))
-            ret = ctx.InvokeEtaFunction();
+            ret = ctx.InvokeCallBackFunction();
 
         return ret;
     }

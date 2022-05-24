@@ -1,71 +1,70 @@
-﻿namespace Dyalect.Parser
+﻿namespace Dyalect.Parser;
+
+public enum ParserError
 {
-    public enum ParserError
-    {
-        None = 0,
+    None = 0,
 
-        Undefined = 1,
+    Undefined = 1,
 
-        TokenExpected = 2,
+    TokenExpected = 2,
 
-        InvalidStandardOperators = 3,
+    InvalidStandardOperators = 3,
 
-        InvalidFunctionName = 4,
+    InvalidFunctionName = 4,
 
-        InvalidStatement = 5,
+    InvalidStatement = 5,
 
-        InvalidBinding = 6,
+    InvalidBinding = 6,
 
-        InvalidExpression = 7,
+    InvalidExpression = 7,
 
-        InvalidIf = 8,
+    InvalidIf = 8,
 
-        InvalidFunctionExpression = 9,
+    InvalidFunctionExpression = 9,
 
-        InvalidUnary = 10,
+    InvalidUnary = 10,
 
-        InvalidLiteral = 11,
+    InvalidLiteral = 11,
 
-        CodeIslandsNotAllowed = 12,
+    CodeIslandsNotAllowed = 12,
 
-        CodeIslandInvalid = 13,
+    CodeIslandInvalid = 13,
 
-        InvalidEscapeCode = 14,
+    InvalidEscapeCode = 14,
 
-        SemanticError = 15,
+    SemanticError = 15,
 
-        InvalidPattern = 16,
+    InvalidPattern = 16,
 
-        InvalidSyntax = 17,
+    InvalidSyntax = 17,
 
-        InvalidCharLiteral = 18,
+    InvalidCharLiteral = 18,
 
-        InvalidTryCatch = 19,
+    InvalidTryCatch = 19,
 
-        InvalidLabel = 20,
+    InvalidLabel = 20,
 
-        InvalidImport = 21,
+    InvalidImport = 21,
 
-        InvalidApplicationArguments = 22,
-        
-        Deprecated = 23,
+    InvalidApplicationArguments = 22,
+    
+    Deprecated = 23,
 
-        InvalidTypeName = 34,
+    InvalidTypeName = 34,
 
-        InvalidRegion = 35,
+    InvalidRegion = 35,
 
-        InvalidFunction = 36,
+    InvalidFunction = 36,
 
-        InvalidYield = 37,
+    InvalidYield = 37,
 
-        InvalidRange = 38,
+    InvalidRange = 38,
 
-        InvalidIdentifier = 39,
+    InvalidIdentifier = 39,
 
-        InvalidApplicationOperator = 40,
+    InvalidApplicationOperator = 40,
 
-        InvalidIndex = 41,
+    InvalidIndex = 41,
 
-        ExpectedFunction = 42
-    }
+    ExpectedFunction = 42
 }

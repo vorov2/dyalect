@@ -430,9 +430,9 @@ partial class Builder
             cw.This();
             cw.PopVar(va);
 
-            va = AddVariable("ini", node.Location, data: VarFlags.Const);
-            cw.Unbox();
-            cw.PopVar(va);
+            //va = AddVariable("ini", node.Location, data: VarFlags.Const);
+            //cw.Unbox();
+            //cw.PopVar(va);
         }
         
         if ((node.Getter || node.Setter) && node.TypeName is null)

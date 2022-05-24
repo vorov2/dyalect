@@ -7,13 +7,13 @@ public abstract class DPattern : DNode
     protected DPattern(Location loc, NodeType type) : base(type, loc) { }
 }
 
-public sealed class DNamePattern : DPattern
+public sealed class DNamePattern : DPattern, INamedNode
 {
     public DNamePattern(Location loc) : base(loc, NodeType.NamePattern) { }
 
     public string Name { get; set; } = null!;
 
-    protected internal override string? GetName() => Name;
+    public string NodeName => Name;
 
     internal bool IsConstructor { get; set; }
 
@@ -139,15 +139,13 @@ public sealed class DNilPattern : DPattern
     public override bool Equals(object? obj) => obj is DNilPattern;
 }
 
-public abstract class DSequencePattern : DPattern
+public abstract class DSequencePattern : DPattern, INodeContainer
 {
     protected DSequencePattern(Location loc, NodeType nodeType) : base(loc, nodeType) { }
 
     public List<DNode> Elements { get; } = new List<DNode>();
 
-    protected internal override int GetElementCount() => Elements.Count;
-
-    protected internal override List<DNode> ListElements() => Elements;
+    public int NodeCount => Elements.Count;
 }
 
 public sealed class DTuplePattern : DSequencePattern

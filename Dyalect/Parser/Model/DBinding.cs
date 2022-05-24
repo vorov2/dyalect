@@ -1,32 +1,28 @@
 ﻿using System.Text;
+namespace Dyalect.Parser.Model;
 
-namespace Dyalect.Parser.Model
+public sealed class DBinding : DBindingBase
 {
-    public sealed class DBinding : DBindingBase
+    public DBinding(Location loc) : base(NodeType.Binding, loc) { }
+
+    public bool AutoClose { get; set; }
+
+    public bool Constant { get; set; }
+
+    public bool Lazy { get; set; }
+
+    internal override void ToString(StringBuilder sb)
     {
-        public DBinding(Location loc) : base(NodeType.Binding, loc) { }
+        if (AutoClose)
+            sb.Append("auto ");
 
-        public bool AutoClose { get; set; }
+        sb.Append(Constant ? "let " : Lazy ? "lazy" : "var ");
+        Pattern.ToString(sb);
 
-        public bool Constant { get; set; }
-
-        public bool Lazy { get; set; }
-
-        protected internal override bool HasAuto() => AutoClose;
-
-        internal override void ToString(StringBuilder sb)
+        if (Init is not null)
         {
-            if (AutoClose)
-                sb.Append("auto ");
-
-            sb.Append(Constant ? "let " : Lazy ? "lazy" : "var ");
-            Pattern.ToString(sb);
-
-            if (Init is not null)
-            {
-                sb.Append(" = ");
-                Init.ToString(sb);
-            }
+            sb.Append(" = ");
+            Init.ToString(sb);
         }
     }
 }
