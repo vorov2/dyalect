@@ -586,48 +586,94 @@
 
 #region "Complex iterator"
     func sequence(first, next) {
-	    var cur = first
-	    while cur {
-		    yield cur
-		    cur = next(cur)
-	    }
+        var cur = first
+        while cur {
+            yield cur
+            cur = next(cur)
+        }
     }
     type List = Cons(value, List next) or Empty() with Lookup
     func get List.HasValue() => this is not Empty()
     func List.Reverse() {
-	    var xs = List.Empty()
-	    for x in sequence(this, x => x.next.HasValue ? x.next : nil) {
-		    xs = List.Cons(x.value, xs)
-	    }
-	    return xs
+        var xs = List.Empty()
+        for x in sequence(this, x => x.next.HasValue ? x.next : nil) {
+            xs = List.Cons(x.value, xs)
+        }
+        return xs
     }
     func List.Iterate() {
-	    func iter() {
-		    for x in sequence(this, x => x.next is not Empty() ? x.next : nil) {
-			    yield x.value
-		    }
-	    }
-	    return iter()
+        func iter() {
+            for x in sequence(this, x => x.next is not Empty() ? x.next : nil) {
+                yield x.value
+            }
+        }
+        return iter()
     }
     func List.ToString() {
-	    let xs = []
-	    for x in this {
-		    xs.Add(x)
-	    }
-	    return "List " + String.Join(xs, separator: ", ")
+        let xs = []
+        for x in this {
+            xs.Add(x)
+        }
+        return "List " + String.Join(xs, separator: ", ")
     }
     static func List.List(values) {
-	    var xs = List.Empty()
-	    for x in values {
-		    xs = List.Cons(x, xs)
-	    }
-	    return xs.Reverse()
+        var xs = List.Empty()
+        for x in values {
+            xs = List.Cons(x, xs)
+        }
+        return xs.Reverse()
     }
     let xs = List << [1..10]
     let ys = []
     for x in xs {
-	    ys.Add(x)
+        ys.Add(x)
     }
     assert([1,2,3,4,5,6,7,8,9,10], ys)
     assert("List [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]", xs.ToString())
+#endregion
+
+#region "Lah numbers"
+    func fact(n) =>
+        n is 0 ? 1 : (n^-1..<0).Fold(1, (acc, val) => acc * val)
+
+    func lah(n, k) {
+        return fact(n) when k is 1
+        return 1 when k == n
+        return 0 when k > n || k < 1 || n < 1
+        (fact(n) * fact(n - 1)) / (fact(k) * fact(k - 1)) / fact(n - k)
+    }
+ 
+    let xs = []
+    (0..12).ForEach(row => {
+        row >> "{0,-3}".Format >> xs.Add
+        (0..row).ForEach(i => lah(row, i) >> "{0,11}".Format >> xs.Add)
+        xs.Add("\n")
+    })
+
+    let str = String.Concat(values: xs)
+    let pattern = <[0            1
+    1            0          1
+    2            0          2          1
+    3            0          6          6          1
+    4            0         24         36         12          1
+    5            0        120        240        120         20          1
+    6            0        720       1800       1200        300         30          1
+    7            0       5040      15120      12600       4200        630         42          1
+    8            0      40320     141120     141120      58800      11760       1176         56          1
+    9            0     362880    1451520    1693440     846720     211680      28224       2016         72          1
+    10           0    3628800   16329600   21772800   12700800    3810240     635040      60480       3240         90          1
+    11           0   39916800  199584000  299376000  199584000   69854400   13970880    1663200     118800       4950        110          1
+    12           0  479001600 2634508800 4390848000 3293136000 1317254400  307359360   43908480    3920400     217800       7260        132          1]>
+
+    func normalize(str) {
+        var xs = []
+        for x in str {
+            if x is not '\s' and not '\t' and not '\n' and not '\r' {
+                xs.Add(x)
+            }
+        }
+        String.Concat(values: xs)
+    }
+
+    assert(normalize(pattern), normalize(str))
 #endregion
