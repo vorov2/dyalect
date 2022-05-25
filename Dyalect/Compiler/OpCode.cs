@@ -9,14 +9,11 @@ public enum OpCode
     PushNil,    //+1
     PushI1_0,   //+1
     PushI1_1,   //+1
-    PushI8,     //+1
     PushI8_0,   //+1
     PushI8_1,   //+1
-    PushR8,     //+1
     PushR8_0,   //+1
     PushR8_1,   //+1
-    PushStr,    //+1
-    PushCh,     //+1
+    PushObj,    //+1
     Br,         //0
     Brtrue,     //-1
     Brfalse,    //-1

@@ -11,14 +11,11 @@ internal static class OpSizeHelper
         0, //PushNil
         0, //PushI1_0
         0, //PushI1_1
-        1, //PushI8
         0, //PushI8_0
         0, //PushI8_1
-        1, //PushR8
         0, //PushR8_0
         0, //PushR8_1
-        1, //PushStr
-        1, //PushCh
+        1, //PushObj
         1, //Br
         1, //Brtrue
         1, //Brfalse

@@ -1,3 +1,6 @@
+# 0.46.5
+  * Change: _Instruction set for virtual machine is simplified._
+
 # 0.46.4
   * Change: _Code refactoring._
   * Change: _`Unbox` opcode is no longer used and decomissioned._

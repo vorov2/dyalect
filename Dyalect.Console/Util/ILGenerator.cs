@@ -106,17 +106,17 @@ public static class ILGenerator
             
             switch (op.Code)
             {
-                case OpCode.PushI8:
-                case OpCode.PushR8:
-                    sb.Append($" {unit.Objects[op.Data].ToObject()}");
-                    break;
-                case OpCode.PushStr:
-                    var str = unit.Objects[op.Data].ToString();
-                    sb.Append($" {StringUtil.Escape(str)}");
-                    break;
-                case OpCode.PushCh:
-                    var str2 = unit.Objects[op.Data].ToString();
-                    sb.Append($" {StringUtil.Escape(str2, "'")}");
+                case OpCode.PushObj:
+                    {
+                        var obj = unit.Objects[op.Data];
+
+                        if (obj.TypeId is Dy.String)
+                            sb.Append($" {StringUtil.Escape(obj.ToString())}");
+                        else if (obj.TypeId is Dy.Char)
+                            sb.Append($" {StringUtil.Escape(obj.ToString(), "'")}");
+                        else
+                            sb.Append($" {obj.ToObject()}");
+                    }
                     break;
                 case OpCode.Br:
                 case OpCode.Brtrue:

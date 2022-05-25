@@ -116,14 +116,14 @@ public static partial class DyMachine
                 case OpCode.Pop:
                     evalStack.PopVoid();
                     break;
+                case OpCode.PushObj:
+                    evalStack.Push(unit.Objects[op.Data]);
+                    break;
                 case OpCode.PushNil:
                     evalStack.Push(DyNil.Instance);
                     break;
                 case OpCode.PushNilT:
                     evalStack.Push(DyNil.Terminator);
-                    break;
-                case OpCode.PushCh:
-                    evalStack.Push(unit.Objects[op.Data]);
                     break;
                 case OpCode.PushI1_1:
                     evalStack.Push(True);
@@ -137,20 +137,11 @@ public static partial class DyMachine
                 case OpCode.PushI8_0:
                     evalStack.Push(DyInteger.Zero);
                     break;
-                case OpCode.PushI8:
-                    evalStack.Push(unit.Objects[op.Data]);
-                    break;
                 case OpCode.PushR8_0:
                     evalStack.Push(DyFloat.Zero);
                     break;
                 case OpCode.PushR8_1:
                     evalStack.Push(DyFloat.One);
-                    break;
-                case OpCode.PushR8:
-                    evalStack.Push(unit.Objects[op.Data]);
-                    break;
-                case OpCode.PushStr:
-                    evalStack.Push(unit.Objects[op.Data]);
                     break;
                 case OpCode.Poploc:
                     locals[op.Data] = evalStack.Pop();
