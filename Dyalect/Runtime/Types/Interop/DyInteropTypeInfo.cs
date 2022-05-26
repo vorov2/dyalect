@@ -250,9 +250,9 @@ internal partial class DyInteropTypeInfo : DyTypeInfo
     [StaticProperty]
     internal static DyObject Single() => new DyInterop(BCL.Single);
     
-    [StaticProperty("Array")]
+    [StaticProperty(Method.Array)]
     internal static DyObject SystemArray() => new DyInterop(BCL.Array);
 
-    [StaticProperty("Type")]
+    [StaticProperty(Method.Type)]
     internal static DyObject SystemType() => new DyInterop(BCL.Type);
 }

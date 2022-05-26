@@ -4,10 +4,8 @@ namespace Dyalect.Runtime.Types;
 
 internal class DyShowMixin : DyMixin<DyShowMixin>
 {
-    public DyShowMixin() : base(Dy.Show)
-    {
+    public DyShowMixin() : base(Dy.Show) =>
         Members.Add(Builtins.String, Unary(Builtins.String, Show));
-    }
 
     private static DyObject Show(ExecutionContext ctx, DyObject arg)
     {

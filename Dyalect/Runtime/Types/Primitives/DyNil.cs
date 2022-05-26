@@ -2,7 +2,6 @@
 
 public class DyNil : DyObject
 {
-    internal const string Literal = "nil";
     public static readonly DyNil Instance = new();
     internal static readonly DyNil Terminator = new DyNilTerminator();
 
@@ -14,7 +13,7 @@ public class DyNil : DyObject
 
     public override object ToObject() => null!;
 
-    public override string ToString() => Literal;
+    public override string ToString() => "nil";
 
     public override bool Equals(DyObject? other) => ReferenceEquals(this, other);
 
