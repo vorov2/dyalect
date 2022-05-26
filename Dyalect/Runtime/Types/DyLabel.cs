@@ -1,20 +1,17 @@
-﻿using Dyalect.Parser;
-using System.Collections.Generic;
-using System.Text;
-
+﻿using System.Collections.Generic;
 namespace Dyalect.Runtime.Types;
 
 public sealed class DyLabel : DyObject
 {
     private List<DyTypeInfo>? typeAnnotations;
 
-    internal bool Mutable;
-
     public override string TypeName => nameof(Dy.Label);
     
     public string Label { get; }
 
     public DyObject Value { get; internal set; }
+
+    internal bool Mutable { get; set; }
 
     public DyLabel(string label, DyObject value, bool mutable = false) : base(Dy.Label) =>
         (Label, Value, Mutable) = (label, value, mutable);
@@ -63,6 +60,4 @@ public sealed class DyLabel : DyObject
     }
 
     public override DyObject Clone() => new DyLabel(Label, Value.Clone(), Mutable);
-
-    
 }

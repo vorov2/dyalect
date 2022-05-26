@@ -32,6 +32,17 @@ internal sealed partial class Lang : ForeignUnit
     [StaticMethod("toString")]
     public static string DirectToString(DyObject value) => value.ToString();
 
+    [StaticMethod("length")]
+    public static DyObject GetLength(DyObject value)
+    {
+        if (value is IMeasurable seq)
+            return new DyInteger(seq.Count);
+        else if (value is DyClass cls)
+            return new DyInteger(cls.Fields.Count);
+        else
+            return Nil;
+    }
+
     [StaticMethod("referenceEquals")]
     public static bool Equals(DyObject value, DyObject other) => ReferenceEquals(value, other);
 

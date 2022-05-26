@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 namespace Dyalect.Runtime.Types;
 
-public abstract class DyEnumerable : DyObject, IEnumerable<DyObject>
+public abstract class DyEnumerable : DyObject, IEnumerable<DyObject>, IMeasurable
 {
     internal protected int Version { get; protected set; }
 

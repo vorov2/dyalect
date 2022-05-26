@@ -1,5 +1,7 @@
 # 0.46.5
-  * Change: _Instruction set for virtual machine is simplified._
+  * Change: _Code refactoring._
+  * Change: _Instruction set for virtual machine is simplified_ ([Issue #930](https://github.com/vorov2/dyalect/issues/930), [docs](https://github.com/vorov2/dyalect/wiki/Standard-functions#length)).
+  * Add: _Add a built-in `length` function_ 
 
 # 0.46.4
   * Change: _Code refactoring._
