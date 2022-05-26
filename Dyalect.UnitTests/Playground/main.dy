@@ -1,6 +1,0 @@
-﻿type Employee()
-
-func Employee.ToString() => "Employee"
-
-let e = Employee()
-e.ToString()
