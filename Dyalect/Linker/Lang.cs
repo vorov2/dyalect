@@ -243,7 +243,7 @@ internal sealed partial class Lang : ForeignUnit
 
     [StaticMethod("round")]
     public static double Round(double number, int digits = 2) => Math.Round(number, digits);
-    
+
     [StaticMethod("sign")]
     public static DyObject Sign(ExecutionContext ctx, DyObject x)
     {

@@ -1,3 +1,8 @@
+# 0.46.6
+  * Fix: _Function `parse` incorrectly reports errors_ ([Issue #933](https://github.com/vorov2/dyalect/issues/933)).
+  * Fix: _Function `parse` doesn't recognize dictionary literal_ ([Issue #934](https://github.com/vorov2/dyalect/issues/934)).
+  * Fix: _Function `parse` doesn't recognize variant literal_ ([Issue #935](https://github.com/vorov2/dyalect/issues/935)).
+
 # 0.46.5
   * Change: _Code refactoring._
   * Change: _Instruction set for virtual machine is simplified_.
