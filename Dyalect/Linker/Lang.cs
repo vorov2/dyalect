@@ -106,6 +106,36 @@ internal sealed partial class Lang : ForeignUnit
             return value.TypeName;
     }
 
+    [StaticMethod("instanceMember")]
+    public static DyObject GetInstanceMember(ExecutionContext ctx, DyObject value, string name)
+    {
+        var member = ctx.RuntimeContext.Types[value.TypeId].LookupInstanceMember(ctx, value, name);
+
+        if (member is not null)
+        {
+            if (member.Auto)
+            {
+                member = member.BindToInstance(ctx, value);
+                var setter = ctx.RuntimeContext.Types[value.TypeId].LookupInstanceMember(ctx, value, "set_" + name);
+                if (setter is not null)
+                    return new DyPropertyFunction(name, member, setter.BindToInstance(ctx, value));
+                return member;
+            }
+
+            return member.BindToInstance(ctx, value);
+        }
+
+        return Nil;
+    }
+
+    [StaticMethod("staticMember")]
+    public static DyObject GetStaticMember(ExecutionContext ctx, DyObject value, string name)
+    {
+        var typeId = value is DyTypeInfo typ ? typ.ReflectedTypeId : value.TypeId;
+        var member = ctx.RuntimeContext.Types[typeId].LookupStaticMember(ctx, name);
+        return member ?? Nil;
+    }
+
     [StaticMethod("rawget")]
     public static DyObject RawGet(ExecutionContext ctx, DyObject values, DyObject index)
     {
@@ -265,7 +295,8 @@ internal sealed partial class Lang : ForeignUnit
         var res = DyParser.Parse(SourceBuffer.FromString(expression));
 
         if (!res.Success)
-            return ctx.ParsingFailed(res.Messages.First().ToString());
+            return ctx.ParsingFailed(res.Messages
+                .Where(m => m.Type == BuildMessageType.Error).First().ToString());
 
         if (res.Value!.Root is null || res.Value!.Root.Nodes.Count == 0)
             return ctx.ParsingFailed("Empty expression.");
@@ -316,7 +347,7 @@ internal sealed partial class Lang : ForeignUnit
         var argsList = new List<DyObject>();
 
         if (args is null)
-            return func!.Invoke(newctx, argsList.ToArray());
+            return func.Invoke(newctx, argsList.ToArray());
         
         var tvv = args.UnsafeAccess();
 
@@ -328,7 +359,7 @@ internal sealed partial class Lang : ForeignUnit
                 argsList.Add(lab.Value);
         }
 
-        return func!.Invoke(newctx, argsList.ToArray());
+        return func.Invoke(newctx, argsList.ToArray());
     }
 
     [StaticMethod("__invoke")]

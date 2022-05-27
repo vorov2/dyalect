@@ -1,6 +1,15 @@
-﻿type Employee()
+﻿type Foo() {
+    var name = "Default"
+}
 
-func Employee.ToString() => "Employee"
+func get Foo.Name() => this!name
 
-let e = Employee()
-e.ToString()
+func set Foo.Name(value) => this!name = value
+
+let foo = Foo()
+
+let fn = instanceMember(foo, "Name")
+print("getter", fn())
+
+fn("John Doe")
+print("getter", fn())

@@ -418,11 +418,11 @@ public abstract class DyTypeInfo : DyObject
     #region Statics
     protected readonly Dictionary<HashString, DyFunction> StaticMembers = new();
 
-    internal bool HasStaticMember(HashString name, ExecutionContext ctx) => LookupStaticMember(name, ctx) is not null;
+    internal bool HasStaticMember(HashString name, ExecutionContext ctx) => LookupStaticMember(ctx, name) is not null;
 
     internal virtual DyObject GetStaticMember(HashString name, ExecutionContext ctx)
     {
-        var ret = LookupStaticMember(name, ctx);
+        var ret = LookupStaticMember(ctx, name);
 
         if (ret is null)
         {
@@ -443,7 +443,7 @@ public abstract class DyTypeInfo : DyObject
 
     internal bool TryGetStaticMember(ExecutionContext ctx, HashString name, out DyObject? value)
     {
-        var func = LookupStaticMember(name, ctx);
+        var func = LookupStaticMember(ctx, name);
 
         if (func is not null)
         {
@@ -459,7 +459,7 @@ public abstract class DyTypeInfo : DyObject
         return false;
     }
 
-    private DyObject? LookupStaticMember(HashString name, ExecutionContext ctx)
+    internal DyObject? LookupStaticMember(ExecutionContext ctx, HashString name)
     {
         if (!StaticMembers.TryGetValue(name, out var value))
         {
@@ -531,11 +531,11 @@ public abstract class DyTypeInfo : DyObject
     protected readonly Dictionary<HashString, DyFunction> Members = new();
     
     internal virtual bool HasInstanceMember(DyObject self, HashString name, ExecutionContext ctx) =>
-        LookupInstanceMember(self, Builtins.OperatorToName((string)name), ctx) is not null;
+        LookupInstanceMember(ctx, self, Builtins.OperatorToName((string)name)) is not null;
 
     internal virtual DyObject GetInstanceMember(DyObject self, HashString name, ExecutionContext ctx)
     {
-        var value = LookupInstanceMember(self, name, ctx);
+        var value = LookupInstanceMember(ctx, self, name);
 
         if (value is not null)
             return value.TryInvokeProperty(ctx, self);
@@ -551,7 +551,7 @@ public abstract class DyTypeInfo : DyObject
 
     internal bool TryGetInstanceMember(ExecutionContext ctx, DyObject self, HashString name, out DyObject? value)
     {
-        var func = LookupInstanceMember(self, name, ctx);
+        var func = LookupInstanceMember(ctx, self, name);
 
         if (func is not null)
         {
@@ -563,7 +563,7 @@ public abstract class DyTypeInfo : DyObject
         return false;
     }
 
-    private DyFunction? LookupInstanceMember(DyObject self, HashString name, ExecutionContext ctx)
+    internal DyFunction? LookupInstanceMember(ExecutionContext ctx, DyObject self, HashString name)
     {
         if (!Members.TryGetValue(name, out var value))
         {
