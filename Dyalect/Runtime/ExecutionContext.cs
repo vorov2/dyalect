@@ -95,6 +95,9 @@ public sealed class ExecutionContext
     }
 
     public bool HasContextVariable(string key) => contextVariables.ContainsKey(key);
+
+    public bool TryGetContextVariable(string key, out object? value) =>
+        contextVariables.TryGetValue(key, out value);
     #endregion
 
     #region ArgContainer
