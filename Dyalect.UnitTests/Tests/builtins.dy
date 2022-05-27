@@ -208,3 +208,9 @@
     type Bar(x)
     assert(1) << length(Bar(42))
 #endregion
+
+#region "clone"
+    assert(true, referenceEquals(42, clone(42)))
+    let xs = [1,2,3]
+    assert(false, referenceEquals(xs, clone(xs)))
+#endregion

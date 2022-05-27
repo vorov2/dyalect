@@ -3,6 +3,7 @@
   * Fix: _Function `parse` incorrectly reports errors_ ([Issue #933](https://github.com/vorov2/dyalect/issues/933)).
   * Fix: _Function `parse` doesn't recognize dictionary literal_ ([Issue #934](https://github.com/vorov2/dyalect/issues/934)).
   * Fix: _Function `parse` doesn't recognize variant literal_ ([Issue #935](https://github.com/vorov2/dyalect/issues/935)).
+  * Add: _Add a global `clone` function as a synonim for `Clone` method_ ([Issue #936](https://github.com/vorov2/dyalect/issues/936), [docs](https://github.com/vorov2/dyalect/wiki/Standard-functions#clone)).
 
 # 0.46.5
   * Change: _Code refactoring._

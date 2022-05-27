@@ -46,6 +46,9 @@ internal sealed partial class Lang : ForeignUnit
     [StaticMethod("referenceEquals")]
     public static bool Equals(DyObject value, DyObject other) => ReferenceEquals(value, other);
 
+    [StaticMethod("clone")]
+    public static DyObject Clone(DyObject value) => value.Clone() ?? Nil;
+
     [StaticMethod("print")]
     public static void Print(ExecutionContext ctx, [VarArg]DyTuple values, [Default(",")]string separator, [Default("\n")]DyObject terminator)
     {
