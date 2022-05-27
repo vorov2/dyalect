@@ -79,25 +79,23 @@ public sealed class ExecutionContext
     #endregion
 
     #region Context variables
-    private readonly object syncRoot = new();
-    private readonly Dictionary<string, object> contextVariables = new();
     public void SetContextVariable(string key, object val)
     {
-        lock (syncRoot)
-            contextVariables[key] = val;
+        lock (RuntimeContext.SyncRoot)
+            RuntimeContext.Variables[key] = val;
     }
 
     public T? GetContextVariable<T>(string key)
     {
-        if (!contextVariables.TryGetValue(key, out var val))
+        if (!RuntimeContext.Variables.TryGetValue(key, out var val))
             return default;
         return (T)val;
     }
 
-    public bool HasContextVariable(string key) => contextVariables.ContainsKey(key);
+    public bool HasContextVariable(string key) => RuntimeContext.Variables.ContainsKey(key);
 
     public bool TryGetContextVariable(string key, out object? value) =>
-        contextVariables.TryGetValue(key, out value);
+        RuntimeContext.Variables.TryGetValue(key, out value);
     #endregion
 
     #region ArgContainer

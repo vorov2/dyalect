@@ -1,4 +1,5 @@
 # 0.46.6
+  * Change: _Refactoring of execution context for better support of multithreading._
   * Fix: _Function `parse` incorrectly reports errors_ ([Issue #933](https://github.com/vorov2/dyalect/issues/933)).
   * Fix: _Function `parse` doesn't recognize dictionary literal_ ([Issue #934](https://github.com/vorov2/dyalect/issues/934)).
   * Fix: _Function `parse` doesn't recognize variant literal_ ([Issue #935](https://github.com/vorov2/dyalect/issues/935)).
