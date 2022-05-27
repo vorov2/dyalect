@@ -170,3 +170,12 @@
     let xs = mixins(v).Iterate().Map(typeName).ToArray()
     assert(["Object", "Lookup", "Order", "Equatable", "Sequence", "Show"], xs)
 #endregion
+
+#region "length"
+    assert(3, length << (1,2,3))
+    assert(2, length << [1,2])
+    assert(2, length << [x: 1, y: 2])
+    assert(4, length << Set(1,2,3,4))
+    assert(3, length("abc"))
+    assert(nil, length(12))
+#endregion

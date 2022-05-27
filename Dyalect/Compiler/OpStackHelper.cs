@@ -11,14 +11,11 @@ internal static class OpStackHelper
         1,  //PushNil
         1,  //PushI1_0
         1,  //PushI1_1
-        1,  //PushI8
         1,  //PushI8_0
         1,  //PushI8_1
-        1,  //PushR8
         1,  //PushR8_0
         1,  //PushR8_1
-        1,  //PushStr
-        1,  //PushCh
+        1,  //PushObj
         0,  //Br
         -1, //Brtrue
         -1, //Brfalse

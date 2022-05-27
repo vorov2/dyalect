@@ -1,3 +1,9 @@
+# 0.46.5
+  * Change: _Code refactoring._
+  * Change: _Instruction set for virtual machine is simplified_.
+  * Change: _Optimize `Interop` type, cache types_ ([Issue #931](https://github.com/vorov2/dyalect/issues/931)).
+  * Add: _Add a built-in `length` function_ ([Issue #930](https://github.com/vorov2/dyalect/issues/930), [docs](https://github.com/vorov2/dyalect/wiki/Standard-functions#length)).
+
 # 0.46.4
   * Change: _Code refactoring._
   * Change: _`Unbox` opcode is no longer used and decomissioned._

@@ -9,10 +9,6 @@ public abstract class DyMixin<T> : DyTypeInfo
 
     public override int ReflectedTypeId { get; }
 
-    protected DyMixin(int typeId)
-    {
-        ReflectedTypeId = typeId;
-        ReflectedTypeName = Dy.GetTypeNameByCode(typeId);
-        Closed = true;
-    }
+    protected DyMixin(int typeId) =>
+        (ReflectedTypeId, ReflectedTypeName, Closed) = (typeId, Dy.GetTypeNameByCode(typeId), true);
 }

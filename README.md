@@ -3,7 +3,7 @@
 
 # Dyalect programming language 
 
-[![GitHub tag (latest SemVer)](https://img.shields.io/badge/Download-0.46.4-blue?style=for-the-badge&logo=github)](https://github.com/vorov2/dyalect/releases/latest)
+[![GitHub tag (latest SemVer)](https://img.shields.io/badge/Download-0.46.5-blue?style=for-the-badge&logo=github)](https://github.com/vorov2/dyalect/releases/latest)
 [![Try online](https://img.shields.io/badge/-Dyalect.online-blueviolet?style=for-the-badge&logo=okta&logoColor=white)](http://dyalect.somee.com/dya/index.html)
 
 Dyalect is a dynamic programming language for .NET platform.
@@ -83,7 +83,7 @@ Please refer to [wiki](https://github.com/vorov2/dyalect/wiki) for more informat
 ## Links
 
 * [Quick start guide](https://github.com/vorov2/dyalect/wiki/Language-overview)
-* [Try Dyalect online](http://dyalect.somee.com/ace/editor.html)
+* [Try Dyalect online](http://dyalect.somee.com/dya/index.html)
 * [SourceForge page](https://sourceforge.net/projects/dyalect/)
 * [Dyalect at RosettaCode](http://rosettacode.org/wiki/Category:Dyalect)
 

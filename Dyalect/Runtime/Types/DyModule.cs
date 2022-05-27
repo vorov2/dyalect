@@ -5,17 +5,14 @@ namespace Dyalect.Runtime.Types;
 
 public sealed class DyModule : DyObject, IEnumerable<DyObject>
 {
-    internal readonly DyObject[] Globals;
+    private readonly DyObject[] globals;
 
     internal Unit Unit { get; }
 
     public override string TypeName => nameof(Dy.Module);
-    
-    public DyModule(Unit unit, DyObject[] globals) : base(Dy.Module)
-    {
-        Unit = unit;
-        Globals = globals;
-    }
+
+    public DyModule(Unit unit, DyObject[] globals) : base(Dy.Module) =>
+        (Unit, this.globals) = (unit, globals);
 
     public override object ToObject() => Unit;
 
@@ -42,7 +39,7 @@ public sealed class DyModule : DyObject, IEnumerable<DyObject>
             if ((sv.Data & VarFlags.Private) == VarFlags.Private)
                 ctx.PrivateNameAccess(name);
 
-            value = Globals[sv.Address >> 8];
+            value = globals[sv.Address >> 8];
             return true;
         }
 
@@ -56,7 +53,7 @@ public sealed class DyModule : DyObject, IEnumerable<DyObject>
             if ((sv.Data & VarFlags.Private) != VarFlags.Private)
                 yield return new DyTuple(new DyLabel[] {
                     new("key", new DyString(key)),
-                    new("value", Globals[sv.Address >> 9])
+                    new("value", globals[sv.Address >> 9])
                     });
         }
     }

@@ -5,9 +5,9 @@ public sealed class DyClass : DyObject, IProduction
 {
     public string Constructor { get; }
 
-    internal Unit DeclaringUnit { get; }
+    public DyTuple Fields { get; }
 
-    internal DyTuple Fields { get; }
+    internal Unit DeclaringUnit { get; }
 
     internal DyTuple Inits { get; }
 

@@ -1,5 +1,6 @@
 ﻿using Dyalect.Codegen;
 using Dyalect.Compiler;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 namespace Dyalect.Runtime.Types;
@@ -7,6 +8,20 @@ namespace Dyalect.Runtime.Types;
 [GeneratedType]
 internal partial class DyInteropTypeInfo : DyTypeInfo
 {
+    private static readonly DyInterop TypeInt32 = new(BCL.Int32);
+    private static readonly DyInterop TypeInt64 = new(BCL.Int64);
+    private static readonly DyInterop TypeUInt32 = new(BCL.UInt32);
+    private static readonly DyInterop TypeUInt64 = new(BCL.UInt64);
+    private static readonly DyInterop TypeByte = new(BCL.Byte);
+    private static readonly DyInterop TypeSByte = new(BCL.SByte);
+    private static readonly DyInterop TypeChar = new(BCL.Char);
+    private static readonly DyInterop TypeString = new(BCL.String);
+    private static readonly DyInterop TypeBoolean = new(BCL.Boolean);
+    private static readonly DyInterop TypeDouble = new(BCL.Double);
+    private static readonly DyInterop TypeSingle = new(BCL.Single);
+    private static readonly DyInterop TypeSystemArray = new(BCL.Array);
+    private static readonly DyInterop TypeSystemType = new(BCL.Type);
+
     private const BindingFlags AllBindingFlags = BindingFlags.NonPublic | BindingFlags.Public 
         | BindingFlags.Instance | BindingFlags.Static | BindingFlags.FlattenHierarchy;
 
@@ -111,7 +126,7 @@ internal partial class DyInteropTypeInfo : DyTypeInfo
         return new DyInterop(typeInfo);
     }
 
-    [StaticMethod("GetType")]
+    [StaticMethod(Method.GetType)]
     internal static DyObject GetSystemType(ExecutionContext ctx, DyObject typeName)
     {
         if (typeName is DyInterop obj)
@@ -119,12 +134,21 @@ internal partial class DyInteropTypeInfo : DyTypeInfo
         else if (typeName.TypeId is not Dy.String or Dy.Char)
             throw new DyCodeException(DyError.InvalidType, typeName);
 
-        var typeInfo = Type.GetType(typeName.ToString(), throwOnError: false);
+        var str = typeName.ToString();
+        var key = nameof(DyInteropTypeInfo) + "_x235_" + typeName.ToString();
 
-        if (typeInfo is null)
-            return ctx.InvalidValue(typeName);
+        if (!ctx.TryGetContextVariable(key, out var ret))
+        {
+            var typeInfo = Type.GetType(str, throwOnError: false);
 
-        return new DyInterop(BCL.Type, typeInfo);
+            if (typeInfo is null)
+                return ctx.InvalidValue(typeName);
+
+            ret = new DyInterop(BCL.Type, typeInfo);
+            ctx.SetContextVariable(key, ret);
+        }
+
+        return (DyObject)ret!;
     }
 
     [StaticMethod]
@@ -218,41 +242,41 @@ internal partial class DyInteropTypeInfo : DyTypeInfo
     }
 
     [StaticProperty]
-    internal static DyObject Int32() => new DyInterop(BCL.Int32);
+    internal static DyObject Int32() => TypeInt32;
 
     [StaticProperty]
-    internal static DyObject Int64() => new DyInterop(BCL.Int64);
+    internal static DyObject Int64() => TypeInt64;
 
     [StaticProperty]
-    internal static DyObject UInt32() => new DyInterop(BCL.UInt32);
+    internal static DyObject UInt32() => TypeUInt32;
 
     [StaticProperty]
-    internal static DyObject UInt64() => new DyInterop(BCL.UInt64);
+    internal static DyObject UInt64() => TypeUInt64;
 
     [StaticProperty]
-    internal static DyObject Byte() => new DyInterop(BCL.Byte);
+    internal static DyObject Byte() => TypeByte;
 
     [StaticProperty]
-    internal static DyObject SByte() => new DyInterop(BCL.SByte);
+    internal static DyObject SByte() => TypeSByte;
 
     [StaticProperty]
-    internal static DyObject Char() => new DyInterop(BCL.Char);
+    internal static DyObject Char() => TypeChar;
 
     [StaticProperty]
-    internal static DyObject String() => new DyInterop(BCL.String);
+    internal static DyObject String() => TypeString;
 
     [StaticProperty]
-    internal static DyObject Boolean() => new DyInterop(BCL.Boolean);
+    internal static DyObject Boolean() => TypeBoolean;
 
     [StaticProperty]
-    internal static DyObject Double() => new DyInterop(BCL.Double);
+    internal static DyObject Double() => TypeDouble;
 
     [StaticProperty]
-    internal static DyObject Single() => new DyInterop(BCL.Single);
+    internal static DyObject Single() => TypeSingle;
     
-    [StaticProperty("Array")]
-    internal static DyObject SystemArray() => new DyInterop(BCL.Array);
+    [StaticProperty(Method.Array)]
+    internal static DyObject SystemArray() => TypeSystemArray;
 
-    [StaticProperty("Type")]
-    internal static DyObject SystemType() => new DyInterop(BCL.Type);
+    [StaticProperty(Method.Type)]
+    internal static DyObject SystemType() => TypeSystemType;
 }

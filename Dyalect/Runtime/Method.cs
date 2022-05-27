@@ -49,6 +49,7 @@ internal static class Method
     public const string Join = "Join";
     public const string Repeat = "Repeat";
     public const string ContainsValue = "ContainsValue";
+    public const string Type = "Type";
     public const string Array = "Array";
     public const string Empty = "Empty";
     public const string Concat = "Concat";
@@ -109,4 +110,5 @@ internal static class Method
     public const string Reduce = "Reduce";
     public const string Any = "Any";
     public const string All = "All";
+    public const string GetType = "GetType";
 }

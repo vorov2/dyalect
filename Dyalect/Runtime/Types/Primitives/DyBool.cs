@@ -32,6 +32,4 @@ public abstract class DyBool : DyObject
     public static explicit operator DyBool(bool v) => v ? True : False;
 
     public override bool Equals(DyObject? other) => ReferenceEquals(this, other);
-
-    public static DyBool Equals(ExecutionContext _, DyObject x, DyObject y) => ReferenceEquals(x, y) ? True : False;
 }

@@ -6,10 +6,7 @@ internal sealed class DyLabelTypeInfo : DyTypeInfo
 
     public override int ReflectedTypeId => Dy.Label;
 
-    public DyLabelTypeInfo()
-    {
-        AddMixins(Dy.Container);
-    }
+    public DyLabelTypeInfo() => AddMixins(Dy.Container);
 
     protected override DyObject InOp(ExecutionContext ctx, DyObject self, DyObject field) =>
         field.TypeId is Dy.String or Dy.Char && ((DyLabel)self).Label == field.ToString() ? True : False;

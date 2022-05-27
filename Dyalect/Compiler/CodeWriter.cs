@@ -118,8 +118,6 @@ internal sealed class CodeWriter
         return idx;
     }
 
-    public void Push(string val) => Emit(new(OpCode.PushStr, IndexObject(new DyString(val))));
-
     public void Push(double val)
     {
         if (val is 0D)
@@ -127,7 +125,7 @@ internal sealed class CodeWriter
         else if (val is 1D)
             Emit(Op.PushR8_1);
         else
-            Emit(new(OpCode.PushR8, IndexObject(new DyFloat(val))));
+            Push(new DyFloat(val));
     }
 
     public void Push(long val)
@@ -137,7 +135,7 @@ internal sealed class CodeWriter
         else if (val == 1L)
             Emit(Op.PushI8_1);
         else
-            Emit(new(OpCode.PushI8, IndexObject(new DyInteger(val))));
+            Push(new DyInteger(val));
     }
 
     public void Push(bool val)
@@ -148,10 +146,11 @@ internal sealed class CodeWriter
             Emit(Op.PushI1_0);
     }
 
-    public void Push(char val)
-    {
-        Emit(new(OpCode.PushCh, IndexObject(new DyChar(val))));
-    }
+    public void Push(string val) => Push(new DyString(val));
+
+    public void Push(char val) => Push(new DyChar(val));
+
+    public void Push(DyObject val) => Emit(new(OpCode.PushObj, IndexObject(val)));
 
     public void PushVar(ScopeVar sv)
     {

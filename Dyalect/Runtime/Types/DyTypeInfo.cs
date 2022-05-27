@@ -6,7 +6,7 @@ namespace Dyalect.Runtime.Types;
 
 public abstract class DyTypeInfo : DyObject
 {
-    protected Ops ops;
+    private Ops ops;
 
     internal bool Closed { get; set; }
 
@@ -29,10 +29,7 @@ public abstract class DyTypeInfo : DyObject
 
     public abstract int ReflectedTypeId { get; }
 
-    protected DyTypeInfo() : base(Dy.TypeInfo)
-    {
-        mixins.Add(Dy.Object);
-    }
+    protected DyTypeInfo() : base(Dy.TypeInfo) => mixins.Add(Dy.Object);
 
     #region Binary Operations
     //x + y
