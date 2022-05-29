@@ -112,18 +112,7 @@ internal sealed partial class Lang : ForeignUnit
         var member = ctx.RuntimeContext.Types[value.TypeId].LookupInstanceMember(ctx, value, name);
 
         if (member is not null)
-        {
-            if (member.Auto)
-            {
-                member = member.BindToInstance(ctx, value);
-                var setter = ctx.RuntimeContext.Types[value.TypeId].LookupInstanceMember(ctx, value, "set_" + name);
-                if (setter is not null)
-                    return new DyPropertyFunction(name, member, setter.BindToInstance(ctx, value));
-                return member;
-            }
-
             return member.BindToInstance(ctx, value);
-        }
 
         return Nil;
     }
