@@ -1,4 +1,4 @@
-﻿#region "parse"
+﻿#region "parse 1"
     let res = parse("[1,2,3,('c',true,23.4),nil]")
     assert([1,2,3,('c',true,23.4),nil], res)
     assert(true, parse("true"))
@@ -8,6 +8,28 @@
     let xs = parse("[12.0, true, (1,2)]")
     let pat = [12.0, true, (1,2)]
     assert(pat, xs)
+#endregion
+
+#region "parse 2"
+    try {
+        parse("[1+2, 3]")
+        assert(got: false)
+    } catch {
+        @ParsingFailed => assert(got: true)
+    }
+#endregion
+
+#region "parse 3"
+    let xs = parse("[x: 1, y: 2]")
+    assert(1, xs.x)
+    assert(2, xs.y)
+#endregion
+
+#region "parse 4"
+    let xs = parse("@Foo(x: 1, y: 2)")
+    assert("Foo", constructorName(xs))
+    assert(1, xs.x)
+    assert(2, xs.y)
 #endregion
 
 #region "eval" 
@@ -171,11 +193,24 @@
     assert(["Object", "Lookup", "Order", "Equatable", "Sequence", "Show"], xs)
 #endregion
 
-#region "length"
+#region "length 1"
     assert(3, length << (1,2,3))
     assert(2, length << [1,2])
     assert(2, length << [x: 1, y: 2])
     assert(4, length << Set(1,2,3,4))
     assert(3, length("abc"))
     assert(nil, length(12))
+#endregion
+
+#region "length 2"
+    type Foo()
+    assert(0) << length(Foo())
+    type Bar(x)
+    assert(1) << length(Bar(42))
+#endregion
+
+#region "clone"
+    assert(true, referenceEquals(42, clone(42)))
+    let xs = [1,2,3]
+    assert(false, referenceEquals(xs, clone(xs)))
 #endregion

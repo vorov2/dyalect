@@ -1,5 +1,6 @@
 ﻿using Dyalect.Compiler;
 using Dyalect.Runtime.Types;
+using System.Collections.Generic;
 using System.Linq;
 namespace Dyalect.Runtime;
 
@@ -12,9 +13,13 @@ public sealed class RuntimeContext
     internal readonly DyArrayTypeInfo Array;
     internal readonly FastList<DyTypeInfo> Types;
 
+    internal readonly object SyncRoot = new();
+
     internal DyObject[][] Units { get; private set; }
 
     internal MemoryLayout[][] Layouts { get; private set; }
+
+    internal Dictionary<string, object> Variables { get; } = new();
 
     public UnitComposition Composition { get; private set; }
 

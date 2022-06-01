@@ -46,6 +46,9 @@ internal sealed partial class Lang : ForeignUnit
     [StaticMethod("referenceEquals")]
     public static bool Equals(DyObject value, DyObject other) => ReferenceEquals(value, other);
 
+    [StaticMethod("clone")]
+    public static DyObject Clone(DyObject value) => value.Clone() ?? Nil;
+
     [StaticMethod("print")]
     public static void Print(ExecutionContext ctx, [VarArg]DyTuple values, [Default(",")]string separator, [Default("\n")]DyObject terminator)
     {
@@ -101,6 +104,25 @@ internal sealed partial class Lang : ForeignUnit
             return ((DyTypeInfo)value).ReflectedTypeName;
         else
             return value.TypeName;
+    }
+
+    [StaticMethod("instanceMember")]
+    public static DyObject GetInstanceMember(ExecutionContext ctx, DyObject value, string name)
+    {
+        var member = ctx.RuntimeContext.Types[value.TypeId].LookupInstanceMember(ctx, value, name);
+
+        if (member is not null)
+            return member.BindToInstance(ctx, value);
+
+        return Nil;
+    }
+
+    [StaticMethod("staticMember")]
+    public static DyObject GetStaticMember(ExecutionContext ctx, DyObject value, string name)
+    {
+        var typeId = value is DyTypeInfo typ ? typ.ReflectedTypeId : value.TypeId;
+        var member = ctx.RuntimeContext.Types[typeId].LookupStaticMember(ctx, name);
+        return member ?? Nil;
     }
 
     [StaticMethod("rawget")]
@@ -243,7 +265,7 @@ internal sealed partial class Lang : ForeignUnit
 
     [StaticMethod("round")]
     public static double Round(double number, int digits = 2) => Math.Round(number, digits);
-    
+
     [StaticMethod("sign")]
     public static DyObject Sign(ExecutionContext ctx, DyObject x)
     {
@@ -262,7 +284,8 @@ internal sealed partial class Lang : ForeignUnit
         var res = DyParser.Parse(SourceBuffer.FromString(expression));
 
         if (!res.Success)
-            return ctx.ParsingFailed(res.Messages.First().ToString());
+            return ctx.ParsingFailed(res.Messages
+                .Where(m => m.Type == BuildMessageType.Error).First().ToString());
 
         if (res.Value!.Root is null || res.Value!.Root.Nodes.Count == 0)
             return ctx.ParsingFailed("Empty expression.");
@@ -313,7 +336,7 @@ internal sealed partial class Lang : ForeignUnit
         var argsList = new List<DyObject>();
 
         if (args is null)
-            return func!.Invoke(newctx, argsList.ToArray());
+            return func.Invoke(newctx, argsList.ToArray());
         
         var tvv = args.UnsafeAccess();
 
@@ -325,7 +348,7 @@ internal sealed partial class Lang : ForeignUnit
                 argsList.Add(lab.Value);
         }
 
-        return func!.Invoke(newctx, argsList.ToArray());
+        return func.Invoke(newctx, argsList.ToArray());
     }
 
     [StaticMethod("__invoke")]
