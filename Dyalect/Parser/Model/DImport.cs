@@ -16,6 +16,6 @@ public sealed class DImport
     {
         var alias = Alias is null ? "" : $" {Alias} = ";
         var path = LocalPath is null ? "" : $"{LocalPath}/";
-        return $"import {Alias}{LocalPath}{ModuleName}";
+        return $"import {alias}{path}{ModuleName}";
     }
 }

@@ -14,7 +14,9 @@ public partial class DyLinker
     private const string OBJ = ".dyo";
     private readonly Lang lang;
 
-    protected Dictionary<Guid, Unit> UnitMap { get; set;  } = new();
+    protected Dictionary<Guid, Unit> UnitMap { get; set; } = new();
+
+    protected Dictionary<string, Unit> SearchMap { get; set; } = new();
 
     protected Dictionary<string, Dictionary<string, ForeignUnit>> AssemblyMap { get; set; } = 
         new Dictionary<string, Dictionary<string, ForeignUnit>>(StringComparer.OrdinalIgnoreCase);
@@ -33,12 +35,14 @@ public partial class DyLinker
         BuilderOptions = options;
         lang = new (args) { FileName = nameof(lang), Id = 1 };
         Units.Add(null!);
+        Units.Add(lang);
     }
 
     protected internal virtual Result<Unit> Link(Unit self, Reference mod)
     {
         if (!UnitMap.TryGetValue(mod.Id, out var unit))
         {
+            //Check if this module is a part of stdlib
             if (mod.LocalPath is null && mod.DllName is null && mod.ModuleName != nameof(lang))
             {
                 if (dyalectLib is null)
@@ -69,16 +73,26 @@ public partial class DyLinker
             {
                 var path = FindModule(self, mod.GetPath(), mod);
 
-                if (path is not null && string.Equals(Path.GetExtension(path), EXT))
-                    unit = ProcessSourceFile(path, mod);
-                else if (path is not null)
-                    unit = ProcessObjectFile(path, mod);
+                if (path is not null && !SearchMap.TryGetValue(path, out unit))
+                {
+                    if (string.Equals(Path.GetExtension(path), EXT))
+                        unit = ProcessSourceFile(path, mod);
+                    else
+                        unit = ProcessObjectFile(path, mod);
+
+                    if (unit is not null)
+                        SearchMap.Add(path, unit);
+                }
             }
 
             if (unit is not null)
             {
-                unit.Id = Units.Count;
-                Units.Add(unit);
+                if (unit.Id == 0)
+                {
+                    unit.Id = Units.Count;
+                    Units.Add(unit);
+                }
+
                 UnitMap.Add(mod.Id, unit);
             }
         }

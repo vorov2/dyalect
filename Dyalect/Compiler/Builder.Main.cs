@@ -597,7 +597,6 @@ partial class Builder
             else
             {
                 Build(el, hints.Append(Push), ctx);
-                string? name;
 
                 if (el is INamedNode nn)
                     cw.Tag(nn.NodeName);
@@ -717,15 +716,15 @@ partial class Builder
 
         if (res.Success)
         {
-            r.Checksum = res.Value!.Checksum;
-            var referencedUnit = new UnitInfo(unit.UnitIds.Count, res.Value.ExportList);
-            unit.References.Add(r);
             var key = node.Alias ?? node.ModuleName;
 
             if (referencedUnits.ContainsKey(key))
                 AddError(CompilerError.DuplicateModuleAlias, node.Location, key);
             else
             {
+                r.Checksum = res.Value!.Checksum;
+                var referencedUnit = new UnitInfo(unit.UnitIds.Count, res.Value.ExportList);
+                unit.References.Add(r);
                 referencedUnits.Add(key, referencedUnit);
                 cw.RunMod(unit.UnitIds.Count);
                 unit.UnitIds.Add(-1); //Real handles are added by a linker

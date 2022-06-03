@@ -126,7 +126,7 @@ internal partial class DyInteropTypeInfo : DyTypeInfo
         return new DyInterop(typeInfo);
     }
 
-    [StaticMethod(Method.GetType)]
+    [StaticMethod(Method.GetTypeInfo)]
     internal static DyObject GetSystemType(ExecutionContext ctx, DyObject typeName)
     {
         if (typeName is DyInterop obj)
