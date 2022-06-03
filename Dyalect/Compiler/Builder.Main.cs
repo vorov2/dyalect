@@ -597,7 +597,6 @@ partial class Builder
             else
             {
                 Build(el, hints.Append(Push), ctx);
-                string? name;
 
                 if (el is INamedNode nn)
                     cw.Tag(nn.NodeName);

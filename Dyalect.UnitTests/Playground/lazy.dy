@@ -18,5 +18,5 @@ let lz = Lazy(() => {
     return 2 + 12.409
 })
 
-print << lz.GetValue()
-print << lz.GetValue()
+//print << lz.GetValue()
+//print << lz.GetValue()

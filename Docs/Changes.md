@@ -1,5 +1,6 @@
 # 0.46.7
   * Fix: _Linker may crush in a case of incorrect module import_ ([Issue #939](https://github.com/vorov2/dyalect/issues/939)).
+  * Fix: _Module with multiple references can be compiled several times_ ([Issue #940](https://github.com/vorov2/dyalect/issues/940)).
 
 # 0.46.6
   * Change: _Refactoring of execution context for better support of multithreading._

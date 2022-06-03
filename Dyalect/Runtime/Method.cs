@@ -110,5 +110,5 @@ internal static class Method
     public const string Reduce = "Reduce";
     public const string Any = "Any";
     public const string All = "All";
-    public const string GetType = "GetType";
+    public const string GetTypeInfo = "GetType";
 }

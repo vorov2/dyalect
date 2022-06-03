@@ -1,15 +1,5 @@
-﻿type Foo() {
-    var name = "Default"
-}
+﻿//import "lazy"
+//import laz2 = "lazy"
 
-func get Foo.Name() => this!name
-
-func set Foo.Name(value) => this!name = value
-
-let foo = Foo()
-
-let fn = instanceMember(foo, "Name")
-print("getter", fn())
-
-fn("John Doe")
-print("getter", fn())
+import core
+import core2 = core
