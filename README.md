@@ -4,7 +4,6 @@
 # Dyalect programming language 
 
 [![GitHub tag (latest SemVer)](https://img.shields.io/badge/-Download-darkgreen?style=for-the-badge&logo=github)](https://github.com/vorov2/dyalect/releases/latest)
-[![Try online](https://img.shields.io/badge/-online-blueviolet?style=for-the-badge&logo=okta&logoColor=white)](http://dyalect.somee.com/dya/index.html)
 [![VSCode](https://img.shields.io/badge/-VSCode-blue?style=for-the-badge&logo=Visual+Studio+Code&logoColor=white)](https://marketplace.visualstudio.com/items?itemName=vorov2.dyalect)
 
 Dyalect is a dynamic programming language for .NET platform.

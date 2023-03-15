@@ -2,7 +2,7 @@
 
   <PropertyGroup>
       <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-      <TargetFramework>net6.0</TargetFramework>
+      <TargetFramework>net7.0</TargetFramework>
       <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
       <GenerateAssemblyDescriptionAttribute>false</GenerateAssemblyDescriptionAttribute>
       <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>

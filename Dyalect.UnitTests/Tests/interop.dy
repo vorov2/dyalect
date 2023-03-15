@@ -133,7 +133,11 @@
 		hset.Add(x.Name)
 	}
 	assert(
-		["CompareTo", "Equals", "GetHashCode", "ToString", "TryFormat", "Parse", "TryParse", "GetTypeCode", "GetType"],
+		["CompareTo", "Equals", "GetHashCode", "ToString", "TryFormat", "Parse", "TryParse", "GetTypeCode", 
+		"DivRem", "LeadingZeroCount", "PopCount", "RotateLeft", "RotateRight", "TrailingZeroCount", "IsPow2", 
+		"Log2", "Clamp", "CopySign", "Max", "Min", "Sign", "Abs", "CreateChecked", "CreateSaturating", 
+		"CreateTruncating", "IsEvenInteger", "IsNegative", "IsOddInteger", "IsPositive", "MaxMagnitude", 
+		"MinMagnitude", "GetType"],
 		hset.ToArray()
 	)
 #endregion
