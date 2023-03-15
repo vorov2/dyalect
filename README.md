@@ -83,7 +83,6 @@ Please refer to [wiki](https://github.com/vorov2/dyalect/wiki) for more informat
 ## Links
 
 * [Quick start guide](https://github.com/vorov2/dyalect/wiki/Language-overview)
-* [Try Dyalect online](http://dyalect.somee.com/dya/index.html)
 * [SourceForge page](https://sourceforge.net/projects/dyalect/)
 * [Dyalect at RosettaCode](http://rosettacode.org/wiki/Category:Dyalect)
 
