@@ -661,7 +661,7 @@ namespace Dyalect.Parser
 	}
 
 	void Function(out DNode node) {
-		node = null; var st = false; var fin = true; DRecursiveBlock rec = null; 
+		node = null; var st = false; var fin = false; DRecursiveBlock rec = null; 
 		if (la.kind == 71) {
 			Get();
 			fin = true; 

@@ -257,61 +257,61 @@ namespace Dyalect.Parser
 				if (ch >= '0' && ch <= '9' || ch >= 'A' && ch <= 'Z' || ch == '_' || ch >= 'a' && ch <= 'z') {AddCh(); goto case 6;}
 				else {t.kind = 4; t.val = new String(tval, 0, tlen); CheckLiteral(); return t;}
 			case 7:
-				if (ch >= '0' && ch <= '9' || ch >= 'A' && ch <= 'F' || ch >= 'a' && ch <= 'f') {AddCh(); goto case 8;}
+				if (ch >= '0' && ch <= '9' || ch >= 'A' && ch <= 'F' || ch == '_' || ch >= 'a' && ch <= 'f') {AddCh(); goto case 8;}
 				else {goto case 0;}
 			case 8:
 				recEnd = pos; recKind = 5;
-				if (ch >= '0' && ch <= '9' || ch >= 'A' && ch <= 'F' || ch >= 'a' && ch <= 'f') {AddCh(); goto case 8;}
+				if (ch >= '0' && ch <= '9' || ch >= 'A' && ch <= 'F' || ch == '_' || ch >= 'a' && ch <= 'f') {AddCh(); goto case 8;}
 				else {t.kind = 5; break;}
 			case 9:
 				recEnd = pos; recKind = 6;
-				if (ch >= '0' && ch <= '9') {AddCh(); goto case 9;}
+				if (ch >= '0' && ch <= '9' || ch == '_') {AddCh(); goto case 9;}
 				else if (ch == 'F' || ch == 'f') {AddCh(); goto case 21;}
 				else if (ch == 'E' || ch == 'e') {AddCh(); goto case 10;}
 				else {t.kind = 6; break;}
 			case 10:
-				if (ch >= '0' && ch <= '9') {AddCh(); goto case 12;}
+				if (ch >= '0' && ch <= '9' || ch == '_') {AddCh(); goto case 12;}
 				else if (ch == '+' || ch == '-') {AddCh(); goto case 11;}
 				else {goto case 0;}
 			case 11:
-				if (ch >= '0' && ch <= '9') {AddCh(); goto case 12;}
+				if (ch >= '0' && ch <= '9' || ch == '_') {AddCh(); goto case 12;}
 				else {goto case 0;}
 			case 12:
 				recEnd = pos; recKind = 6;
-				if (ch >= '0' && ch <= '9') {AddCh(); goto case 12;}
+				if (ch >= '0' && ch <= '9' || ch == '_') {AddCh(); goto case 12;}
 				else if (ch == 'F' || ch == 'f') {AddCh(); goto case 21;}
 				else {t.kind = 6; break;}
 			case 13:
-				if (ch >= '0' && ch <= '9') {AddCh(); goto case 14;}
+				if (ch >= '0' && ch <= '9' || ch == '_') {AddCh(); goto case 14;}
 				else {goto case 0;}
 			case 14:
 				recEnd = pos; recKind = 6;
-				if (ch >= '0' && ch <= '9') {AddCh(); goto case 14;}
+				if (ch >= '0' && ch <= '9' || ch == '_') {AddCh(); goto case 14;}
 				else if (ch == 'F' || ch == 'f') {AddCh(); goto case 21;}
 				else if (ch == 'E' || ch == 'e') {AddCh(); goto case 15;}
 				else {t.kind = 6; break;}
 			case 15:
-				if (ch >= '0' && ch <= '9') {AddCh(); goto case 17;}
+				if (ch >= '0' && ch <= '9' || ch == '_') {AddCh(); goto case 17;}
 				else if (ch == '+' || ch == '-') {AddCh(); goto case 16;}
 				else {goto case 0;}
 			case 16:
-				if (ch >= '0' && ch <= '9') {AddCh(); goto case 17;}
+				if (ch >= '0' && ch <= '9' || ch == '_') {AddCh(); goto case 17;}
 				else {goto case 0;}
 			case 17:
 				recEnd = pos; recKind = 6;
-				if (ch >= '0' && ch <= '9') {AddCh(); goto case 17;}
+				if (ch >= '0' && ch <= '9' || ch == '_') {AddCh(); goto case 17;}
 				else if (ch == 'F' || ch == 'f') {AddCh(); goto case 21;}
 				else {t.kind = 6; break;}
 			case 18:
-				if (ch >= '0' && ch <= '9') {AddCh(); goto case 20;}
+				if (ch >= '0' && ch <= '9' || ch == '_') {AddCh(); goto case 20;}
 				else if (ch == '+' || ch == '-') {AddCh(); goto case 19;}
 				else {goto case 0;}
 			case 19:
-				if (ch >= '0' && ch <= '9') {AddCh(); goto case 20;}
+				if (ch >= '0' && ch <= '9' || ch == '_') {AddCh(); goto case 20;}
 				else {goto case 0;}
 			case 20:
 				recEnd = pos; recKind = 6;
-				if (ch >= '0' && ch <= '9') {AddCh(); goto case 20;}
+				if (ch >= '0' && ch <= '9' || ch == '_') {AddCh(); goto case 20;}
 				else if (ch == 'F' || ch == 'f') {AddCh(); goto case 21;}
 				else {t.kind = 6; break;}
 			case 21:
@@ -392,7 +392,7 @@ namespace Dyalect.Parser
 				{t.kind = 52; break;}
 			case 53:
 				recEnd = pos; recKind = 5;
-				if (ch >= '0' && ch <= '9') {AddCh(); goto case 53;}
+				if (ch >= '0' && ch <= '9' || ch == '_') {AddCh(); goto case 53;}
 				else if (ch == 'F' || ch == 'f') {AddCh(); goto case 21;}
 				else if (ch == '.') {AddCh(); goto case 13;}
 				else if (ch == 'E' || ch == 'e') {AddCh(); goto case 18;}
@@ -404,7 +404,7 @@ namespace Dyalect.Parser
 				else {t.kind = 2; t.val = new String(tval, 0, tlen); CheckLiteral(); return t;}
 			case 55:
 				recEnd = pos; recKind = 5;
-				if (ch >= '0' && ch <= '9') {AddCh(); goto case 53;}
+				if (ch >= '0' && ch <= '9' || ch == '_') {AddCh(); goto case 53;}
 				else if (ch == 'X' || ch == 'x') {AddCh(); goto case 7;}
 				else if (ch == 'F' || ch == 'f') {AddCh(); goto case 21;}
 				else if (ch == '.') {AddCh(); goto case 13;}
@@ -470,7 +470,7 @@ namespace Dyalect.Parser
 				{t.kind = 101; break;}
 			case 73:
 				recEnd = pos; recKind = 27;
-				if (ch >= '0' && ch <= '9') {AddCh(); goto case 9;}
+				if (ch >= '0' && ch <= '9' || ch == '_') {AddCh(); goto case 9;}
 				else if (ch == '.') {AddCh(); goto case 85;}
 				else {t.kind = 27; break;}
 			case 74:

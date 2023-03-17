@@ -316,19 +316,29 @@ internal sealed partial class InternalParser
 
     private long ParseInteger()
     {
-        if (t.val.Length > 2 && t.val[0] == '0' && char.ToUpper(t.val[1]) == 'X')
-            return long.Parse(t.val[2..], NumberStyles.HexNumber);
+        var val = t.val;
 
-        return long.Parse(t.val);
+        if (val.IndexOf('_') != -1)
+            val = val.Replace("_", "");
+
+        if (val.Length > 2 && val[0] == '0' && char.ToUpper(val[1]) == 'X')
+            return long.Parse(val[2..], NumberStyles.HexNumber);
+
+        return long.Parse(val);
     }
 
     private double ParseFloat()
     {
-        var c = t.val[^1];
+        var val = t.val;
+
+        if (val.IndexOf('_') != -1)
+            val = val.Replace("_", "");
+
+        var c = val[^1];
 
         if (c == 'f' || c == 'F')
-            return double.Parse(t.val[0..^1], InvariantCulture.NumberFormat);
+            return double.Parse(val[0..^1], InvariantCulture.NumberFormat);
 
-        return double.Parse(t.val, InvariantCulture.NumberFormat);
+        return double.Parse(val, InvariantCulture.NumberFormat);
     }
 }

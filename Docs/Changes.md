@@ -1,6 +1,7 @@
 # 0.47.0
   * _Project migrated to .NET 7.0_
-  * Add: _Add built-in `instanceMember` and `staticMember` functions_ ([Issue #937](https://github.com/vorov2/dyalect/issues/937)).
+  * Add: _Add built-in `instanceMember` and `staticMember` functions_ ([Issue #937](https://github.com/vorov2/dyalect/issues/937), [docs](https://github.com/vorov2/dyalect/wiki/Standard-functions#instanceMember)).
+  * Add: _Add support for underscores in numeric literals_ ([Issue #942](https://github.com/vorov2/dyalect/issues/942)).
 
 # 0.46.7
   * Fix: _Linker may crush in a case of incorrect module import_ ([Issue #939](https://github.com/vorov2/dyalect/issues/939)).
