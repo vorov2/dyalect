@@ -1,5 +1,6 @@
 # 0.47.0
   * _Project migrated to .NET 7.0_
+  * Add: _Add built-in `instanceMember` and `staticMember` functions_ ([Issue #937](https://github.com/vorov2/dyalect/issues/937)).
 
 # 0.46.7
   * Fix: _Linker may crush in a case of incorrect module import_ ([Issue #939](https://github.com/vorov2/dyalect/issues/939)).
