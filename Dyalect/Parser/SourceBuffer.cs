@@ -3,8 +3,6 @@ namespace Dyalect.Parser;
 
 public abstract class SourceBuffer
 {
-    internal const int EOF = char.MaxValue + 1;
-
     public abstract string? FileName { get; }
 
     protected internal abstract int Pos { get; set; }

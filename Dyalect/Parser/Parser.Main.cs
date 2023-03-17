@@ -36,20 +36,20 @@ internal sealed partial class InternalParser
     private void AddError(ParserError error, Location loc, params object[] args)
     {
         var str = string.Format(ParserErrors.ResourceManager.GetString(error.ToString()) ?? error.ToString(), args);
-        AddError(new BuildMessage(str, BuildMessageType.Error, (int)error, loc.Line, loc.Column, this.scanner.Buffer.FileName));
+        AddError(new BuildMessage(str, BuildMessageType.Error, (int)error, loc.Line, loc.Column, this.scanner.InputBuffer.FileName));
     }
 
     private void Deprecated(string exp)
     {
         var detail = string.Format(ParserErrors.Deprecated, exp);
         AddError(new BuildMessage(detail, BuildMessageType.Error, (int)ParserError.Deprecated,
-            t.line, t.col, this.scanner.Buffer.FileName));
+            t.line, t.col, this.scanner.InputBuffer.FileName));
     }
 
     private void AddError(string message, int line, int col)
     {
         ErrorProcessor.ProcessError(message, out var detail, out var code);
-        AddError(new BuildMessage(detail, BuildMessageType.Error, (int)code, line, col, this.scanner.Buffer.FileName));
+        AddError(new BuildMessage(detail, BuildMessageType.Error, (int)code, line, col, this.scanner.InputBuffer.FileName));
     }
 
     private void AddError(BuildMessage msg)
@@ -258,7 +258,7 @@ internal sealed partial class InternalParser
 
     private DStringLiteral? ParseString()
     {
-        if (!EscapeCodeParser.Parse(scanner.Buffer.FileName, t, t.val, Errors, out var result, out var chunks))
+        if (!EscapeCodeParser.Parse(scanner.InputBuffer.FileName, t, t.val, Errors, out var result, out var chunks))
             return null;
 
         return new DStringLiteral(t) { Value = result, Chunks = chunks };
@@ -266,7 +266,7 @@ internal sealed partial class InternalParser
 
     private void ParseStringChunk(DStringLiteral lit)
     {
-        if (lit is null || !EscapeCodeParser.Parse(scanner.Buffer.FileName, t, t.val, Errors, out var result, out var chunks))
+        if (lit is null || !EscapeCodeParser.Parse(scanner.InputBuffer.FileName, t, t.val, Errors, out var result, out var chunks))
             return;
 
         if (lit.Chunks is null) 
@@ -289,7 +289,7 @@ internal sealed partial class InternalParser
 
     private string? ParseSimpleString()
     {
-        if (!EscapeCodeParser.Parse(scanner.Buffer.FileName, t, t.val, Errors, out var result, out var chunks))
+        if (!EscapeCodeParser.Parse(scanner.InputBuffer.FileName, t, t.val, Errors, out var result, out var chunks))
             return null;
 
         if (chunks is not null)

@@ -3,7 +3,8 @@
 using System;
 using System.IO;
 using System.Collections;
-using Buffer = Dyalect.Parser.SourceBuffer;
+using Buffer = Dyalect.Parser.Constants;
+using Map = System.Collections.Generic.Dictionary<int, int>;
 
 
 namespace Dyalect.Parser
@@ -90,7 +91,7 @@ namespace Dyalect.Parser
                 tval = newBuf;
             }
 
-            if (ch != SourceBuffer.EOF)
+            if (ch != Constants.EOF)
             {
 			tval[tlen++] = (char) ch;
                 NextCh();

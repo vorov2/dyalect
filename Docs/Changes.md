@@ -1,5 +1,6 @@
 # 0.47.0
   * _Project migrated to .NET 7.0_
+  * Change: _Parser refactoring and optimizations._
   * Add: _Add built-in `instanceMember` and `staticMember` functions_ ([Issue #937](https://github.com/vorov2/dyalect/issues/937), [docs](https://github.com/vorov2/dyalect/wiki/Standard-functions#instanceMember)).
   * Add: _Add support for underscores in numeric literals_ ([Issue #942](https://github.com/vorov2/dyalect/issues/942)).
 
