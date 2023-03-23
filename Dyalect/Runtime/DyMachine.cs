@@ -322,7 +322,7 @@ public static partial class DyMachine
                 case OpCode.Fail:
                     {
                         second = evalStack.Pop();
-                        if (ctx.Error is null) ctx.Error = second.ToError();
+                        ctx.Error ??= second.ToError();
                         goto CATCH;
                     }
                 case OpCode.NewIter:
