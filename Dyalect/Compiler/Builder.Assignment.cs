@@ -1,8 +1,9 @@
 ﻿using Dyalect.Parser.Model;
 using static Dyalect.Compiler.Hints;
+
 namespace Dyalect.Compiler;
 
-//This part contains compilation of assignments/compound assignments
+//This part contains compilation logic for assignments/compound assignments
 partial class Builder
 {
     private bool Build(DAssignment node, Hints hints, CompilerContext ctx)

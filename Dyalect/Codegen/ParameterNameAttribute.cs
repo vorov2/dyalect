@@ -1,10 +1,7 @@
-﻿using System;
+﻿namespace Dyalect.Codegen;
 
-namespace Dyalect.Codegen
+[AttributeUsage(AttributeTargets.Parameter, AllowMultiple = false)]
+public sealed class ParameterNameAttribute : Attribute
 {
-    [AttributeUsage(AttributeTargets.Parameter, AllowMultiple = false)]
-    public sealed class ParameterNameAttribute : Attribute
-    {
-        public ParameterNameAttribute(string _) { }
-    }
+    public ParameterNameAttribute(string _) { }
 }

@@ -3,6 +3,7 @@ using Dyalect.Parser;
 using Dyalect.Parser.Model;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+
 namespace Dyalect.Compiler;
 
 //This part contains everything connected with emitting debug info

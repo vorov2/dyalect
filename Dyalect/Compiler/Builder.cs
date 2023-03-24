@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using static Dyalect.Compiler.Hints;
+
 namespace Dyalect.Compiler;
 
 internal sealed partial class Builder

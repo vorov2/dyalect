@@ -6,6 +6,7 @@ using Dyalect.Strings;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+
 namespace Dyalect.Linker;
 
 public partial class DyLinker

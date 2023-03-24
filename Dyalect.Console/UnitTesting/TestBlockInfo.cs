@@ -1,4 +1,5 @@
 ﻿using Dyalect.Parser.Model;
+
 namespace Dyalect.UnitTesting;
 
 public sealed class TestBlockInfo

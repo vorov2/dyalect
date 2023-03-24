@@ -3,6 +3,7 @@ using Dyalect.Strings;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
+
 namespace Dyalect.Parser;
 
 internal static class EscapeCodeParser
@@ -65,8 +66,7 @@ internal static class EscapeCodeParser
                             break;
                         case '(':
                             {
-                                if (chunks == null)
-                                    chunks = new List<StringChunk>();
+                                chunks ??= new List<StringChunk>();
 
                                 if (sb.Length > 0)
                                 {

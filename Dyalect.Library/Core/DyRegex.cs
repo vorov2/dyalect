@@ -1,5 +1,6 @@
 ﻿using Dyalect.Runtime.Types;
 using System.Text.RegularExpressions;
+
 namespace Dyalect.Library.Core;
 
 public sealed class DyRegex : DyForeignObject

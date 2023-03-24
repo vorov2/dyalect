@@ -1,5 +1,6 @@
 ﻿using Dyalect.Parser.Model;
 using System.Collections.Generic;
+
 namespace Dyalect.Compiler;
 
 internal sealed class CompilerContext

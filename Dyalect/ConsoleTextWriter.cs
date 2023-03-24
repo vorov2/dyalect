@@ -2,6 +2,7 @@
 using Dyalect.Runtime.Types;
 using System.IO;
 using System.Text;
+
 namespace Dyalect;
 
 public sealed class ConsoleTextWriter : TextWriter

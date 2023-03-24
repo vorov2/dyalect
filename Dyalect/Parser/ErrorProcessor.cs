@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using static Dyalect.Parser.ParserError;
+
 namespace Dyalect.Parser;
 
 internal static class ErrorProcessor

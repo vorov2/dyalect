@@ -2,6 +2,7 @@
 using Dyalect.Parser.Model;
 using System.Collections.Generic;
 using static Dyalect.Compiler.Hints;
+
 namespace Dyalect.Compiler;
 
 //This part is responsible for the compilation logic of custom types

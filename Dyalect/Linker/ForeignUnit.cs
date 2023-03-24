@@ -2,10 +2,13 @@
 using Dyalect.Runtime;
 using Dyalect.Runtime.Types;
 using System.Collections.Generic;
+
 namespace Dyalect.Linker;
 
 public abstract class ForeignUnit : Unit
 {
+    protected static readonly DyObject Nil = DyNil.Instance;
+
     private bool initialized;
     private readonly Dictionary<Type, DyForeignTypeInfo> typeInfos = new();
 
@@ -78,6 +81,4 @@ public abstract class ForeignUnit : Unit
     protected virtual void InitializeTypes() { }
 
     protected virtual void InitializeMembers() { }
-
-    protected static DyObject Nil = DyNil.Instance;
 }

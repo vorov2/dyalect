@@ -1,5 +1,6 @@
 ﻿using Dyalect.Runtime.Types;
 using System.Text;
+
 namespace Dyalect.Library.Core;
 
 public sealed class DyStringBuilder : DyForeignObject

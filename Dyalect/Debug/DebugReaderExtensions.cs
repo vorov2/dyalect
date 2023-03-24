@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using static System.Math;
+
 namespace Dyalect.Debug;
 
 public static class DebugReaderExtensions

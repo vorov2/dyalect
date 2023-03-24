@@ -3,6 +3,7 @@ using Dyalect.Parser.Model;
 using Dyalect.Runtime.Types;
 using System.Collections.Generic;
 using System.Linq;
+
 namespace Dyalect.Linker;
 
 public sealed class DyIncrementalLinker : DyLinker
@@ -11,7 +12,6 @@ public sealed class DyIncrementalLinker : DyLinker
     private DyCompiler? oldCompiler;
     private UnitComposition? composition;
     private int? startOffset;
-
     private Dictionary<Guid, Unit>? backupUnitMap;
     private Dictionary<string, Dictionary<string, ForeignUnit>>? backupAssemblyMap;
     private List<Unit>? backupUnits;

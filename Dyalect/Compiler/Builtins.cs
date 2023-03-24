@@ -72,7 +72,6 @@ internal static class Builtins
         };
 
     public const string OperatorSymbols = "?:+-*/&%<>^=!~|";
-
     public const string Add         = "op_add";
     public const string Sub         = "op_sub";
     public const string Mul         = "op_mul";

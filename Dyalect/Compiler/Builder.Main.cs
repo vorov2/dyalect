@@ -4,6 +4,7 @@ using Dyalect.Runtime;
 using System.Collections.Generic;
 using System.Linq;
 using static Dyalect.Compiler.Hints;
+
 namespace Dyalect.Compiler;
 
 partial class Builder
@@ -149,7 +150,7 @@ partial class Builder
         cw.Type(Dy.Variant);
         cw.GetMember(node.Name);
         cw.FunPrep(1);
-        BuildTupleElements(node.Arguments, node.Location, hints, ctx);
+        BuildTupleElements(node.Arguments, hints, ctx);
         AddLinePragma(node.Location);
         cw.NewArgs(node.Arguments.Count);
         cw.FunArgNm("values");
@@ -533,7 +534,7 @@ partial class Builder
         }
         else
         {
-            BuildTupleElements(node.Elements, node.Location, hints, ctx);
+            BuildTupleElements(node.Elements, hints, ctx);
             AddLinePragma(node.Location);
             cw.NewTuple(node.Elements.Count);
         }
@@ -541,7 +542,7 @@ partial class Builder
         PopIf(hints);
     }
 
-    private void BuildDictionary(List<DNode> elements, Location loc, Hints hints, CompilerContext ctx)
+    private void BuildDictionary(List<DNode> elements, Hints hints, CompilerContext ctx)
     {
         var set = new HashSet<string>();
 
@@ -569,7 +570,7 @@ partial class Builder
         cw.NewDict(elements.Count);
     }
 
-    private void BuildTupleElements(List<DNode> elements, Location loc, Hints hints, CompilerContext ctx)
+    private void BuildTupleElements(List<DNode> elements, Hints hints, CompilerContext ctx)
     {
         var set = new HashSet<string>();
         
@@ -615,7 +616,7 @@ partial class Builder
             cw.FunCall(0);
         }
         else if (node.Elements.Count > 0 && node.Elements[0].NodeType == NodeType.Label)
-            BuildDictionary(node.Elements, node.Location, hints, ctx);
+            BuildDictionary(node.Elements, hints, ctx);
         else
         {
             cw.Type(Dy.Array);
@@ -875,9 +876,7 @@ partial class Builder
 
             if (a.NodeType == NodeType.Label)
             {
-                if (dict is null)
-                    dict = new();
-
+                dict ??= new();
                 kwArg = true;
                 var la = (DLabelLiteral)a;
 

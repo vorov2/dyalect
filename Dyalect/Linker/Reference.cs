@@ -1,4 +1,5 @@
 ﻿using Dyalect.Compiler;
+
 namespace Dyalect.Linker;
 
 public sealed class Reference<T> where T : ForeignUnit

@@ -1,4 +1,5 @@
 ﻿using Dyalect.Runtime.Types;
+
 namespace Dyalect.Library.Core;
 
 public interface ISpan

@@ -1,7 +1,7 @@
 ﻿using Dyalect.Codegen;
 using Dyalect.Runtime;
 using Dyalect.Runtime.Types;
-using System;
+
 namespace Dyalect.Library.Core;
 
 [GeneratedType]

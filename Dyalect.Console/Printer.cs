@@ -3,6 +3,7 @@ using Dyalect.Runtime.Types;
 using System;
 using System.Collections.Generic;
 using static System.Console;
+
 namespace Dyalect;
 
 internal static class Printer

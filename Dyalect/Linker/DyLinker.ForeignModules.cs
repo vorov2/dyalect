@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+
 namespace Dyalect.Linker;
 
 partial class DyLinker

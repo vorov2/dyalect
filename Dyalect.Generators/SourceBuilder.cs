@@ -1,4 +1,5 @@
 ﻿using System.Text;
+
 namespace Dyalect.Generators;
 
 internal sealed class SourceBuilder

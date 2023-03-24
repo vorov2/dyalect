@@ -1,6 +1,6 @@
 ﻿using Dyalect.Linker;
 using Dyalect.Parser;
-using System;
+
 namespace Dyalect.Compiler;
 
 public sealed class Reference : IEquatable<Reference>
@@ -8,6 +8,20 @@ public sealed class Reference : IEquatable<Reference>
     internal static readonly Reference Empty = new(Guid.NewGuid(), "<NOTSET>", default, default, default, default);
 
     internal Guid Id { get; }
+
+    internal int Checksum { get; set; }
+
+    public string? LocalPath { get; }
+
+    public string ModuleName { get; }
+
+    public string? DllName { get; }
+
+    public Location SourceLocation { get; }
+
+    public string? SourceFileName { get; }
+
+    public ForeignUnit? Instance { get; internal set; }
 
     internal Reference(Guid id, string moduleName, string? localPath, string? dllName, Location sourceLocation, string? sourceFleName)
     {
@@ -31,18 +45,4 @@ public sealed class Reference : IEquatable<Reference>
     public override int GetHashCode() => HashCode.Combine(LocalPath, DllName, ModuleName);
 
     public override bool Equals(object? obj) => obj is Reference r && Equals(r);
-
-    internal int Checksum { get; set; }
-
-    public string? LocalPath { get; }
-
-    public string ModuleName { get; }
-
-    public string? DllName { get; }
-
-    public Location SourceLocation { get; }
-
-    public string? SourceFileName { get; }
-
-    public ForeignUnit? Instance { get; internal set; }
 }

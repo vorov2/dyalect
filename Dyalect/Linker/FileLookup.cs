@@ -1,5 +1,6 @@
 ﻿using Dyalect.Compiler;
 using System.IO;
+
 namespace Dyalect.Linker;
 
 public sealed class FileLookup

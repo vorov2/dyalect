@@ -1,5 +1,6 @@
 ﻿using Dyalect.Runtime.Types;
 using System.IO;
+
 namespace Dyalect.Linker;
 
 internal static class ObjectFile

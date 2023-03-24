@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Text;
+
 namespace Dyalect.Parser.Model;
 
 internal static class Extensions

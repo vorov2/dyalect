@@ -1,7 +1,7 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using CatchMarks = System.Collections.Generic.Stack<Dyalect.Runtime.CatchMark>;
+
 namespace Dyalect.Runtime;
 
 internal sealed class SectionStack : IEnumerable<CatchMarks>

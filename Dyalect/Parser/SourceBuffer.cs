@@ -1,4 +1,5 @@
 ﻿using System.IO;
+
 namespace Dyalect.Parser;
 
 public abstract class SourceBuffer

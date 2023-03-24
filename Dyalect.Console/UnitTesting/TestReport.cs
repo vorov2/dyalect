@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+
 namespace Dyalect.UnitTesting;
 
 public sealed class TestReport

@@ -1,6 +1,7 @@
 ﻿using Dyalect.Parser;
 using Dyalect.Strings;
 using System.Collections.Generic;
+
 namespace Dyalect.Compiler;
 
 //This part is responsible for emitting warnings and errors

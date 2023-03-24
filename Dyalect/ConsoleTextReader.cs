@@ -1,6 +1,7 @@
 ﻿using Dyalect.Runtime;
 using Dyalect.Runtime.Types;
 using System.IO;
+
 namespace Dyalect;
 
 public sealed class ConsoleTextReader : TextReader
