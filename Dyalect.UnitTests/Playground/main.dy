@@ -1,5 +1,11 @@
 ﻿//import "lazy"
 //import laz2 = "lazy"
 
-import core
-import core2 = core
+/*func getValue() {
+    print("getValue")
+    return 2
+}*/
+
+lazy x = 2 //+ getValue()
+//x.GetType()
+//print("end")

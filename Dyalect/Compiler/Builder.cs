@@ -117,21 +117,23 @@ internal sealed partial class Builder
                 Build(n, last ? Push : None, ctx);
             }
 
-            //Evaluate all lazy bindings at the end of module
-            foreach (var laz in globalLazy)
-            {
-                var sv = globalScope.Locals[laz];
-
-                //If it is not yet evaluated
-                if ((sv.Data & VarFlags.Lazy) == VarFlags.Lazy
-                    && (sv.Data & VarFlags.Private) != VarFlags.Private)
+            //Evaluate all lazy bindings at the end of module,
+            //unless it is not restricted (e.g. in interactive mode)
+            if (!options.KeepLazy)
+                foreach (var laz in globalLazy)
                 {
-                    var sys = 0 | sv.Address << 8;
-                    cw.PushVar(new ScopeVar(sys));
-                    cw.CallNullaryFunction();
-                    cw.PopVar(sys);
+                    var sv = globalScope.Locals[laz];
+
+                    //If it is not yet evaluated
+                    if ((sv.Data & VarFlags.Lazy) == VarFlags.Lazy
+                        && (sv.Data & VarFlags.Private) != VarFlags.Private)
+                    {
+                        var sys = 0 | sv.Address << 8;
+                        cw.PushVar(new ScopeVar(sys));
+                        cw.CallNullaryFunction();
+                        cw.PopVar(sys);
+                    }
                 }
-            }
 
             //Dispose auto's declared in global scope
             CallAutos(cls: true);

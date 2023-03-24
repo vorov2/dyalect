@@ -5,6 +5,7 @@
   * Add: _Add built-in `instanceMember` and `staticMember` functions_ ([Issue #937](https://github.com/vorov2/dyalect/issues/937), [docs](https://github.com/vorov2/dyalect/wiki/Standard-functions#instanceMember)).
   * Add: _Add support for underscores in numeric literals_ ([Issue #942](https://github.com/vorov2/dyalect/issues/942)).
   * Fix: _Dya is unable to find config file_ ([Issue #943](https://github.com/vorov2/dyalect/issues/943)).
+  * Fix: _Lazy variables don't work correctly in interactive_ ([Issue #944](https://github.com/vorov2/dyalect/issues/944)).
 
 # 0.46.7
   * Fix: _Linker may crush in a case of incorrect module import_ ([Issue #939](https://github.com/vorov2/dyalect/issues/939)).

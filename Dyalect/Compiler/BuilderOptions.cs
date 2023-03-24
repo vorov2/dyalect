@@ -11,10 +11,13 @@ public sealed class BuilderOptions
             NoLangModule = false,
             NoWarnings = false,
             NoWarningsLinker = false,
-            LinkerSkipChecksum = false
+            LinkerSkipChecksum = false,
+            KeepLazy = false
         };
 
     public HashSet<int> IgnoreWarnings { get; } = new();
+
+    public bool KeepLazy { get; set; }
 
     public bool Debug { get; set; }
 

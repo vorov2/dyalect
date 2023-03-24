@@ -31,7 +31,8 @@ internal sealed class InteractiveContext
             NoOptimizations = options.NoOptimizations,
             NoLangModule = options.NoLang,
             NoWarnings = options.NoWarnings,
-            NoWarningsLinker = options.NoWarningsLinker
+            NoWarningsLinker = options.NoWarningsLinker,
+            KeepLazy = true
         };
 
         if (options.IgnoreWarnings != null)
