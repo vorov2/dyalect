@@ -39,8 +39,7 @@ public sealed partial class DyRegexTypeInfo : DyForeignTypeInfo
     [InstanceMethod]
     internal static DyObject Split(ExecutionContext ctx, DyRegex self, string input, int? count = null, int index = 0)
     {
-        if (count is null)
-            count = int.MaxValue;
+        count ??= int.MaxValue;
 
         if (index < 0 || index >= input.Length)
             return ctx.IndexOutOfRange(index);
@@ -65,8 +64,7 @@ public sealed partial class DyRegexTypeInfo : DyForeignTypeInfo
     [InstanceMethod]
     internal static DyObject Match(ExecutionContext ctx, DyRegex self, string input, int index = 0, int? count = null)
     {
-        if (count is null)
-            count = input.Length;
+        count ??= input.Length;
 
         if (index + count > input.Length)
             return ctx.IndexOutOfRange();
