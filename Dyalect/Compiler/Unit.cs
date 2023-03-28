@@ -6,6 +6,30 @@ namespace Dyalect.Compiler;
 
 public class Unit
 {
+    internal int Checksum { get; set; }
+
+    public int Id { get; internal set; }
+
+    public FastList<Reference> References { get; }
+
+    public FastList<int> UnitIds { get; }
+
+    public FastList<HashString> Strings { get; }
+
+    public FastList<DyObject> Objects { get; }
+
+    public FastList<Op> Ops { get; }
+
+    public string? FileName { get; internal set; }
+
+    public DebugInfo Symbols { get; internal set; }
+
+    public Scope? GlobalScope { get; internal set; }
+
+    public FastList<MemoryLayout> Layouts { get; }
+
+    public Dictionary<HashString, ScopeVar> ExportList { get; }
+
     internal Unit()
     {
         Layouts = new();
@@ -16,6 +40,7 @@ public class Unit
         References = new();
         Strings = new();
         Objects = new();
+        Symbols = DebugInfo.Default;
     }
 
     private Unit(Unit unit, DebugInfo di)
@@ -34,29 +59,5 @@ public class Unit
         Objects = unit.Objects;
     }
 
-    internal int Checksum { get; set; }
-
     internal Unit Clone(DebugInfo di) => new(this, di);
-
-    public int Id { get; internal set; }
-
-    public FastList<Reference> References { get; }
-
-    public FastList<int> UnitIds { get; }
-
-    public FastList<HashString> Strings { get; }
-
-    public FastList<DyObject> Objects { get; }
-
-    public FastList<Op> Ops { get; }
-
-    public string? FileName { get; internal set; }
-
-    public DebugInfo Symbols { get; internal set; } = null!;
-
-    public Scope? GlobalScope { get; internal set; }
-
-    public FastList<MemoryLayout> Layouts { get; }
-
-    public Dictionary<HashString, ScopeVar> ExportList { get; }
 }

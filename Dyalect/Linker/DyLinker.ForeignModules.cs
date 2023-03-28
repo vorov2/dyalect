@@ -7,7 +7,7 @@ namespace Dyalect.Linker;
 
 partial class DyLinker
 {
-    private const string DYALECTLIB = "Dyalect.Library.dll";
+    private const string DyalectLibrary = "Dyalect.Library.dll";
     private Dictionary<string, ForeignUnit>? dyalectLib;
 
     private ForeignUnit? LinkForeignModule(Unit self, Reference mod)
@@ -41,7 +41,7 @@ partial class DyLinker
             if (dict is not null)
                 AssemblyMap.Add(dll, dict);
 
-            if (dll == DYALECTLIB)
+            if (dll == DyalectLibrary)
                 dyalectLib = dict;
         }
 

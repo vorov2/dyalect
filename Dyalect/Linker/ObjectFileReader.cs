@@ -3,6 +3,7 @@ using Dyalect.Debug;
 using Dyalect.Runtime.Types;
 using System.IO;
 using System.Linq;
+
 namespace Dyalect.Linker;
 
 public static class ObjectFileReader
@@ -136,9 +137,8 @@ public static class ObjectFileReader
 
     private static void ReadSymbols(BinaryReader reader, Unit unit)
     {
-        var di = new DebugInfo();
+        var di = new DebugInfo(reader.ReadString());
         unit.Symbols = di;
-        di.File = reader.ReadString();
 
         var scopes = reader.ReadInt32();
         for (var i = 0; i < scopes; i++)

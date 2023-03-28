@@ -9,6 +9,8 @@ public sealed class DyDebugger
     private const string Unknown = "<unknown>";
     private const string Global = "<global>";
 
+    internal UnitComposition Composition { get; }
+
     public DyDebugger(UnitComposition asm)
     {
         Composition = asm;
@@ -106,6 +108,4 @@ public sealed class DyDebugger
     //}
 
     //internal List<Breakpoint> Breakpoints { get; }
-
-    internal UnitComposition Composition { get; }
 }

@@ -444,7 +444,7 @@ PRODUCTIONS
         (. node = rec ?? node; .).
 
     AbstractFunctionBody<bool st, bool fin, out DNode node> =
-        (. node = null; var get = false; var set = false; .)
+        (. node = null; .)
         (
             FunctionSignature<st, fin, out var f>
             (.
@@ -454,7 +454,7 @@ PRODUCTIONS
         ).
 
     FunctionBody<bool st, bool fin, out DNode node> =
-        (. node = null; var get = false; var set = false; .)
+        (. node = null; .)
         (
             FunctionSignature<st, fin, out var f>
             ( Block<out node> | "=>" GuardedStatement<out node> )
@@ -989,7 +989,6 @@ PRODUCTIONS
             Expr<out node> (. @if.True = node; .)
             ":" Expr<out node> (. @if.False = node; node = @if; .)
         ).
-
 
     ThrowExpr<out DNode node> =
         (. node = null; .)

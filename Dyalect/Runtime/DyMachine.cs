@@ -272,6 +272,11 @@ public static partial class DyMachine
                     evalStack.Replace(types[first.TypeId].Neg(ctx, first));
                     if (ctx.Error is not null) goto HANDLE0;
                     break;
+                case OpCode.Plus:
+                    first = evalStack.Peek();
+                    evalStack.Replace(types[first.TypeId].Plus(ctx, first));
+                    if (ctx.Error is not null) goto HANDLE0;
+                    break;
                 case OpCode.Not:
                     first = evalStack.Peek();
                     evalStack.Replace(types[first.TypeId].Not(ctx, first));

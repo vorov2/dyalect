@@ -2,7 +2,7 @@
 
 public sealed class VarSym
 {
-    public string Name { get; init; } = null!;
+    public required string Name { get; init; }
 
     public int Address { get; init; }
 
@@ -13,8 +13,6 @@ public sealed class VarSym
     public int Flags { get; init; }
 
     public int Data { get; init; }
-
-    public VarSym() { }
 
     public override string ToString() => Name;
 }

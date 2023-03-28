@@ -6,12 +6,25 @@ public sealed class DebugInfo
 {
     internal static readonly DebugInfo Default = new();
 
-    public DebugInfo()
+    public string? File { get; }
+
+    public List<ScopeSym> Scopes { get; }
+
+    public List<LineSym> Lines { get; }
+
+    public List<VarSym> Vars { get; }
+
+    public Dictionary<int, FunSym> Functions { get; }
+
+    public DebugInfo() : this(default(string)) { }
+
+    public DebugInfo(string? file)
     {
         Scopes = new();
         Lines = new();
         Vars = new();
         Functions = new();
+        File = file;
     }
 
     private DebugInfo(DebugInfo di)
@@ -24,14 +37,4 @@ public sealed class DebugInfo
     }
 
     public DebugInfo Clone() => new(this);
-
-    public string? File { get; set; }
-
-    public List<ScopeSym> Scopes { get; }
-
-    public List<LineSym> Lines { get; }
-
-    public List<VarSym> Vars { get; }
-
-    public Dictionary<int, FunSym> Functions { get; }
 }

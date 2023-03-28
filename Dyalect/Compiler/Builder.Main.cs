@@ -482,7 +482,7 @@ partial class Builder
             if (hints.Has(Pop))
                 PopParentVariable(ctx, node.Name, node.Location);
             else
-                PushParentVariable(ctx, node.Name, node.Location);
+                PushParentVariable(node.Name, node.Location);
 
             return;
         }
@@ -1281,6 +1281,8 @@ partial class Builder
 
         if (node.Operator == UnaryOperator.Neg)
             cw.Neg();
+        else if (node.Operator == UnaryOperator.Plus)
+            cw.Plus();
         else if (node.Operator == UnaryOperator.Not)
             cw.Not();
         else if (node.Operator == UnaryOperator.BitwiseNot)

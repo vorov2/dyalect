@@ -104,7 +104,7 @@ partial class Builder
         return err;
     }
 
-    private int PushParentVariable(CompilerContext ctx, string name, Location loc)
+    private int PushParentVariable(string name, Location loc)
     {
         var err = GetParentVariable(name, out var sv);
 

@@ -47,10 +47,10 @@ public partial class DyLinker
             if (mod.LocalPath is null && mod.DllName is null && mod.ModuleName != nameof(lang))
             {
                 if (dyalectLib is null)
-                    LookupAssembly(self, DYALECTLIB);
+                    LookupAssembly(self, DyalectLibrary);
 
                 if (dyalectLib is not null && dyalectLib.ContainsKey(mod.ModuleName))
-                    return Link(self, new Reference(mod.Id, mod.ModuleName, null, DYALECTLIB, mod.SourceLocation, mod.SourceFileName));
+                    return Link(self, new Reference(mod.Id, mod.ModuleName, null, DyalectLibrary, mod.SourceLocation, mod.SourceFileName));
             }
 
             if (mod.ModuleName == nameof(lang))

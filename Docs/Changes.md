@@ -7,6 +7,7 @@
   * Add: _Consider abstract methods and properties_ ([Issue #945](https://github.com/vorov2/dyalect/issues/945), [docs](https://github.com/vorov2/dyalect/wiki/Functions#abstract)).
   * Fix: _Dya is unable to find config file_ ([Issue #943](https://github.com/vorov2/dyalect/issues/943)).
   * Fix: _Lazy variables don't work correctly in interactive_ ([Issue #944](https://github.com/vorov2/dyalect/issues/944)).
+  * Fix: _Unary `+` is not compiled_ ([Issue #946](https://github.com/vorov2/dyalect/issues/946)).
 
 # 0.46.7
   * Fix: _Linker may crush in a case of incorrect module import_ ([Issue #939](https://github.com/vorov2/dyalect/issues/939)).

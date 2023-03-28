@@ -255,3 +255,11 @@
         @OperationNotSupported => assert(got: true)
     }
 #endregion
+
+#region "Unary plus"
+    func Integer +() {
+        this + this
+    }
+    let x = +3
+    assert(6, x)
+#endregion

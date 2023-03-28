@@ -965,7 +965,7 @@ namespace Dyalect.Parser
 
 	void FunctionBody(bool st, bool fin, out DNode node) {
 		node = null; var get = false; var set = false; 
-		FunctionSignature(out var f);
+		FunctionSignature(st, fin, out var f);
 		if (la.kind == 34) {
 			Block(out node);
 		} else if (la.kind == 26) {
@@ -979,14 +979,14 @@ namespace Dyalect.Parser
 	}
 
 	void AbstractFunctionBody(bool st, bool fin, out DNode node) {
-		node = null; var get = false; var set = false; 
-		FunctionSignature(out var f);
+		node = null; 
+		FunctionSignature(st, fin, out var f);
 		node = f;
 		functions.Pop();
 		
 	}
 
-	void FunctionSignature(out DFunctionDeclaration f) {
+	void FunctionSignature(bool st, bool fin, out DFunctionDeclaration f) {
 		var get = false; var set = false; f = null; 
 		if (la.kind == 84 || la.kind == 85) {
 			if (la.kind == 84) {
