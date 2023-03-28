@@ -30,4 +30,7 @@ public static class Exe
         var result2 = DyMachine.Execute(ctx);
         return result2.Value;
     }
+
+    public static DyObject? Eval(SourceBuffer buffer, object? args = null) =>
+        Eval(buffer, FileLookup.Default.BuilderOptions, FileLookup.Default, args);
 }

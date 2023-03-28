@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+
 namespace Dyalect.Runtime.Types;
 
 public class DyDictionary : DyEnumerable
@@ -73,7 +74,7 @@ public class DyDictionary : DyEnumerable
             return value;
     }
 
-    internal void SetItem(DyObject index, DyObject value, ExecutionContext ctx)
+    internal void SetItem(DyObject index, DyObject value, ExecutionContext _)
     {
         if (!Dictionary.TryAdd(index, value))
             Dictionary[index] = value;

@@ -1,7 +1,8 @@
 ﻿using Dyalect.Compiler;
+
 namespace Dyalect.Runtime.Types;
 
-internal class DyDisposableMixin : DyMixin<DyDisposableMixin>
+internal sealed class DyDisposableMixin : DyMixin<DyDisposableMixin>
 {
     public DyDisposableMixin() : base(Dy.Disposable)
     {

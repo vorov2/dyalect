@@ -9,7 +9,7 @@ internal sealed class SourceBuilder
 
     public void Indent() => padding += 4;
     public void Outdent() => padding -= 4;
-    
+
     public void StartBlock()
     {
         AppendLine("{");

@@ -1,6 +1,7 @@
 ﻿using Dyalect.Compiler;
 using System.Collections;
 using System.Collections.Generic;
+
 namespace Dyalect.Runtime.Types;
 
 public sealed class DyModule : DyObject, IEnumerable<DyObject>

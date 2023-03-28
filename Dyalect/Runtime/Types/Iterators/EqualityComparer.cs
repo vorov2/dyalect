@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+
 namespace Dyalect.Runtime.Types;
 
 public sealed class EqualityComparer : IEqualityComparer<DyObject>

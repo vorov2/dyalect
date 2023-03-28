@@ -1,7 +1,8 @@
 ﻿using Dyalect.Compiler;
+
 namespace Dyalect.Runtime.Types;
 
-internal class DyFunctorMixin : DyMixin<DyFunctorMixin>
+internal sealed class DyFunctorMixin : DyMixin<DyFunctorMixin>
 {
     public DyFunctorMixin() : base(Dy.Functor) =>
         Members.Add(Builtins.Call, Unary(Builtins.Call, SelfCall));

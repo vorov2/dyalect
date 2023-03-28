@@ -1,6 +1,7 @@
 ﻿using Dyalect.Codegen;
 using System.Collections.Generic;
 using System.Linq;
+
 namespace Dyalect.Runtime.Types;
 
 [GeneratedType]
@@ -156,8 +157,7 @@ internal sealed partial class DyArrayTypeInfo : DyCollTypeInfo
         if (!CorrectIndex(self, ref index))
             throw new DyCodeException(DyError.IndexOutOfRange, index);
 
-        if (count is null)
-            count = self.Count - index;
+        count ??= self.Count - index;
 
         if (index + count > self.Count)
             throw new DyCodeException(DyError.IndexOutOfRange);
@@ -312,9 +312,7 @@ internal sealed partial class DyArrayTypeInfo : DyCollTypeInfo
     [StaticMethod]
     internal static DyObject Copy(DyArray source, int index = 0, DyArray? destination = null, int destinationIndex = 0, int? count = null)
     {
-        if (count is null)
-            count = source.Count;
-
+        count ??= source.Count;
         destination ??= new DyArray(new DyObject[destinationIndex + count.Value]);
 
         if (index < 0 || index >= source.Count)

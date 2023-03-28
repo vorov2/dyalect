@@ -1,6 +1,7 @@
 ﻿using Dyalect.Compiler;
 using Dyalect.Debug;
 using System.Collections.Generic;
+
 namespace Dyalect.Runtime.Types;
 
 internal sealed class DyIteratorFunction : DyForeignFunction

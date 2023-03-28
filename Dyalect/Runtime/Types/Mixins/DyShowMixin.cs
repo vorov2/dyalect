@@ -1,8 +1,9 @@
 ﻿using Dyalect.Compiler;
 using System.Collections.Generic;
+
 namespace Dyalect.Runtime.Types;
 
-internal class DyShowMixin : DyMixin<DyShowMixin>
+internal sealed class DyShowMixin : DyMixin<DyShowMixin>
 {
     public DyShowMixin() : base(Dy.Show) =>
         Members.Add(Builtins.String, Unary(Builtins.String, Show));

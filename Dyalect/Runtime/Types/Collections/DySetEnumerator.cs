@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+
 namespace Dyalect.Runtime.Types;
 
 internal sealed class DySetEnumerator : IEnumerator<DyObject>

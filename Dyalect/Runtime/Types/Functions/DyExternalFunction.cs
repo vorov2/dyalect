@@ -1,5 +1,6 @@
 ﻿using Dyalect.Compiler;
 using Dyalect.Debug;
+
 namespace Dyalect.Runtime.Types;
 
 public sealed class DyExternalFunction : DyForeignFunction

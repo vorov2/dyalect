@@ -1,7 +1,8 @@
 ﻿using Dyalect.Compiler;
+
 namespace Dyalect.Runtime.Types;
 
-internal class DySequenceMixin : DyMixin<DySequenceMixin>
+internal sealed class DySequenceMixin : DyMixin<DySequenceMixin>
 {
     public DySequenceMixin() : base(Dy.Sequence)
     {

@@ -1,4 +1,5 @@
 ﻿using Dyalect.Compiler;
+
 namespace Dyalect.Runtime.Types;
 
 internal sealed class DyNumberMixin : DyMixin<DyNumberMixin>

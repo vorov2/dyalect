@@ -1,4 +1,5 @@
 ﻿using Dyalect.Codegen;
+
 namespace Dyalect.Runtime.Types;
 
 [GeneratedType]

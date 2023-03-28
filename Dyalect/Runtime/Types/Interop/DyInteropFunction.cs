@@ -3,6 +3,7 @@ using Dyalect.Debug;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+
 namespace Dyalect.Runtime.Types;
 
 internal sealed class DyInteropFunction : DyForeignFunction

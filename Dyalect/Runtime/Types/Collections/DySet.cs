@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+
 namespace Dyalect.Runtime.Types;
 
 public class DySet : DyEnumerable
@@ -126,7 +127,7 @@ public class DySet : DyEnumerable
 
         return Set.IsSupersetOf(seq);
     }
-    
+
     public override int GetHashCode()
     {
         unchecked

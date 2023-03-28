@@ -14,6 +14,8 @@ public sealed class FileLookup
     private readonly string[] systemPaths;
     private readonly string[] additionalPaths;
 
+    internal BuilderOptions BuilderOptions => options;
+
     internal static readonly FileLookup Default = new(BuilderOptions.Default(), Array.Empty<string>(),
         Array.Empty<string>(), Array.Empty<string>(), Array.Empty<string>());
 

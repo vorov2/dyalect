@@ -1,6 +1,7 @@
 ﻿using Dyalect.Compiler;
 using System.Collections.Generic;
 using System.IO;
+
 namespace Dyalect.Runtime.Types;
 
 internal sealed class DyModuleTypeInfo : DyTypeInfo

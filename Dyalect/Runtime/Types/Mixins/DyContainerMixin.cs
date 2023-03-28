@@ -1,7 +1,8 @@
 ﻿using Dyalect.Compiler;
+
 namespace Dyalect.Runtime.Types;
 
-internal class DyContainerMixin : DyMixin<DyContainerMixin>
+internal sealed class DyContainerMixin : DyMixin<DyContainerMixin>
 {
     public DyContainerMixin() : base(Dy.Container)
     {
@@ -9,7 +10,7 @@ internal class DyContainerMixin : DyMixin<DyContainerMixin>
         SetSupportedOperations(Ops.In);
     }
 
-    private static DyObject IsIn(ExecutionContext ctx, DyObject self, DyObject field)
+    private static DyObject IsIn(ExecutionContext _, DyObject self, DyObject field)
     {
         if (field.TypeId is not Dy.String and not Dy.Char)
             return False;
