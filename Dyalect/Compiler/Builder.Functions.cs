@@ -448,6 +448,14 @@ partial class Builder
             var dec = new DFunctionDeclaration(node.Location) { Name = node.Name, Body = node.Body };
             BuildFunctionDeclaration(dec, hints.Append(IteratorBody), ctx);
         }
+        else if (node.Body is null)
+        {
+            if (node.TypeName is null || node.IsStatic)
+                AddError(CompilerError.AbstractOnlyMethods, node.Location);
+
+            //An abstract function
+            cw.PushNil();
+        }
         else
             Build(node.Body!, hints.Append(Last), ctx);
 

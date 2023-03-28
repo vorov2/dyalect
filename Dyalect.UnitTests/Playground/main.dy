@@ -1,11 +1,21 @@
-﻿//import "lazy"
-//import laz2 = "lazy"
+﻿type Date
 
-/*func getValue() {
-    print("getValue")
-    return 2
-}*/
+abstract func foo()
 
-lazy x = 2 //+ getValue()
-//x.GetType()
-//print("end")
+abstract func get Date.Year()
+abstract func get Date.Month()
+abstract func get Date.Day()
+
+func Date.IsLeapYear() => this.Year % 4 == 0
+
+type LocalDate(year, month, day, offset)
+    with Date 
+func get LocalDate.Offset() => this!offset
+func get LocalDate.Year() => this!year
+func get LocalDate.Month() => this!month
+func get LocalDate.Day() => this!day
+
+let date = LocalDate(1984, 3, 12, 3)
+print(date.Offset)
+print(date.Year) //Outputs: 1984
+print(date.IsLeapYear()) //Outputs: true

@@ -426,7 +426,10 @@ PRODUCTIONS
         (
             [ "final" (. fin = true; .) ]
             [ "static" (. st = true; .) ]
-            "func" FunctionBody<st, fin, out node>
+            (
+                "func" FunctionBody<st, fin, out node>
+                | "abstract" "func" AbstractFunctionBody<st, fin, out node>
+            )
         )
         {
             (.
@@ -440,12 +443,34 @@ PRODUCTIONS
         }
         (. node = rec ?? node; .).
 
+    AbstractFunctionBody<bool st, bool fin, out DNode node> =
+        (. node = null; var get = false; var set = false; .)
+        (
+            FunctionSignature<st, fin, out var f>
+            (.
+                node = f;
+                functions.Pop();
+            .)
+        ).
+
     FunctionBody<bool st, bool fin, out DNode node> =
         (. node = null; var get = false; var set = false; .)
         (
+            FunctionSignature<st, fin, out var f>
+            ( Block<out node> | "=>" GuardedStatement<out node> )
+            (.
+                f.Body = node;
+                node = f;
+                functions.Pop();
+            .)
+        ).
+
+    FunctionSignature<bool st, bool fin, out DFunctionDeclaration f> =
+        (. var get = false; var set = false; f = null; .)
+        (
             [ "get" (. get = true; .) | "set" (. set = true; .) ]
             (.
-                var f = new DFunctionDeclaration(t) { IsStatic = st, IsFinal = fin, Getter = get, Setter = set };
+                f = new DFunctionDeclaration(t) { IsStatic = st, IsFinal = fin, Getter = get, Setter = set };
                 functions.Push(f);
             .)
             Qualident<out var name, out Qualident type>
@@ -485,12 +510,6 @@ PRODUCTIONS
                     TypeName<out var qual> (. f.TargetTypeName = qual; .)
                 )
             )
-            ( Block<out node> | "=>" GuardedStatement<out node> )
-            (.
-                f.Body = node;
-                node = f;
-                functions.Pop();
-            .)
         ).
 
     FunctionParameter<out DParameter arg> =

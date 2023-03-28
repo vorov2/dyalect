@@ -333,4 +333,7 @@
   <data name="MethodNested" xml:space="preserve">
     <value>Methods cannot be nested in other functions.</value>
   </data>
+  <data name="AbstractOnlyMethods" xml:space="preserve">
+    <value>Only instance methods and properties can be declared as abstract.</value>
+  </data>
 </root>
