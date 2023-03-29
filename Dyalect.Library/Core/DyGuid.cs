@@ -1,5 +1,6 @@
 ﻿using Dyalect.Runtime.Types;
 using System;
+
 namespace Dyalect.Library.Core;
 
 public sealed class DyGuid : DyForeignObject

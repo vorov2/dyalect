@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
+
 namespace Dyalect;
 
 internal static class BCL
@@ -38,10 +39,8 @@ internal static class BCL
 
         foreach (var mi in type.GetMethods(flags))
             if (mi.Name == name)
-            { 
-                if (xs is null)
-                    xs = new();
-
+            {
+                xs ??= new();
                 xs.Add(mi);
             }
 

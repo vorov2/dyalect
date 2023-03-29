@@ -4,7 +4,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+
 namespace Dyalect.Generators;
+
 public static class Extensions
 {
     public static string ToString(this IEnumerable<string> elements, string mask, string separator = ", ") =>

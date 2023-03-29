@@ -1,4 +1,5 @@
 ﻿using Dyalect.Linker;
+
 namespace Dyalect.Runtime.Types;
 
 public abstract class DyForeignTypeInfo : DyTypeInfo

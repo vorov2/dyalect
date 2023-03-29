@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using static Dyalect.Parser.ParserError;
+
 namespace Dyalect.Parser;
 
 internal static class ErrorProcessor
@@ -20,6 +21,7 @@ internal static class ErrorProcessor
             ,{ "invalid Statement", InvalidStatement }
             ,{ "invalid TypeName", InvalidTypeName }
             ,{ "invalid Control", InvalidExpression }
+            ,{ "invalid GuardedStatement", InvalidGuardedStatement }
             ,{ "invalid Binding", InvalidBinding }
             ,{ "invalid ControlFlow", InvalidStatement }
             ,{ "invalid If", InvalidIf }
@@ -44,12 +46,12 @@ internal static class ErrorProcessor
             ,{ "invalid Literal", InvalidLiteral }
             ,{ "invalid ApplicationArguments", InvalidApplicationArguments }
             ,{ "invalid Label", InvalidLabel }
-            ,{ "invalid Name", InvalidIdentifier }
             ,{ "invalid String", InvalidLiteral }
             ,{ "invalid Bool", InvalidLiteral }
             ,{ "invalid Tuple", InvalidLiteral }
             ,{ "invalid DyalectItem", InvalidStatement }
 
+            ,{ "invalid Name", InvalidIdentifier }
             ,{ "invalid Assignment", InvalidStatement }
             ,{ "invalid Ternary", InvalidExpression }
             ,{ "invalid IndexBody", InvalidExpression }

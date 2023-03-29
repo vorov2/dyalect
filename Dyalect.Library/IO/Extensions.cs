@@ -1,5 +1,6 @@
 ﻿using Dyalect.Runtime;
 using System;
+
 namespace Dyalect.Library.IO;
 
 internal static class Extensions

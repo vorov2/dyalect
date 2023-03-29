@@ -136,5 +136,9 @@ public enum CompilerError
 
     FinalOnlyMethods = 266,
 
-    MethodNested = 267
+    MethodNested = 267,
+
+    AbstractOnlyMethods = 268,
+
+    AbstractNotFinal = 269
 }

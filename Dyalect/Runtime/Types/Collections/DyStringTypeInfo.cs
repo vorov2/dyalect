@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+
 namespace Dyalect.Runtime.Types;
 
 [GeneratedType]
@@ -112,9 +113,7 @@ internal sealed partial class DyStringTypeInfo : DyCollTypeInfo
     internal static DyObject Slice(DyString self, int index = 0, int? size = null)
     {
         index = CorrectIndex(index, self.Value);
-
-        if (size is null)
-            size = self.Count - 1;
+        size ??= self.Count - 1;
 
         if (index == 0 && size == self.Count - 1)
             return self;
@@ -143,9 +142,7 @@ internal sealed partial class DyStringTypeInfo : DyCollTypeInfo
     internal static int IndexOf(string self, string value, int index = 0, int? count = null)
     {
         index = CorrectIndex(index, self);
-
-        if (count is null)
-            count = self.Length - index;
+        count ??= self.Length - index;
 
         if (index < 0 || index > self.Length || count < 0 || count > self.Length - index)
             throw new DyCodeException(DyError.IndexOutOfRange);
@@ -156,13 +153,9 @@ internal sealed partial class DyStringTypeInfo : DyCollTypeInfo
     [InstanceMethod]
     internal static int LastIndexOf(string self, string value, int? index = null, int? count = null)
     {
-        if (index is null)
-            index = self.Length - 1;
-
+        index ??= self.Length - 1;
         index = CorrectIndex(index.Value, self);
-
-        if (count is null)
-            count = index + 1;
+        count ??= index + 1;
 
         if (index < 0 || index > self.Length || count < 0 || index - count + 1 < 0)
             throw new DyCodeException(DyError.IndexOutOfRange);
@@ -234,8 +227,7 @@ internal sealed partial class DyStringTypeInfo : DyCollTypeInfo
     [InstanceMethod]
     internal static string? Remove(string self, int index, int? count = null)
     {
-        if (count is null)
-            count = self.Length - index;
+        count ??= self.Length - index;
 
         if (index + count > self.Length)
             throw new DyCodeException(DyError.IndexOutOfRange);

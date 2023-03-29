@@ -1,5 +1,6 @@
 ﻿using Dyalect.Codegen;
 using System.Text;
+
 namespace Dyalect.Runtime.Types;
 
 [GeneratedType]
@@ -113,7 +114,7 @@ internal sealed partial class DyDictionaryTypeInfo : DyTypeInfo
 
     [InstanceMethod]
     internal static bool ContainsValue(DyDictionary self, DyObject value) => self.ContainsValue(value);
-    
+
     [InstanceMethod(Method.GetAndRemove)]
     internal static DyObject GetAndRemove(DyDictionary self, DyObject key) => self.GetAndRemove(key);
 

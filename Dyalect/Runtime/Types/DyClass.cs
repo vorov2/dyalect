@@ -1,4 +1,5 @@
 ﻿using Dyalect.Compiler;
+
 namespace Dyalect.Runtime.Types;
 
 public sealed class DyClass : DyObject, IProduction

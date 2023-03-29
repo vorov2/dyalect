@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+
 namespace Dyalect.Util;
 
 internal static class HelpGenerator
@@ -24,9 +25,8 @@ internal static class HelpGenerator
 
         foreach (var ac in props)
         {
-            var attr = Attribute.GetCustomAttribute(ac, typeof(BindingAttribute)) as BindingAttribute;
-
-            if (attr is null || attr.Help is null)
+            if (Attribute.GetCustomAttribute(ac, typeof(BindingAttribute)) is not BindingAttribute attr
+                || attr.Help is null)
                 continue;
 
             var ln = new List<string>();
@@ -60,7 +60,7 @@ internal static class HelpGenerator
     {
         if (h.Length > HELP_LENGTH)
         {
-            var idx = 0;
+            int idx;
             var lastIdx = 0;
             while ((idx = h.IndexOf(' ', lastIdx + 1)) < HELP_LENGTH && idx != -1)
                 lastIdx = idx;

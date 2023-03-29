@@ -2,6 +2,7 @@
 using Dyalect.Runtime;
 using System.Collections.Generic;
 using static Dyalect.Compiler.Hints;
+
 namespace Dyalect.Compiler;
 
 //Contains compilation logic for pattern matching
@@ -149,7 +150,7 @@ partial class Builder
         }
     }
 
-    private void BuildComparisonPattern(DComparisonPattern node, Hints hints, CompilerContext ctx)
+    private void BuildComparisonPattern(DComparisonPattern node, Hints _, CompilerContext ctx)
     {
         switch (node.Pattern.NodeType)
         {

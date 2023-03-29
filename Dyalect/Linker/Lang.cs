@@ -8,13 +8,14 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+
 namespace Dyalect.Linker;
 
 [GeneratedModule]
 internal sealed partial class Lang : ForeignUnit
 {
     private readonly DyTuple? startupArguments;
-    private const string VAR_CONSOLEOUTPUT = "sys.ConsoleOutput";
+    private const string VarConsoleOutput = "sys.ConsoleOutput";
 
     public Lang() => FileName = "lang";
 
@@ -81,14 +82,14 @@ internal sealed partial class Lang : ForeignUnit
     {
         if (output is null)
         {
-            var outputWriter = ctx.GetContextVariable<TextWriter>(VAR_CONSOLEOUTPUT);
+            var outputWriter = ctx.GetContextVariable<TextWriter>(VarConsoleOutput);
             if (outputWriter is not null)
                 Console.SetOut(outputWriter);
         }
         else
         {
-            if (!ctx.HasContextVariable(VAR_CONSOLEOUTPUT))
-                ctx.SetContextVariable(VAR_CONSOLEOUTPUT, Console.Out);
+            if (!ctx.HasContextVariable(VarConsoleOutput))
+                ctx.SetContextVariable(VarConsoleOutput, Console.Out);
 
             Console.SetOut(new ConsoleTextWriter(ctx, output));
         }

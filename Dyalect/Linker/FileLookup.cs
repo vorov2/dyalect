@@ -1,17 +1,20 @@
 ﻿using Dyalect.Compiler;
 using System.IO;
+
 namespace Dyalect.Linker;
 
 public sealed class FileLookup
 {
-    private const string LIBDIR = "lib";
-    private const string LOGFILE = "dyalect_error.log";
+    private const string LibDirectory = "lib";
+    private const string LogFile = "dyalect_error.log";
 
     private readonly BuilderOptions options;
     private readonly string[] startupPaths;
     private readonly string[] standardPaths;
     private readonly string[] systemPaths;
     private readonly string[] additionalPaths;
+
+    internal BuilderOptions BuilderOptions => options;
 
     internal static readonly FileLookup Default = new(BuilderOptions.Default(), Array.Empty<string>(),
         Array.Empty<string>(), Array.Empty<string>(), Array.Empty<string>());
@@ -28,9 +31,9 @@ public sealed class FileLookup
     public static FileLookup Create(BuilderOptions options, string startupPath, string[]? additionalPaths = null)
     {
         var systemPath = FileProbe.GetExecutableDirectory();
-        var systemPaths = new string[] { systemPath, Path.Combine(systemPath, LIBDIR) };
+        var systemPaths = new string[] { systemPath, Path.Combine(systemPath, LibDirectory) };
         var startupPaths = startupPath is not null
-            ? new string[] { startupPath, Path.Combine(startupPath, LIBDIR) }
+            ? new string[] { startupPath, Path.Combine(startupPath, LibDirectory) }
             : Array.Empty<string>();
 
         return new
@@ -126,7 +129,7 @@ public sealed class FileLookup
             //Attempt to log this error
             try
             {
-                File.AppendAllLines(Path.Combine(Environment.CurrentDirectory, LOGFILE),
+                File.AppendAllLines(Path.Combine(Environment.CurrentDirectory, LogFile),
                     new[] {
                         new string('=', 80),
                         $"Unable to write log file \"{fn}\" because of an error:",

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Text;
+
 namespace Dyalect.Parser.Model;
 
 public sealed class DFunctionDeclaration : DNode
@@ -15,6 +16,8 @@ public sealed class DFunctionDeclaration : DNode
     internal bool IsStatic { get; set; }
 
     internal bool IsFinal { get; set; }
+
+    internal bool IsAbstract => Body is null;
 
     internal bool IsIndexer { get; set; }
 
@@ -59,6 +62,9 @@ public sealed class DFunctionDeclaration : DNode
 
         if (IsFinal)
             sb.Append("final ");
+
+        if (IsAbstract)
+            sb.Append("abstract ");
 
         if (Name is not null)
             sb.Append("func ");

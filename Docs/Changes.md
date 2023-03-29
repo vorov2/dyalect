@@ -1,3 +1,15 @@
+# 0.47.0
+  * _Project migrated to .NET 7.0_
+  * Change: _Parser refactoring and optimizations._
+  * Change: _General code refactoring._
+  * Add: _Add built-in `instanceMember` and `staticMember` functions_ ([Issue #937](https://github.com/vorov2/dyalect/issues/937), [docs](https://github.com/vorov2/dyalect/wiki/Standard-functions#instanceMember)).
+  * Add: _Add support for underscores in numeric literals_ ([Issue #942](https://github.com/vorov2/dyalect/issues/942)).
+  * Add: _Consider abstract methods and properties_ ([Issue #945](https://github.com/vorov2/dyalect/issues/945), [docs](https://github.com/vorov2/dyalect/wiki/Functions#abstract)).
+  * Fix: _Dya is unable to find config file_ ([Issue #943](https://github.com/vorov2/dyalect/issues/943)).
+  * Fix: _Lazy variables don't work correctly in interactive_ ([Issue #944](https://github.com/vorov2/dyalect/issues/944)).
+  * Fix: _Unary `+` is not compiled_ ([Issue #946](https://github.com/vorov2/dyalect/issues/946)).
+  * Fix: _Disallow `final` and `abstract` modifiers on the same function_ ([Issue #947](https://github.com/vorov2/dyalect/issues/947)).
+
 # 0.46.7
   * Fix: _Linker may crush in a case of incorrect module import_ ([Issue #939](https://github.com/vorov2/dyalect/issues/939)).
   * Fix: _Module with multiple references can be compiled several times_ ([Issue #940](https://github.com/vorov2/dyalect/issues/940)).

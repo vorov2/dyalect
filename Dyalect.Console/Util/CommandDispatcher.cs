@@ -1,9 +1,10 @@
-﻿using Dyalect.Runtime;
+﻿#pragma warning disable CA1822
+using Dyalect.Runtime;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection;
+
 namespace Dyalect.Util;
 
 public sealed class CommandDispatcher

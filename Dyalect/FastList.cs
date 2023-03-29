@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+
 namespace Dyalect;
 
 public sealed class FastList<T> : IEnumerable<T>

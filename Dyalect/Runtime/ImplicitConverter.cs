@@ -1,5 +1,6 @@
 ﻿using Dyalect.Runtime.Types;
 using System.Runtime.CompilerServices;
+
 namespace Dyalect.Runtime;
 
 public static class ImplicitConverter

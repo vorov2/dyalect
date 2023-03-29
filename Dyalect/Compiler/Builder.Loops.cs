@@ -1,5 +1,6 @@
 ﻿using Dyalect.Parser.Model;
 using static Dyalect.Compiler.Hints;
+
 namespace Dyalect.Compiler;
 
 //Contains compilation logic for loops

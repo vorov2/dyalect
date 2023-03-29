@@ -1,4 +1,5 @@
 ﻿using System.Globalization;
+
 namespace Dyalect;
 
 public static class CultureInfoSettings

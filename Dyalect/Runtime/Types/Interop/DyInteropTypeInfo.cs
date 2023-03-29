@@ -1,8 +1,8 @@
 ﻿using Dyalect.Codegen;
 using Dyalect.Compiler;
-using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+
 namespace Dyalect.Runtime.Types;
 
 [GeneratedType]
@@ -184,7 +184,7 @@ internal partial class DyInteropTypeInfo : DyTypeInfo
     }
 
     [StaticMethod]
-    internal static DyObject CreateArray(ExecutionContext ctx, DyInterop type, int size)
+    internal static DyObject CreateArray(ExecutionContext _, DyInterop type, int size)
     {
         if (type.Object is not Type t)
             throw new DyCodeException(DyError.InvalidType, type);
@@ -232,7 +232,7 @@ internal partial class DyInteropTypeInfo : DyTypeInfo
     }
 
     [StaticMethod]
-    internal static DyObject GetField(ExecutionContext ctx, DyInterop type, string name)
+    internal static DyObject GetField(ExecutionContext _, DyInterop type, string name)
     {
         if (type.Object is not Type typ)
             throw new DyCodeException(DyError.InvalidType, type);

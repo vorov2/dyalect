@@ -1,4 +1,5 @@
 ﻿using Dyalect.Parser.Model;
+
 namespace Dyalect.Compiler;
 
 internal sealed class TypeInfo

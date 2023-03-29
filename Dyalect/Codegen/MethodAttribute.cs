@@ -1,5 +1,4 @@
-﻿using System;
-namespace Dyalect.Codegen;
+﻿namespace Dyalect.Codegen;
 
 public abstract class MethodAttribute : Attribute
 {

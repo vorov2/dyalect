@@ -1,8 +1,9 @@
 ﻿using Dyalect.Parser.Model;
 using Dyalect.Runtime.Types;
+
 namespace Dyalect.Debug;
 
-public struct Par
+public readonly struct Par
 {
     public readonly string Name;
     public readonly bool IsVarArg;

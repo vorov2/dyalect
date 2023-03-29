@@ -194,3 +194,11 @@
     lazy x = 2 + 2
     assert("221", x + 1)
 #endregion
+
+#region "Lazy with function"
+    func getValue() {
+        throw @Error("Error")
+    }
+    lazy x = 2 + getValue()
+    assert(got: true)
+#endregion

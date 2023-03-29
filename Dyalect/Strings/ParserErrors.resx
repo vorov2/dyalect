@@ -213,4 +213,7 @@
   <data name="ExpectedFunction" xml:space="preserve">
     <value>Expected function declaration.</value>
   </data>
+  <data name="InvalidGuardedStatement" xml:space="preserve">
+    <value>Invalid guarded statement.</value>
+  </data>
 </root>

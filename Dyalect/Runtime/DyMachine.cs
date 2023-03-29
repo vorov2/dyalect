@@ -3,6 +3,7 @@ using Dyalect.Linker;
 using Dyalect.Runtime.Types;
 using Dyalect.Strings;
 using System.Linq;
+
 namespace Dyalect.Runtime;
 
 public static partial class DyMachine
@@ -271,6 +272,11 @@ public static partial class DyMachine
                     evalStack.Replace(types[first.TypeId].Neg(ctx, first));
                     if (ctx.Error is not null) goto HANDLE0;
                     break;
+                case OpCode.Plus:
+                    first = evalStack.Peek();
+                    evalStack.Replace(types[first.TypeId].Plus(ctx, first));
+                    if (ctx.Error is not null) goto HANDLE0;
+                    break;
                 case OpCode.Not:
                     first = evalStack.Peek();
                     evalStack.Replace(types[first.TypeId].Not(ctx, first));
@@ -322,7 +328,7 @@ public static partial class DyMachine
                 case OpCode.Fail:
                     {
                         second = evalStack.Pop();
-                        if (ctx.Error is null) ctx.Error = second.ToError();
+                        ctx.Error ??= second.ToError();
                         goto CATCH;
                     }
                 case OpCode.NewIter:

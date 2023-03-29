@@ -1,6 +1,7 @@
 ﻿using Microsoft.CodeAnalysis;
 using System.Collections.Generic;
 using System.Linq;
+
 namespace Dyalect.Generators;
 
 public abstract class SourceGenerator : ISourceGenerator

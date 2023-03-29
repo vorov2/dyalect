@@ -3,10 +3,12 @@ https://vsmarketplacebadge.apphb.com/version/vorov2.dyalect.svg
 
 VSCode marketplace extension installs:
 https://vsmarketplacebadge.apphb.com/installs/vorov2.dyalect.svg
-
 https://github.com/Naereen/badges
 
 Download:
 https://img.shields.io/badge/Download-0.35.10-blue?style=for-the-badge&logo=github
 
 ![GitHub tag (latest SemVer)](https://img.shields.io/badge/version-0.35-royalblue.svg) 
+
+[![Try online](https://img.shields.io/badge/-online-blueviolet?style=for-the-badge&logo=okta&logoColor=white)](http://dyalect.somee.com/dya/index.html)
+* [Try Dyalect online](http://dyalect.somee.com/dya/index.html)

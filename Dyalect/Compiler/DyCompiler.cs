@@ -1,5 +1,6 @@
 ﻿using Dyalect.Linker;
 using Dyalect.Parser.Model;
+
 namespace Dyalect.Compiler;
 
 public sealed class DyCompiler

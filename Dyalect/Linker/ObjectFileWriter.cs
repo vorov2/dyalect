@@ -2,6 +2,7 @@
 using Dyalect.Debug;
 using System.Collections.Generic;
 using System.IO;
+
 namespace Dyalect.Linker;
 
 public static class ObjectFileWriter

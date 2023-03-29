@@ -2,6 +2,7 @@
 using Dyalect.Parser.Model;
 using System.Collections.Generic;
 using static Dyalect.Compiler.Hints;
+
 namespace Dyalect.Compiler;
 
 //This part is responsible for the compilation logic of custom types
@@ -19,11 +20,8 @@ partial class Builder
         var ti = new TypeInfo(node, new(unitId, unit.ExportList));
         var typeVar = 0;
 
-        if (types.ContainsKey(node.Name))
-        {
-            types.Remove(node.Name);
+        if (types.Remove(node.Name))
             AddError(CompilerError.TypeAlreadyDeclared, node.Location, node.Name);
-        }
         else
         {
             typeVar = AddVariable(node.Name, node.Location, VarFlags.Type | VarFlags.Const);

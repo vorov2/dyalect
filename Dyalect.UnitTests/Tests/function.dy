@@ -889,3 +889,15 @@
     let ys = xs.Iterate().Map(String).ToArray()
     assert(["1","2","3"], ys)
 #endregion
+
+#region "Abstract functions"
+    type Foo()
+    abstract func Foo.Test()
+    let f = Foo()
+    assert(nil, f.Test())
+    type Bar() with Foo
+    func Bar.Test() => 42
+    let b = Bar()
+    assert(got: b is Foo)
+    assert(42, b.Test())
+#endregion

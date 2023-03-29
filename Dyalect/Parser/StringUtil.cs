@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Text.RegularExpressions;
+
 namespace Dyalect.Parser;
 
 public static class StringUtil

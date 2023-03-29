@@ -5,6 +5,12 @@
     assert(0.0, res)
 #endregion
 
+#region "Underscore"
+    assert(1_000f, 1000f)
+    assert(1____0f, 10f)
+    assert(1.____1f, 1.1f)
+#endregion
+
 #region "Methods: Min and Max"
     assert(1.7976931348623157E+308, Float.Max)
     assert(-1.7976931348623157E+308, Float.Min)

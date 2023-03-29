@@ -2,7 +2,7 @@
 
   <PropertyGroup>
       <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-      <TargetFramework>net6.0</TargetFramework>
+      <TargetFramework>net7.0</TargetFramework>
       <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
       <GenerateAssemblyDescriptionAttribute>false</GenerateAssemblyDescriptionAttribute>
       <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
@@ -17,16 +17,19 @@
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <OutputPath>..\Bin\</OutputPath>
+    <WarningLevel>9999</WarningLevel>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <OutputPath>..\bin\</OutputPath>
     <NoWarn>1701;1702;CA1822</NoWarn>
+    <WarningLevel>9999</WarningLevel>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DebugGenerators|AnyCPU'">
     <OutputPath>..\bin\</OutputPath>
     <NoWarn>1701;1702;CA1822</NoWarn>
+    <WarningLevel>9999</WarningLevel>
   </PropertyGroup>
 
   <ItemGroup>

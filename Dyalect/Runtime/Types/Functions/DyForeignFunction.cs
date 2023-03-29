@@ -1,4 +1,5 @@
 ﻿using Dyalect.Debug;
+
 namespace Dyalect.Runtime.Types;
 
 public abstract class DyForeignFunction : DyFunction

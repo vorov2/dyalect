@@ -1,5 +1,6 @@
 ﻿using Dyalect.Codegen;
 using System.Globalization;
+
 namespace Dyalect.Runtime.Types;
 
 [GeneratedType]

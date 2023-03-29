@@ -9,7 +9,7 @@
       <GenerateAssemblyVersionAttribute>false</GenerateAssemblyVersionAttribute>
       <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
       <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-      <TargetFramework>net6.0</TargetFramework>
+      <TargetFramework>net7.0</TargetFramework>
       <ApplicationIcon>dya.ico</ApplicationIcon>
       <OutputType>Exe</OutputType>
       <StartupObject />
@@ -24,14 +24,17 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <OutputPath>..\bin\</OutputPath>
     <Prefer32Bit>false</Prefer32Bit>
+    <WarningLevel>9999</WarningLevel>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <OutputPath>..\bin\</OutputPath>
+    <WarningLevel>9999</WarningLevel>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DebugGenerators|AnyCPU'">
     <OutputPath>..\bin\</OutputPath>
+    <WarningLevel>9999</WarningLevel>
   </PropertyGroup>
 
   <ItemGroup>

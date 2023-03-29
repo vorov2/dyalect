@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+
 namespace Dyalect.Debug;
 
 public sealed class DebugWriter
@@ -6,6 +7,10 @@ public sealed class DebugWriter
     private readonly Stack<ScopeSym> scopes;
     private readonly Stack<FunSym> funs;
     private int scopeCount;
+
+    public DebugInfo Symbols { get; }
+
+    public VarSym? LastVarSym { get; private set; }
 
     public DebugWriter()
     {
@@ -69,8 +74,4 @@ public sealed class DebugWriter
     
     public void AddLineSym(int offset, int line, int col) =>
         Symbols.Lines.Add(new(offset, line, col));
-    
-    public DebugInfo Symbols { get; }
-
-    public VarSym? LastVarSym { get; private set; }
 }

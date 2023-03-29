@@ -2,6 +2,7 @@
 using Dyalect.Parser.Model;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+
 namespace Dyalect.Compiler;
 
 //This part is responsible for adding/resolving variables
@@ -10,7 +11,6 @@ partial class Builder
     //Variables indexers
     private readonly Stack<int> counters; //Stack of indices for the lexical scope
     private int currentCounter; //Global indexer
-
     private bool privateScope; //Identifies that a current scope is private
 
     //If we have a simple expression than all name references are qualified as implicit function parameters
@@ -104,7 +104,7 @@ partial class Builder
         return err;
     }
 
-    private int PushParentVariable(CompilerContext ctx, string name, Location loc)
+    private int PushParentVariable(string name, Location loc)
     {
         var err = GetParentVariable(name, out var sv);
 

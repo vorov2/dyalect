@@ -1,4 +1,5 @@
 ﻿using System.Text;
+
 namespace Dyalect.Parser.Model;
 
 public sealed class DIf : DNode

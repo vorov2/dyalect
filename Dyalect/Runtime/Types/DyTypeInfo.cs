@@ -2,6 +2,7 @@
 using Dyalect.Debug;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+
 namespace Dyalect.Runtime.Types;
 
 public abstract class DyTypeInfo : DyObject
@@ -36,7 +37,6 @@ public abstract class DyTypeInfo : DyObject
     private DyFunction? add;
     protected virtual DyObject AddOp(ExecutionContext ctx, DyObject left, DyObject right)
     {
-        //TODO: validate logic
         if (right.TypeId == Dy.String && left.TypeId != Dy.String)
         {
             try

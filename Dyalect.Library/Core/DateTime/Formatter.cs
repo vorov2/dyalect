@@ -1,6 +1,6 @@
-﻿using System;
-using System.Text;
+﻿using System.Text;
 using static Dyalect.Library.Core.FormatElementKind;
+
 namespace Dyalect.Library.Core;
 
 internal static class Formatter

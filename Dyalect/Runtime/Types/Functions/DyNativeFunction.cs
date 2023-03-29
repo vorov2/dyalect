@@ -1,5 +1,6 @@
 ﻿using Dyalect.Debug;
 using System.Collections.Generic;
+
 namespace Dyalect.Runtime.Types;
 
 internal class DyNativeFunction : DyFunction

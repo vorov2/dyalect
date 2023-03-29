@@ -1,7 +1,8 @@
 ﻿using Dyalect.Compiler;
+
 namespace Dyalect.Runtime.Types;
 
-internal class DyLookupMixin : DyMixin<DyLookupMixin>
+internal sealed class DyLookupMixin : DyMixin<DyLookupMixin>
 {
     public DyLookupMixin() : base(Dy.Lookup)
     {

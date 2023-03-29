@@ -6,6 +6,7 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+
 namespace Dyalect;
 
 internal sealed class InteractiveContext
@@ -30,7 +31,8 @@ internal sealed class InteractiveContext
             NoOptimizations = options.NoOptimizations,
             NoLangModule = options.NoLang,
             NoWarnings = options.NoWarnings,
-            NoWarningsLinker = options.NoWarningsLinker
+            NoWarningsLinker = options.NoWarningsLinker,
+            KeepLazy = true
         };
 
         if (options.IgnoreWarnings != null)

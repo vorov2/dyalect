@@ -3,6 +3,13 @@
     assert(96, res)
 #endregion
 
+#region "Underscore"
+    assert(1_000, 1000)
+    assert(1____0, 10)
+    assert(0x__0f, 15)
+    assert(0x__0f, 0x0f)
+#endregion
+
 #region "Methods: Min and Max"
     assert(9223372036854775807, Integer.Max)
     assert(-9223372036854775807, Integer.Min + 1)
@@ -25,7 +32,6 @@
     let t = TypeInfo(x)
     assert("Integer", typeName(t))
 #endregion
-
 
 #region "Methods: IsMultiple"
     assert(true, 12.IsMultipleOf(3))

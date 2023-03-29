@@ -16,7 +16,7 @@ internal sealed class StringBuffer : SourceBuffer
         FileName = fileName.Replace('\\', '/');
 
     protected internal override int Read() =>
-        bufferPosition < bufferLen ? buffer[bufferPosition++] : EOF;
+        bufferPosition < bufferLen ? buffer[bufferPosition++] : Constants.EOF;
 
     protected internal override int Peek()
     {

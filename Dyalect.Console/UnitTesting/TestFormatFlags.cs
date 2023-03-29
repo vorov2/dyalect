@@ -1,4 +1,5 @@
 ﻿using System;
+
 namespace Dyalect.UnitTesting;
 
 [Flags]

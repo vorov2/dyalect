@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+
 namespace Dyalect.UnitTesting;
 
 public sealed class TestRunner
@@ -30,7 +31,7 @@ public sealed class TestRunner
             if (blocks is null)
                 return false;
 
-            RunTests(report, blocks, dyaOptions, buildOptions, warns);
+            RunTests(report, blocks, buildOptions, warns);
 
             if (warns.Count > 0)
                 report.BuildWarnings = warns;
@@ -64,7 +65,7 @@ public sealed class TestRunner
         }
     }
 
-    private TestBlockInfo[] GatherTests(IEnumerable<string> files, List<BuildMessage> warns)
+    private static TestBlockInfo[] GatherTests(IEnumerable<string> files, List<BuildMessage> warns)
     {
         var blocks = new List<TestBlockInfo>();
 
@@ -97,7 +98,7 @@ public sealed class TestRunner
         return blocks.ToArray();
     }
 
-    private void RunTests(TestReport report, TestBlockInfo[] testBlocks, DyaOptions options, BuilderOptions builderOptions, List<BuildMessage> warns)
+    private void RunTests(TestReport report, TestBlockInfo[] testBlocks, BuilderOptions builderOptions, List<BuildMessage> warns)
     {
         const string INIT = "Initialize";
 
@@ -108,8 +109,8 @@ public sealed class TestRunner
 
         try
         {
-            inits = testBlocks.Where(b => b.Block is not null && b.Block?.Name == INIT)
-                .ToDictionary(b => b.FileName, b => b.Block.Body);
+            inits = testBlocks.Where(b => b.Block is not null && b.Block.Name == INIT)
+                .ToDictionary(b => b.FileName, b => b.Block!.Body);
         }
         catch (ArgumentException)
         {

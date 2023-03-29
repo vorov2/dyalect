@@ -1,5 +1,6 @@
 ﻿using Dyalect.Compiler;
 using Dyalect.Debug;
+
 namespace Dyalect.Runtime.Types;
 
 internal sealed class DyVariantConstructor : DyForeignFunction

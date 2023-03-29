@@ -9,6 +9,13 @@ public class CallFrame
 
     internal static readonly CallFrame External = new ExternalCallFrame();
 
+    private sealed class ExternalCallFrame : CallFrame
+    {
+        internal ExternalCallFrame() : base("", "", 0, LineSym.Empty) { }
+
+        public override string ToString() => ExternalPoint;
+    }
+
     private string GetName() => CodeBlockName ?? Global;
 
     public string? CodeBlockName { get; }
@@ -18,13 +25,6 @@ public class CallFrame
     public int Offset { get; }
 
     public LineSym? LinePragma { get; }
-
-    sealed class ExternalCallFrame : CallFrame
-    {
-        internal ExternalCallFrame() : base("", "", 0, LineSym.Empty) { }
-
-        public override string ToString() => ExternalPoint;
-    }
 
     internal CallFrame(string? moduleName, string codeBlockName, int offset, LineSym lineSym) =>
         (CodeBlockName, ModuleName, Offset, LinePragma) = (moduleName, codeBlockName, offset, lineSym);

@@ -9,8 +9,9 @@ CHARACTERS
     ucase = 'A' .. 'Z'.
     lcase = 'a' .. 'z' + "_".
     digit = "0123456789".
+    digitOrUnder = digit + "_".
     notDigit = ANY - digit.
-    hexDigit = digit + "ABCDEFabcdef".
+    hexDigit = digit + "ABCDEFabcdef_".
     stringChar = ANY - '"' - '\\' - newLine.
     stringChar2 = ANY - '"' - '\\' - '(' - ')' - newLine.
     verbatimChar = ANY - ']'.
@@ -27,14 +28,14 @@ TOKENS
 
     directive = "#" (letter { letter | digit } | "_" letter { letter | digit  }).
 
-    intToken    = digit { digit } | ("0x"|"0X") hexDigit { hexDigit }.
+    intToken    = digit { digitOrUnder } | ("0x"|"0X") hexDigit { hexDigit | "_" }.
 
-    floatToken  = "." digit { digit } [ ("e"|"E") [ "+" | "-" ] digit { digit } ] [("F"|"f")]
-                    | digit { digit } ("F"|"f")
-                    | digit { digit }
+    floatToken  = "." digitOrUnder { digitOrUnder } [ ("e"|"E") [ "+" | "-" ] digitOrUnder { digitOrUnder | "_" } ] [("F"|"f")]
+                    | digit { digitOrUnder } ("F"|"f")
+                    | digit { digitOrUnder }
                         (
-                            "." digit { digit } [ ( "e" | "E" ) ["+" | "-" ] digit { digit } ]
-                            | ( "e" | "E") ["+" | "-" ] digit { digit }
+                            "." digitOrUnder { digitOrUnder } [ ( "e" | "E" ) ["+" | "-" ] digitOrUnder { digitOrUnder } ]
+                            | ( "e" | "E") ["+" | "-" ] digitOrUnder { digitOrUnder }
                         ) [("F"|"f")].
 
     stringToken = "\"" { stringChar | "\\" printable }  "\"".
@@ -425,7 +426,10 @@ PRODUCTIONS
         (
             [ "final" (. fin = true; .) ]
             [ "static" (. st = true; .) ]
-            "func" FunctionBody<st, fin, out node>
+            (
+                "func" FunctionBody<st, fin, out node>
+                | "abstract" "func" AbstractFunctionBody<st, fin, out node>
+            )
         )
         {
             (.
@@ -439,12 +443,34 @@ PRODUCTIONS
         }
         (. node = rec ?? node; .).
 
+    AbstractFunctionBody<bool st, bool fin, out DNode node> =
+        (. node = null; .)
+        (
+            FunctionSignature<st, fin, out var f>
+            (.
+                node = f;
+                functions.Pop();
+            .)
+        ).
+
     FunctionBody<bool st, bool fin, out DNode node> =
-        (. node = null; var get = false; var set = false; .)
+        (. node = null; .)
+        (
+            FunctionSignature<st, fin, out var f>
+            ( Block<out node> | "=>" GuardedStatement<out node> )
+            (.
+                f.Body = node;
+                node = f;
+                functions.Pop();
+            .)
+        ).
+
+    FunctionSignature<bool st, bool fin, out DFunctionDeclaration f> =
+        (. var get = false; var set = false; f = null; .)
         (
             [ "get" (. get = true; .) | "set" (. set = true; .) ]
             (.
-                var f = new DFunctionDeclaration(t) { IsStatic = st, IsFinal = fin, Getter = get, Setter = set };
+                f = new DFunctionDeclaration(t) { IsStatic = st, IsFinal = fin, Getter = get, Setter = set };
                 functions.Push(f);
             .)
             Qualident<out var name, out Qualident type>
@@ -484,12 +510,6 @@ PRODUCTIONS
                     TypeName<out var qual> (. f.TargetTypeName = qual; .)
                 )
             )
-            ( Block<out node> | "=>" GuardedStatement<out node> )
-            (.
-                f.Body = node;
-                node = f;
-                functions.Pop();
-            .)
         ).
 
     FunctionParameter<out DParameter arg> =
@@ -969,7 +989,6 @@ PRODUCTIONS
             Expr<out node> (. @if.True = node; .)
             ":" Expr<out node> (. @if.False = node; node = @if; .)
         ).
-
 
     ThrowExpr<out DNode node> =
         (. node = null; .)

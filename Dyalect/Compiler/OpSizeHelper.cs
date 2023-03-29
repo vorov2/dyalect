@@ -2,7 +2,7 @@
 
 internal static class OpSizeHelper
 {
-    internal static int[] Op =
+    public static int[] Op =
     {
         0, //Nop
         0, //Str

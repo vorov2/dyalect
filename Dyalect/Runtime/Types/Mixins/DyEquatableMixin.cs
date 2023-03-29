@@ -1,7 +1,8 @@
 ﻿using Dyalect.Compiler;
+
 namespace Dyalect.Runtime.Types;
 
-internal class DyEquatableMixin : DyMixin<DyEquatableMixin>
+internal sealed class DyEquatableMixin : DyMixin<DyEquatableMixin>
 {
     public DyEquatableMixin() : base(Dy.Equatable)
     {

@@ -3,6 +3,7 @@ using Dyalect.Debug;
 using Dyalect.Parser;
 using System.Runtime.CompilerServices;
 using System.Text;
+
 namespace Dyalect.Runtime.Types;
 
 public abstract class DyFunction : DyObject

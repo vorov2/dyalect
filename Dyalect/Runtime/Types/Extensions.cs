@@ -3,6 +3,7 @@ using Dyalect.Parser;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Text;
+
 namespace Dyalect.Runtime.Types;
 
 public static class Extensions
@@ -268,7 +269,6 @@ public static class Extensions
             {
                 if (lab.Mutable)
                     sb.Append("var ");
-
 
                 //TODO: validate removal
                 //foreach (var ta in lab.EnumerateAnnotations())

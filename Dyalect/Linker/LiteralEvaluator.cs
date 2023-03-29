@@ -2,6 +2,7 @@
 using Dyalect.Runtime.Types;
 using Dyalect.Runtime;
 using System.Collections.Generic;
+
 namespace Dyalect.Linker;
 
 internal static class LiteralEvaluator

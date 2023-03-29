@@ -3,6 +3,7 @@ using Dyalect.Runtime.Types;
 using Dyalect.Strings;
 using System.Linq;
 using System.Text;
+
 namespace Dyalect.Runtime;
 
 public static class ErrorGenerators
@@ -377,8 +378,8 @@ public static class ErrorGenerators
                 .ToArray();
             str = string.Format(str, vals);
         }
-        else if (str is null)
-            str = RuntimeErrors.ResourceManager.GetString(err.Constructor + ".0");
+        else
+            str ??= RuntimeErrors.ResourceManager.GetString(err.Constructor + ".0");
 
         return str ?? err.Constructor;
     }

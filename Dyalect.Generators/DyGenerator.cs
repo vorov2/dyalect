@@ -2,39 +2,39 @@
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System.Linq;
 
-namespace Dyalect.Generators
+namespace Dyalect.Generators;
+
+[Generator]
+public class DyGenerator : ISourceGenerator
 {
-    [Generator]
-    public class DyGenerator : ISourceGenerator
+    public void Execute(GeneratorExecutionContext ctx)
     {
-        public void Execute(GeneratorExecutionContext ctx)
-        {
-            var syntaxReceiver = (DyTypeGeneratorSyntaxReceiver)ctx.SyntaxReceiver;
+        var syntaxReceiver = (DyTypeGeneratorSyntaxReceiver)ctx.SyntaxReceiver;
 
-            if (syntaxReceiver.Class is null)
-                return;
+        if (syntaxReceiver.Class is null)
+            return;
 
-            var userClass = syntaxReceiver.Class;
-            var dyTypes = userClass.Members
-                .OfType<FieldDeclarationSyntax>()
-                .SelectMany(f => f.Declaration.Variables.Select(v => (ctx.Compilation.GetSemanticModel(f.SyntaxTree), v)))
-                .Select(kv => kv.Item1.GetDeclaredSymbol(kv.v))
-                .OfType<IFieldSymbol>()
-                .Where(m => m.IsConst && m.ConstantValue is int)
-                .Select(f => ((int)f.ConstantValue, f.Name, f.GetAttributes().Any(a => a.AttributeClass.ToString() == "Dyalect.Codegen.MixinAttribute")))
-                .OrderBy(kv => kv.Item1)
-                .Select(kv => (kv.Name, kv.Item3))
-                .ToArray();
-            
-            static string GetClassName((string name, bool mixin) info) =>
-                info.name switch
-                {
-                    "TypeInfo" => "new DyMetaTypeInfo()",
-                    _ when info.mixin => $"Dy{info.name}Mixin.Instance",
-                    _ => $"new Dy{info.name}TypeInfo()"
-                };
+        var userClass = syntaxReceiver.Class;
+        var dyTypes = userClass.Members
+            .OfType<FieldDeclarationSyntax>()
+            .SelectMany(f => f.Declaration.Variables.Select(v => (ctx.Compilation.GetSemanticModel(f.SyntaxTree), v)))
+            .Select(kv => kv.Item1.GetDeclaredSymbol(kv.v))
+            .OfType<IFieldSymbol>()
+            .Where(m => m.IsConst && m.ConstantValue is int)
+            .Select(f => ((int)f.ConstantValue, f.Name, f.GetAttributes().Any(a => a.AttributeClass.ToString() == "Dyalect.Codegen.MixinAttribute")))
+            .OrderBy(kv => kv.Item1)
+            .Select(kv => (kv.Name, kv.Item3))
+            .ToArray();
+        
+        static string GetClassName((string name, bool mixin) info) =>
+            info.name switch
+            {
+                "TypeInfo" => "new DyMetaTypeInfo()",
+                _ when info.mixin => $"Dy{info.name}Mixin.Instance",
+                _ => $"new Dy{info.name}TypeInfo()"
+            };
 
-            var source = $@"using System;
+        var source = $@"using System;
 using Dyalect.Runtime.Types;
 namespace Dyalect;
 
@@ -77,26 +77,25 @@ partial class Dy
         }};
     }}
 }}";
-            ctx.AddSource($"Dy.generated.cs", source);
-        }
-
-        public void Initialize(GeneratorInitializationContext ctx)
-        {
-            //if (!System.Diagnostics.Debugger.IsAttached)
-            //    System.Diagnostics.Debugger.Launch();
-
-            ctx.RegisterForSyntaxNotifications(() => new DyTypeGeneratorSyntaxReceiver());
-        }
+        ctx.AddSource($"Dy.generated.cs", source);
     }
 
-    public sealed class DyTypeGeneratorSyntaxReceiver : ISyntaxReceiver
+    public void Initialize(GeneratorInitializationContext ctx)
     {
-        public ClassDeclarationSyntax Class { get; private set; }
+        //if (!System.Diagnostics.Debugger.IsAttached)
+        //    System.Diagnostics.Debugger.Launch();
 
-        public void OnVisitSyntaxNode(SyntaxNode syntaxNode)
-        {
-            if (syntaxNode is ClassDeclarationSyntax cds && cds.Identifier.ValueText == "Dy")
-                Class = cds;
-        }
+        ctx.RegisterForSyntaxNotifications(() => new DyTypeGeneratorSyntaxReceiver());
+    }
+}
+
+public sealed class DyTypeGeneratorSyntaxReceiver : ISyntaxReceiver
+{
+    public ClassDeclarationSyntax Class { get; private set; }
+
+    public void OnVisitSyntaxNode(SyntaxNode syntaxNode)
+    {
+        if (syntaxNode is ClassDeclarationSyntax cds && cds.Identifier.ValueText == "Dy")
+            Class = cds;
     }
 }

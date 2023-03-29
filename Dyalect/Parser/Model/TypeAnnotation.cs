@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+
 namespace Dyalect.Parser.Model;
 
 public sealed class TypeAnnotation : IEnumerable<Qualident>

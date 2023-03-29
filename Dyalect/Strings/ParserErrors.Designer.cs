@@ -178,6 +178,15 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Invalid guarded statement..
+        /// </summary>
+        internal static string InvalidGuardedStatement {
+            get {
+                return ResourceManager.GetString("InvalidGuardedStatement", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Invalid identifier..
         /// </summary>
         internal static string InvalidIdentifier {

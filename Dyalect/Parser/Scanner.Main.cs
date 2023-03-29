@@ -1,4 +1,5 @@
 ﻿namespace Dyalect.Parser;
+using Map = System.Collections.Generic.Dictionary<int, int>;
 
 internal sealed partial class Scanner
 {
@@ -18,7 +19,7 @@ internal sealed partial class Scanner
     private char[] tval = new char[128];
     private int tlen;
 
-    public SourceBuffer Buffer => buffer;
+    public SourceBuffer InputBuffer => buffer;
 
     public Scanner(SourceBuffer buffer)
     {
@@ -54,9 +55,7 @@ internal sealed partial class Scanner
     {
         do
         {
-            if (pt.next == null)
-                pt.next = NextToken();
-
+            pt.next ??= NextToken();
             pt = pt.next;
         }
         while (pt.kind > maxT);

@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+
 namespace Dyalect.Runtime;
 
 internal sealed class CallStack : IEnumerable<Caller>

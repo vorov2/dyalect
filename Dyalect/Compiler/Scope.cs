@@ -80,10 +80,3 @@ public sealed class Scope
 
     public ScopeKind Kind { get; private set; }
 }
-
-public enum ScopeKind
-{
-    Lexical = 0,
-    Function,
-    Loop
-}

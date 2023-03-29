@@ -1,5 +1,6 @@
 ﻿using Dyalect.Runtime;
 using Dyalect.Runtime.Types;
+
 namespace Dyalect.Library.Core;
 
 public abstract class SpanTypeInfo<T> : DyForeignTypeInfo<CoreModule>

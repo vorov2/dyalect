@@ -2,18 +2,19 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+
 namespace Dyalect.Util;
 
 public static class CommandLineReader
 {
-    abstract class Value
+    private abstract class Value
     {
         public bool IsDefault;
 
         public abstract DyObject ToObject();
     }
 
-    class StringValue : Value
+    private sealed class StringValue : Value
     {
         public StringValue() => Value = null!;
 
@@ -22,7 +23,7 @@ public static class CommandLineReader
         public override DyObject ToObject() => new DyString(Value);
     }
 
-    class ArrayValue : Value
+    private sealed class ArrayValue : Value
     {
         public ArrayValue(params string[] args)
         {
@@ -67,9 +68,7 @@ public static class CommandLineReader
 
         foreach (var pi in typeof(T).GetProperties())
         {
-            var attr = Attribute.GetCustomAttribute(pi, typeof(BindingAttribute)) as BindingAttribute;
-
-            if (attr is null)
+            if (Attribute.GetCustomAttribute(pi, typeof(BindingAttribute)) is not BindingAttribute attr)
                 continue;
 
             object value = null!;
@@ -234,7 +233,7 @@ public static class CommandLineReader
             {
                 if (opt != null)
                     AddOption(opt, null);
-                opt = str.Substring(1);
+                opt = str[1..];
                 continue;
             }
 

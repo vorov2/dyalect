@@ -1,6 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using static Dyalect.Library.Core.FormatElementKind;
+
 namespace Dyalect.Library.Core;
 
 internal static class InputParser

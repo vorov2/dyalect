@@ -1,5 +1,10 @@
-﻿//import "lazy"
-//import laz2 = "lazy"
+﻿type Test
 
-import core
-import core2 = core
+final abstract func Test.Foo()
+
+func Integer +() {
+    this+this
+}
+
+let x = +3
+print(x)

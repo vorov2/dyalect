@@ -2,9 +2,9 @@
 using Dyalect.Parser.Model;
 using Dyalect.Runtime;
 using Dyalect.Runtime.Types;
-using System;
 using System.Collections.Generic;
 using static Dyalect.Compiler.Hints;
+
 namespace Dyalect.Compiler;
 
 //Contains function related compilation logic
@@ -382,7 +382,7 @@ partial class Builder
     {
         var iterBody = hints.Has(IteratorBody);
         var args = CompileFunctionParameters(node);
-        StartFun(node.Setter ? Builtins.Setter(node.Name!) : node.Name!, node.TypeName is not null ? node.TypeName.Local : null, args);
+        StartFun(node.Setter ? Builtins.Setter(node.Name!) : node.Name!, node.TypeName?.Local, args);
 
         if (node.IsStatic && node.TypeName is null)
             AddError(CompilerError.StaticOnlyMethods, node.Location, node.Name!);
@@ -447,6 +447,17 @@ partial class Builder
         {
             var dec = new DFunctionDeclaration(node.Location) { Name = node.Name, Body = node.Body };
             BuildFunctionDeclaration(dec, hints.Append(IteratorBody), ctx);
+        }
+        else if (node.Body is null)
+        {
+            if (node.TypeName is null || node.IsStatic)
+                AddError(CompilerError.AbstractOnlyMethods, node.Location);
+
+            if (node.IsFinal)
+                AddError(CompilerError.AbstractNotFinal, node.Location);
+
+            //An abstract function
+            cw.PushNil();
         }
         else
             Build(node.Body!, hints.Append(Last), ctx);

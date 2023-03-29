@@ -1,5 +1,4 @@
-﻿using System;
-namespace Dyalect.Compiler;
+﻿namespace Dyalect.Compiler;
 
 [Flags]
 public enum Hints
