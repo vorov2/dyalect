@@ -1,3 +1,6 @@
+# 0.47.1
+  *
+
 # 0.47.0
   * _Project migrated to .NET 7.0_
   * Change: _Parser refactoring and optimizations._
