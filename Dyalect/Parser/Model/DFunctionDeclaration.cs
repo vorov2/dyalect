@@ -17,6 +17,8 @@ public sealed class DFunctionDeclaration : DNode
 
     internal bool IsFinal { get; set; }
 
+    internal bool IsAbstract => Body is null;
+
     internal bool IsIndexer { get; set; }
 
     internal bool IsConstructor { get; set; }
@@ -60,6 +62,9 @@ public sealed class DFunctionDeclaration : DNode
 
         if (IsFinal)
             sb.Append("final ");
+
+        if (IsAbstract)
+            sb.Append("abstract ");
 
         if (Name is not null)
             sb.Append("func ");

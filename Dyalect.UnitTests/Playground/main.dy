@@ -1,4 +1,8 @@
-﻿func Integer +() {
+﻿type Test
+
+final abstract func Test.Foo()
+
+func Integer +() {
     this+this
 }
 

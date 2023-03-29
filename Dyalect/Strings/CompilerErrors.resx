@@ -336,4 +336,7 @@
   <data name="AbstractOnlyMethods" xml:space="preserve">
     <value>Only instance methods and properties can be declared as abstract.</value>
   </data>
+  <data name="AbstractNotFinal" xml:space="preserve">
+    <value>Abstract functions cannot be marked as "final".</value>
+  </data>
 </root>

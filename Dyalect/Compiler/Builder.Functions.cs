@@ -453,6 +453,9 @@ partial class Builder
             if (node.TypeName is null || node.IsStatic)
                 AddError(CompilerError.AbstractOnlyMethods, node.Location);
 
+            if (node.IsFinal)
+                AddError(CompilerError.AbstractNotFinal, node.Location);
+
             //An abstract function
             cw.PushNil();
         }

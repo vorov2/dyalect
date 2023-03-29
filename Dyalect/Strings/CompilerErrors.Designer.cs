@@ -61,6 +61,15 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Abstract functions cannot be marked as &quot;final&quot;..
+        /// </summary>
+        internal static string AbstractNotFinal {
+            get {
+                return ResourceManager.GetString("AbstractNotFinal", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Only instance methods and properties can be declared as abstract..
         /// </summary>
         internal static string AbstractOnlyMethods {
