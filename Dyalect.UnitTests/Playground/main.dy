@@ -1,2 +1,4 @@
-﻿let x = 12_
-print(x)
+﻿let fn = instanceMember("1,2,3", "StartsWith")
+
+print(fn)
+fn(1, 2)
