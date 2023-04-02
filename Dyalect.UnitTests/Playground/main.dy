@@ -1,10 +1,10 @@
-﻿type Test
+﻿type Base
 
-final abstract func Test.Foo()
+abstract func Base.Foo()
 
-func Integer +() {
-    this+this
-}
+type Derived() with Base
 
-let x = +3
-print(x)
+func Derived.Foo() => "Foo"
+
+let x = Derived()
+x.Foo()

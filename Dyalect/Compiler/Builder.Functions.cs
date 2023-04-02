@@ -457,7 +457,8 @@ partial class Builder
                 AddError(CompilerError.AbstractNotFinal, node.Location);
 
             //An abstract function
-            cw.PushNil();
+            ThrowError(DyError.NotImplemented);
+            cw.Fail();
         }
         else
             Build(node.Body!, hints.Append(Last), ctx);

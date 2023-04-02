@@ -1,5 +1,6 @@
 # 0.47.1
   * Change: _`IOFailed` exception should include details about an error_ ([Issue #949](https://github.com/vorov2/dyalect/issues/949)).
+  * Fix: _Abstract member should throw `NotImplemented` error_ ([Issue #950](https://github.com/vorov2/dyalect/issues/950)).
 
 # 0.47.0
   * _Project migrated to .NET 7.0_
