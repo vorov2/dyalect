@@ -1,5 +1,4 @@
 ﻿using Dyalect.Runtime;
-using System;
 
 namespace Dyalect.Library.IO;
 
