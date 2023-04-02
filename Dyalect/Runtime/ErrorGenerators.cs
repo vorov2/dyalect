@@ -45,6 +45,12 @@ public static class ErrorGenerators
         return Nil;
     }
 
+    public static DyObject IOFailed(this ExecutionContext ctx, string reason)
+    {
+        ctx.Error = new(DyError.IOFailed, reason);
+        return Nil;
+    }
+
     public static DyObject TypeClosed(this ExecutionContext ctx, DyTypeInfo typeInfo)
     {
         ctx.Error = new(DyError.TypeClosed, typeInfo.ReflectedTypeName);

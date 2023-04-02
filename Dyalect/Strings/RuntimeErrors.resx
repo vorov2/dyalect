@@ -309,4 +309,7 @@
   <data name="OverloadProhibited.1" xml:space="preserve">
     <value>Unable to overload a method "{0}", method is final.</value>
   </data>
+  <data name="IOFailed.1" xml:space="preserve">
+    <value>Cannot complete an IO operation: {0}</value>
+  </data>
 </root>

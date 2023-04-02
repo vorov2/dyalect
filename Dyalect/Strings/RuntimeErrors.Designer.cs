@@ -340,6 +340,15 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cannot complete an IO operation: {0}.
+        /// </summary>
+        internal static string IOFailed_1 {
+            get {
+                return ResourceManager.GetString("IOFailed.1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Key is already present in the dictionary..
         /// </summary>
         internal static string KeyAlreadyPresent_0 {
