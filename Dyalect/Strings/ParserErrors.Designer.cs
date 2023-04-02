@@ -241,6 +241,15 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Invalid number..
+        /// </summary>
+        internal static string InvalidNumber {
+            get {
+                return ResourceManager.GetString("InvalidNumber", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Pattern is invalid..
         /// </summary>
         internal static string InvalidPattern {

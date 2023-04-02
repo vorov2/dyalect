@@ -1,10 +1,2 @@
-﻿type Base
-
-abstract func Base.Foo()
-
-type Derived() with Base
-
-func Derived.Foo() => "Foo"
-
-let x = Derived()
-x.Foo()
+﻿let x = 12_
+print(x)

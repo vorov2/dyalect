@@ -893,8 +893,11 @@
 #region "Abstract functions"
     type Foo()
     abstract func Foo.Test()
-    let f = Foo()
-    assert(nil, f.Test())
+    try {
+        let f = Foo()
+    } catch {
+        @NotImplemented => assert(got: true)
+    }
     type Bar() with Foo
     func Bar.Test() => 42
     let b = Bar()
