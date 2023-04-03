@@ -1,5 +1,4 @@
 ﻿using Dyalect.Runtime;
-using System;
 
 namespace Dyalect.Library.IO;
 
@@ -11,9 +10,9 @@ internal static class Extensions
         {
             return action();
         }
-        catch (Exception)
+        catch (Exception ex)
         {
-            ctx.IOFailed();
+            ctx.IOFailed(ex.Message);
             return default;
         }
     }
@@ -24,9 +23,9 @@ internal static class Extensions
         {
             action();
         }
-        catch (Exception)
+        catch (Exception ex)
         {
-            ctx.IOFailed();
+            ctx.IOFailed(ex.Message);
         }
     }
 }

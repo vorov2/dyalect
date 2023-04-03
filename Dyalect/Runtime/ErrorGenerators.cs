@@ -45,6 +45,12 @@ public static class ErrorGenerators
         return Nil;
     }
 
+    public static DyObject IOFailed(this ExecutionContext ctx, string detail)
+    {
+        ctx.Error = new(DyError.IOFailed, detail);
+        return Nil;
+    }
+
     public static DyObject TypeClosed(this ExecutionContext ctx, DyTypeInfo typeInfo)
     {
         ctx.Error = new(DyError.TypeClosed, typeInfo.ReflectedTypeName);
@@ -191,7 +197,8 @@ public static class ErrorGenerators
     public static DyObject StaticOperationNotSupported(this ExecutionContext ctx, string op, int typeId)
     {
         var typeName = ctx.RuntimeContext.Types[typeId].ReflectedTypeName;
-        //small hack to get OperationNotSupported.4
+        //Small hack to get OperationNotSupported.4. It allows to use the same general code of "OperationNotSupported",
+        //but a different text for a case of a static operation
         ctx.Error = new(DyError.OperationNotSupported, Builtins.NameToOperator(op), typeName, 0, 0);
         return Nil;
     }

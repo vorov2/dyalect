@@ -317,9 +317,15 @@ internal sealed partial class InternalParser
     private long ParseInteger()
     {
         var val = t.val;
+        var ix = val.IndexOf('_');
 
-        if (val.IndexOf('_') != -1)
+        if (ix != -1)
+        {
+            if (ix == val.Length - 1)
+                AddError(ParserError.InvalidNumber, new Location(t.line, t.col));
+
             val = val.Replace("_", "");
+        }
 
         if (val.Length > 2 && val[0] == '0' && char.ToUpper(val[1]) == 'X')
             return long.Parse(val[2..], NumberStyles.HexNumber);
@@ -330,9 +336,15 @@ internal sealed partial class InternalParser
     private double ParseFloat()
     {
         var val = t.val;
+        var ix = val.IndexOf('_');
 
-        if (val.IndexOf('_') != -1)
+        if (ix != -1)
+        {
+            if (ix == val.Length - 1)
+                AddError(ParserError.InvalidNumber, new Location(t.line, t.col));
+
             val = val.Replace("_", "");
+        }
 
         var c = val[^1];
 

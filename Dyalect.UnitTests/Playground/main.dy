@@ -1,10 +1,4 @@
-﻿type Test
+﻿let fn = instanceMember("1,2,3", "StartsWith")
 
-final abstract func Test.Foo()
-
-func Integer +() {
-    this+this
-}
-
-let x = +3
-print(x)
+print(fn)
+fn(1, 2)

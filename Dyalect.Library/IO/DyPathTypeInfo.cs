@@ -75,9 +75,9 @@ public sealed partial class DyPathTypeInfo : DyForeignTypeInfo<IOModule>
         {
             return ctx.InvalidValue();
         }
-        catch (Exception)
+        catch (Exception ex)
         {
-            return ctx.IOFailed();
+            return ctx.IOFailed(ex.Message);
         }
     }
 
@@ -95,9 +95,9 @@ public sealed partial class DyPathTypeInfo : DyForeignTypeInfo<IOModule>
         {
             return ctx.InvalidValue();
         }
-        catch (Exception)
+        catch (Exception ex)
         {
-            return ctx.IOFailed();
+            return ctx.IOFailed(ex.Message);
         }
     }
 }

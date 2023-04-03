@@ -22,15 +22,15 @@ CHARACTERS
 TOKENS
     ucaseToken = ucase { letter | digit }.
 
-    lcaseToken = lcase { letter | digit } | "_" lcase { letter | digit  } | "_".
+    lcaseToken = lcase { letter | digit } | "_" lcase { letter | digit } | "_".
 
     variantToken = "@" (letter|"_") { letter | digit }.
 
-    directive = "#" (letter { letter | digit } | "_" letter { letter | digit  }).
+    directive = "#" (letter { letter | digit } | "_" letter { letter | digit }).
 
-    intToken    = digit { digitOrUnder } | ("0x"|"0X") hexDigit { hexDigit | "_" }.
+    intToken    = digit { digitOrUnder } | ("0x"|"0X") hexDigit { hexDigit }.
 
-    floatToken  = "." digitOrUnder { digitOrUnder } [ ("e"|"E") [ "+" | "-" ] digitOrUnder { digitOrUnder | "_" } ] [("F"|"f")]
+    floatToken  = "." digitOrUnder { digitOrUnder } [ ("e"|"E") [ "+" | "-" ] digitOrUnder { digitOrUnder } ] [("F"|"f")]
                     | digit { digitOrUnder } ("F"|"f")
                     | digit { digitOrUnder }
                         (

@@ -21,10 +21,10 @@ public sealed class DyaOptions : IOptionBag
     [Binding("out", Help = "Specifies an output directory (e.g. for a compiled file).", Category = CompilerHeader)]
     public string? OutputDirectory { get; set; }
 
-    [Binding("c", "compile", Help = "Compiles all provided files. By default an object file is placed in the same directory as compiled file (with a .dyo extension). In order to change an output directory, use -out switch.", Category = CompilerHeader)]
+    [Binding("c", "compile", Help = "Compiles all provided files to an object file format. By default an object file is placed in the same directory as compiled file (with a .dyo extension). In order to change an output directory, use -out switch.", Category = CompilerHeader)]
     public bool Compile { get; set; }
 
-    [Binding("il", Help = "Compiles all provided files and outputs IL (intermediate assembly). If an output directory (-out switch) is given IL is saved to files, otherwise - printed to standard output.", Category = CompilerHeader)]
+    [Binding("il", Help = "Compiles all provided files and outputs IL (intermediate assembly). If an output directory (-out switch) is specified, IL would be serialized to file(s), otherwise - printed to standard output.", Category = CompilerHeader)]
     public bool GenerateIL { get; set; }
 
     [Binding("debug", Help = "Compile in debug mode.", Category = CompilerHeader)]
@@ -45,7 +45,7 @@ public sealed class DyaOptions : IOptionBag
     [Binding("nolang", Help = "Do not import \"lang\" module that includes basic primitives and operations.", Category = CompilerHeader)]
     public bool NoLang { get; set; }
 
-    [Binding("linklog", Help = "Specifies a file where linker would log information loading of modules and assemblies. If a file is not specified logging is not performed. This settings seriously affects performance.", Category = LinkerHeader)]
+    [Binding("linklog", Help = "Specifies a file to which linker would trace loading of modules and assemblies. If a file is not specified tracing is not performed. This setting affects performance.", Category = LinkerHeader)]
     public string? LinkerLog { get; set; }
 
     [Binding("path", Help = "A path where linker would look for referenced modules. You can specify this switch multiple times.", Category = LinkerHeader)]
@@ -63,10 +63,10 @@ public sealed class DyaOptions : IOptionBag
     [Binding("onlyfailed", Help = "Show only failed tests (the default behavior is to report about all executed tests).", Category = TestingHeader)]
     public bool ShowOnlyFailedTests { get; set; }
 
-    [Binding("testresults", Help = "Specifies a file to save test results. If file is not specified test results are only printed to console.", Category = TestingHeader)]
+    [Binding("testresults", Help = "Specifies a file to save test results. If a file is not specified test results are only printed to console.", Category = TestingHeader)]
     public string? SaveTestResults { get; set; }
 
-    [Binding("useMarkdown", Help = "Generate test results in Markdown format. This setting is only applied when test results are save to a file specified by \"testresults\" settings.", Category = TestingHeader)]
+    [Binding("useMarkdown", Help = "Generate test results in Markdown format. This setting is only applied when test results are saved to a file specified by -testresults settings.", Category = TestingHeader)]
     public bool UseMarkdown { get; set; }
 
     [Binding("i", Help = "Stay in interactive mode after executing a file.", Category = GeneralHeader)]

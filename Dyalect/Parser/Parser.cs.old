@@ -964,7 +964,7 @@ namespace Dyalect.Parser
 	}
 
 	void FunctionBody(bool st, bool fin, out DNode node) {
-		node = null; var get = false; var set = false; 
+		node = null; 
 		FunctionSignature(st, fin, out var f);
 		if (la.kind == 34) {
 			Block(out node);

@@ -68,5 +68,7 @@ public enum ParserError
 
     ExpectedFunction = 42,
 
-    InvalidGuardedStatement = 43
+    InvalidGuardedStatement = 43,
+
+    InvalidNumber = 44
 }
