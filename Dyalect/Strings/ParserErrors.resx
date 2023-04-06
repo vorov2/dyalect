@@ -219,4 +219,7 @@
   <data name="InvalidNumber" xml:space="preserve">
     <value>Invalid number.</value>
   </data>
+  <data name="AbstractFunctionNoBody" xml:space="preserve">
+    <value>An abstract function or property should not define a body.</value>
+  </data>
 </root>

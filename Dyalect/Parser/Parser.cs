@@ -1,5 +1,6 @@
 
 #nullable disable
+#pragma warning disable
 using System;
 using System.Linq;
 using System.Collections.Generic;
@@ -981,6 +982,13 @@ namespace Dyalect.Parser
 	void AbstractFunctionBody(bool st, bool fin, out DNode node) {
 		node = null; 
 		FunctionSignature(st, fin, out var f);
+		if (la.kind == 26) {
+			Get();
+			GuardedStatement(out node);
+		}
+		if (node is not null)
+		   AddError(ParserError.AbstractFunctionNoBody, new(t.line, t.col));
+		
 		node = f;
 		functions.Pop();
 		

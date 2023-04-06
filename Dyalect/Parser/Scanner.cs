@@ -1,5 +1,6 @@
 
 #nullable disable
+#pragma warning disable
 using System;
 using System.IO;
 using System.Collections;
