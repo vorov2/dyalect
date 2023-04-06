@@ -70,5 +70,7 @@ public enum ParserError
 
     InvalidGuardedStatement = 43,
 
-    InvalidNumber = 44
+    InvalidNumber = 44,
+
+    AbstractFunctionNoBody = 45
 }

@@ -29,6 +29,7 @@ internal static class ErrorProcessor
             ,{ "invalid Expr", InvalidExpression }
             ,{ "invalid StatementExpr", InvalidExpression }
             ,{ "invalid FunctionBody", InvalidFunction}
+            ,{ "invalid FunctionSignature", InvalidFunction}
             ,{ "invalid FunctionStatement", InvalidFunction}
             ,{ "invalid Pattern", InvalidPattern }
             ,{ "invalid BooleanPattern", InvalidPattern }

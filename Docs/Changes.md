@@ -1,3 +1,7 @@
+# 0.47.2
+  * Fix: _Better error reporting when an abstract function has a body_ ([Issue #955](https://github.com/vorov2/dyalect/issues/955)).
+  * Change: _Parser error reporting corrected._
+
 # 0.47.1
   * Change: _`IOFailed` exception should include details about an error_ ([Issue #949](https://github.com/vorov2/dyalect/issues/949)).
   * Fix: _Abstract member should throw `NotImplemented` error_ ([Issue #950](https://github.com/vorov2/dyalect/issues/950)).

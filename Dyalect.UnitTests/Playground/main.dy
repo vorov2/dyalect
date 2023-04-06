@@ -1,4 +1,15 @@
-﻿let fn = instanceMember("1,2,3", "StartsWith")
+﻿type Foo()
+
+func Foo.Test1() {}
+func get Foo.Name() => "Foo"
+func set Foo.Name(value) {}
+
+abstract func Foo.CheckIt() =>
+    print("somehow this one has a body")
+
+let f = Foo()
+f.Name
+let fn = instanceMember(f, "set_Name")
 
 print(fn)
-fn(1, 2)
+fn("val")
