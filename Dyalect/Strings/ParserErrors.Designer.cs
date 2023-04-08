@@ -61,6 +61,15 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to An abstract function or property should not define a body..
+        /// </summary>
+        internal static string AbstractFunctionNoBody {
+            get {
+                return ResourceManager.GetString("AbstractFunctionNoBody", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Invalid code island inside of a string literal..
         /// </summary>
         internal static string CodeIslandInvalid {
