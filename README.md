@@ -6,7 +6,7 @@
 [![GitHub tag (latest SemVer)](https://img.shields.io/badge/-Download-darkgreen?style=for-the-badge&logo=github)](https://github.com/vorov2/dyalect/releases/latest)
 [![VSCode](https://img.shields.io/badge/-VSCode-blue?style=for-the-badge&logo=Visual+Studio+Code&logoColor=white)](https://marketplace.visualstudio.com/items?itemName=vorov2.dyalect)
 
-Dyalect is a dynamic programming language for .NET platform.
+Dyalect is a dynamic programming language for the .NET platform.
 It is lightweight, fast and modern. Dyalect (or Dy for short)
 supports Windows, MacOS and Linux.
 
@@ -75,8 +75,7 @@ Hello, world!
 27.5
 ```
 
-Dy is shipped with the CLI (command line interface) to
-help you quick start with the language.
+Dy is shipped with the CLI (command line interface) to help you quick start with the language.
 
 Please refer to [wiki](https://github.com/vorov2/dyalect/wiki) for more information.
 
