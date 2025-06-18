@@ -75,8 +75,8 @@ Hello, world!
 27.5
 ```
 
-Dy is shipped with a CLI (command line interface) which can
-help you to familiarize yourself with the language.
+Dy is shipped with the CLI (command line interface) to
+help you quick start with the language.
 
 Please refer to [wiki](https://github.com/vorov2/dyalect/wiki) for more information.
 
